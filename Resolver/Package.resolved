@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CryptoSwift",
+        "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "32f641cf24fc7abc1c591a2025e9f2f572648b0f",
+          "version": "1.7.2"
+        }
+      },
+      {
+        "package": "swift-log",
+        "repositoryURL": "https://github.com/apple/swift-log.git",
+        "state": {
+          "branch": null,
+          "revision": "32e8d724467f8fe623624570367e3d50c5638e46",
+          "version": "1.5.2"
+        }
+      },
+      {
+        "package": "SwiftSoup",
+        "repositoryURL": "https://github.com/scinfu/SwiftSoup.git",
+        "state": {
+          "branch": null,
+          "revision": "8b6cf29eead8841a1fa7822481cb3af4ddaadba6",
+          "version": "2.6.1"
+        }
+      },
+      {
+        "package": "SwiftyPyString",
+        "repositoryURL": "https://github.com/ChanTsune/SwiftyPyString.git",
+        "state": {
+          "branch": null,
+          "revision": "90b88666574ddc518d5334392b07d9587517c1ed",
+          "version": "2.2.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

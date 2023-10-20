@@ -1,0 +1,57 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Run",
+            "program": "${workspaceFolder:backend}/.build/debug/Run",
+            "args": [],
+            "cwd": "${workspaceFolder:backend}",
+            "preLaunchTask": "swift: Build Debug Run"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Release Run",
+            "program": "${workspaceFolder:backend}/.build/release/Run",
+            "args": [],
+            "cwd": "${workspaceFolder:backend}",
+            "preLaunchTask": "swift: Build Release Run"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Test backend",
+            "program": "/Applications/Xcode-13.2.1.app/Contents/Developer/usr/bin/xctest",
+            "args": [
+                ".build/debug/backendPackageTests.xctest"
+            ],
+            "cwd": "${workspaceFolder:backend}",
+            "preLaunchTask": "swift: Build All"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Debug App",
+            "program": "${workspaceFolder:backend}/.build/debug/App",
+            "args": [],
+            "cwd": "${workspaceFolder:backend}",
+            "preLaunchTask": "swift: Build Debug App"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Release App",
+            "program": "${workspaceFolder:backend}/.build/release/App",
+            "args": [],
+            "cwd": "${workspaceFolder:backend}",
+            "preLaunchTask": "swift: Build Release App"
+        }
+    ]
+}
