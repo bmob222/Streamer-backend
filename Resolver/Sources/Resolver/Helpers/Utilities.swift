@@ -95,21 +95,7 @@ public struct Utilities {
             var request = URLRequest(url: url)
             request.httpMethod = httpMethod
             request.httpBody = data
-            if url.absoluteString.contains("easypanel.host") || url.absoluteString.contains("disable-ads") {
-                if let userID = Self.userID {
-                    request.setValue(userID, forHTTPHeaderField: "x-streamer-id")
-                }
-                if let appVersion = Self.appVersion {
-                    request.setValue(appVersion, forHTTPHeaderField: "x-app-version")
-                }
-                request.setValue(streamerBEkey, forHTTPHeaderField: "x-streamer-be-key")
-                if let device = Self.device {
-                    request.setValue(device, forHTTPHeaderField: "x-device")
-                }
-
-            } else {
-                request.setValue(Constants.userAgent, forHTTPHeaderField: "user-agent")
-            }
+           
             request.setValue("same-origin", forHTTPHeaderField: "sec-fetch-site")
             request.setValue("cors", forHTTPHeaderField: "sec-fetch-mode")
             request.setValue(url.absoluteString, forHTTPHeaderField: "referer")
@@ -126,6 +112,22 @@ public struct Utilities {
             extraHeaders.forEach {
                 request.setValue($0.value, forHTTPHeaderField: $0.key)
 
+            }
+            
+            if url.absoluteString.contains("easypanel.host") || url.absoluteString.contains("disable-ads") {
+                if let userID = Self.userID {
+                    request.setValue(userID, forHTTPHeaderField: "x-streamer-id")
+                }
+                if let appVersion = Self.appVersion {
+                    request.setValue(appVersion, forHTTPHeaderField: "x-app-version")
+                }
+                request.setValue(streamerBEkey, forHTTPHeaderField: "x-streamer-be-key")
+                if let device = Self.device {
+                    request.setValue(device, forHTTPHeaderField: "x-device")
+                }
+
+            } else {
+                request.setValue(Constants.userAgent, forHTTPHeaderField: "user-agent")
             }
             let (rdata, response)  = try await ResolverURLSession.shared.session.asyncData(for: request)
 
@@ -230,18 +232,22 @@ public struct Utilities {
         let response =  try JSONDecoder().decode(ProxyResponse.self, from: content)
 
         Constants.userAgent = response.solution.userAgent
-
+//        HTTPCookieStorage.shared.cookies?.forEach(HTTPCookieStorage.shared.deleteCookie)
         for cookie in response.solution.cookies {
             var cookieProperties = [HTTPCookiePropertyKey: Any]()
-            cookieProperties[.name] = cookie.name
-            cookieProperties[.value] = cookie.value
             cookieProperties[.domain] = cookie.domain
-            cookieProperties[.path] = cookie.path
-            cookieProperties[.secure] = cookie.secure
             cookieProperties[.expires] = Date(timeIntervalSince1970: cookie.expiry)
-
-            let newCookie = HTTPCookie(properties: cookieProperties)
-            HTTPCookieStorage.shared.setCookie(newCookie!)
+            cookieProperties[.name] = cookie.name
+            cookieProperties[.path] = cookie.path
+            cookieProperties[.init(rawValue: "sameSitePolicy")] = cookie.sameSite
+            cookieProperties[.secure] = cookie.secure
+            cookieProperties[.value] = cookie.value
+            cookieProperties[.init(rawValue: "HttpOnly")] = cookie.httpOnly
+            print(cookie.name)
+            print(cookie.value)
+            if let newCookie = HTTPCookie(properties: cookieProperties){
+                HTTPCookieStorage.shared.setCookie(newCookie)
+            }
         }
 
         return response.solution.response

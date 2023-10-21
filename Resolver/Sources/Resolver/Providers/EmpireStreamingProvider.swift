@@ -8,7 +8,7 @@ public struct EmpireStreamingProvider: Provider {
     public let langauge: String = ""
     private let posterBaseURL = URL(staticString: "https://image.tmdb.org/t/p/w342/")
 
-    public let baseURL: URL = URL(staticString: "https://empire-streaming.app/")
+    public let baseURL: URL = URL(staticString: "https://empire-stream.net")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("movies")
     }
@@ -30,24 +30,24 @@ public struct EmpireStreamingProvider: Provider {
     static var contentItemsResponse: ContentItemsResponse?
 
     func trigger() async throws {
-        let url = URL(staticString: "https://empire-streaming.app/api/views/contenitem")
+        _ = try await Utilities.requestCloudFlareCookies(url: .init(staticString: "https://empire-stream.net"))
+
+        let url = URL(staticString: "https://empire-stream.net/api/views/contenitem")
         let headers = [
-            "Host": "empire-streaming.app",
-            "Connection": "keep-alive",
-            "Pragma": "no-cache",
-            "Cache-Control": "no-cache",
-            "sec-ch-ua": "\"Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"115\", \"Chromium\";v=\"115\"",
             "Accept": "application/json, text/plain, */*",
-            "DNT": "1",
+            "Pragma": "no-cache",
             "sec-ch-ua-mobile": "?0",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
-            "sec-ch-ua-platform": "\"macOS\"",
             "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Dest": "empty",
-            "Referer": "https://empire-streaming.app/",
             "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
-            "Cookie": "cf_clearance=.7i0986DiW5qmEbgO8gfWuYZnD0dRXuXRvujwez_uwk-1691868138-0-1-979816dd.aa21640c.c099493d-150.0.0"
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Mode": "cors",
+            "authority": "https://empire-stream.net/api/views/contenitem",
+            "Referer": "https://empire-streaming.net/",
+            "Connection": "keep-alive",
+            "DNT": "1",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+            "Sec-Fetch-Dest": "empty",
+            "Host": "empire-stream.net",
         ]
 
         let data = try await Utilities.requestData(url: url, extraHeaders: headers)
@@ -67,7 +67,7 @@ public struct EmpireStreamingProvider: Provider {
         ] as [String: Any]
         let postData = try! JSONSerialization.data(withJSONObject: jsonData, options: [])
 
-        let url = URL(string: "https://empire-streaming.app/api/views/search_explorateur")!
+        let url = URL(string: "https://empire-stream.net/api/views/search_explorateur")!
         let headers = [
             "Accept": "application/json, text/plain, */*",
             "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
@@ -75,9 +75,9 @@ public struct EmpireStreamingProvider: Provider {
             "Connection": "keep-alive",
             "Content-Type": "application/json;charset=UTF-8",
             "DNT": "1",
-            "Origin": "https://empire-streaming.app",
+            "Origin": "https://empire-stream.net",
             "Pragma": "no-cache",
-            "Referer": "https://empire-streaming.app/explorateur",
+            "Referer": "https://empire-stream.net/explorateur",
             "Sec-Fetch-Dest": "empty",
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "same-origin",

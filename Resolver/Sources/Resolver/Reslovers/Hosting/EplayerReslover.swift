@@ -40,7 +40,7 @@ struct EplayerResolver: Resolver {
 
         ]
 
-        let data = "hash=\(id)&r=https%3A%2F%2Fempire-streaming.app%2F".data(using: .utf8)
+        let data = "hash=\(id)&r=https%3A%2F%2Fempire-stream.net%2F".data(using: .utf8)
         let videoData = try await Utilities.requestData(url: playerURL, httpMethod: "POST", data: data, extraHeaders: headers)
         let response = try JSONDecoder().decode(Response.self, from: videoData)
 

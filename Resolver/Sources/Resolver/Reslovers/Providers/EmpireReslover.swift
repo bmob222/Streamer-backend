@@ -3,8 +3,8 @@ import SwiftSoup
 
 struct EmpireResolver: Resolver {
     let name = "Empire"
-    static let domains: [String] = ["empire-streaming.app"]
-    private let baseURL: URL = URL(string: "https://empire-streaming.app/")!
+    static let domains: [String] = ["empire-stream.net"]
+    private let baseURL: URL = URL(string: "https://empire-stream.net/")!
 
     enum EmpireResolverError: Error {
         case urlNotValid
@@ -12,7 +12,7 @@ struct EmpireResolver: Resolver {
 
     func getMediaURL(url: URL) async throws -> [Stream] {
         let headers = [
-            "Host": "empire-streaming.app",
+            "Host": "empire-stream.net",
             "Sec-Fetch-Site": "same-origin",
             "Connection": "keep-alive",
             "Sec-Fetch-Mode": "navigate",
