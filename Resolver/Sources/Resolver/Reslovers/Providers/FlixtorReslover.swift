@@ -44,7 +44,7 @@ struct FlixtorResolver: Resolver {
         let document = try SwiftSoup.parse(servers.result)
         let rows: Elements = try document.select(".video-server")
         return try await rows.array().concurrentMap { row -> URL? in
-            let id: String = try row.attr("data-link-id")
+            let id: String = try row.attr("data-id")
             let epVrf = try await encodeVrf(text: id)
 
             // https://flixtor.video/ajax/server/838771?vrf=ZExJX053anY%3D
