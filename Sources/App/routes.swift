@@ -295,10 +295,13 @@ func routes(_ app: Application) throws {
     }
     app.get("tmdb", "movie", ":movieId") { req -> [Resolver.Source] in
         guard let id = req.parameters.get("movieId"),
-              let tmdbID = Int(id) else {
+              let tmdbID = Int(id),
+              let themoviearchiveURL = URL(string: "https://prod.omega.themoviearchive.site/v3/movie/sources/\(tmdbID)") else {
             throw Abort(.badRequest)
         }
-        return []
+        return [
+            .init(hostURL: themoviearchiveURL)
+        ]
     }
 
     app.get("tmdb", "tv", ":tvShowID", ":seasonNumber", ":episodeNumber") { req -> [Resolver.Source] in

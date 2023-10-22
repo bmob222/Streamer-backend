@@ -60,7 +60,8 @@ public struct HostsResolver {
         EmpireResolver(),
         EplayerResolver(),
         StreamWishResolver(),
-        GogoAnimeHDResolver()
+        GogoAnimeHDResolver(),
+        TheMovieArchiveReslover()
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {
         logger.info("🕸 Resolving \(url)")
