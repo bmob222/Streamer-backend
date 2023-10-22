@@ -235,7 +235,7 @@ public struct EmpireStreamingProvider: Provider {
             return []
         }
 
-        var keyword = keyword.lowercased()
+        var keyword = keyword.lowercased().trimmingCharacters(in: .whitespaces)
         let films = result.contentItem.films.filter { $0.title.lowercased().contains(keyword) || $0.originalTitle?.lowercased().contains(keyword) == true}.prefix(10)
         let shows = result.contentItem.series.filter { $0.title.lowercased().contains(keyword) || $0.originalTitle?.lowercased().contains(keyword) == true }.prefix(10)
 
