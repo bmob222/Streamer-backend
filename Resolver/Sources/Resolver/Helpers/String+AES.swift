@@ -55,7 +55,11 @@ public extension String {
             let sc = script.components(separatedBy: ".")
             var page = ""
             for elm in sc {
-                let c_elm = String(data: Data(base64Encoded: elm + "==")!, encoding: .utf8)!
+                let data = Data(base64Encoded: elm + "==")  ?? Data(base64Encoded: elm)
+                guard let data = data else {
+                    continue
+                }
+                let c_elm = String(data: data, encoding: .utf8)!
                 let t_ch = c_elm.matchesDotMatchesLineSeparators(for: "(\\d+)")
                 if !t_ch.isEmpty {
                     let nb = Int(t_ch[0])! + Int(t_int[0])!
@@ -182,7 +186,7 @@ extension Character {
     }
 }
 
-func randomString(length: Int) -> String {
+public func randomString(length: Int) -> String {
   let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
   return String((0..<length).map { _ in letters.randomElement()! })
 }

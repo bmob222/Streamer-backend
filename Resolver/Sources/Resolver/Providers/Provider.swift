@@ -45,6 +45,8 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case faselHD
     case moviebox
     case gogoAnimeHD
+    case tmdb
+
 }
 
 public enum ProviderType: Codable, Equatable, Hashable {
@@ -117,13 +119,18 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return EmpireStreamingProvider()
             case .gogoAnimeHD:
                 return GogoAnimeHDProvider()
-
+            case .tmdb:
+                return TMDBProvider()
             }
         case .remote(let id):
             let config = Self.activeProvidersConfig.first { $0.id == id}!
             return RemoteProvider(providerConfig: config)
         }
 
+    }
+
+    public var isRDEnabled: Bool {
+        rawValue == "tmdb"
     }
 
     public var iconURL: URL {

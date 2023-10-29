@@ -17,7 +17,8 @@ struct MyCloudResolver: Resolver {
         "vizcloud.online",
         "vizcloud.xyz",
         "vizcloud2.online",
-        "vizcloud2.ru"
+        "vizcloud2.ru",
+        "mcloud.bz"
     ]
 
     @EnviromentValue(key: "mycloud_keys_url", defaultValue: URL(staticString: "https://google.com"))

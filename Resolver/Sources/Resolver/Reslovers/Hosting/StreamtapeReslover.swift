@@ -5,7 +5,7 @@ struct StreamtapeResolver: Resolver {
     let name = "Streamtape"
 
     static let domains: [String] = [
-        "streamtape.com", "streamtapeadblock.art", "streamtape.to"
+        "streamtape.com", "streamtapeadblock.art", "streamtape.to", "tapeblocker.com", "streamtapeadblockuser.xyz"
     ]
 
     enum StreamtapeResolverError: Error {

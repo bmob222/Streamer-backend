@@ -57,9 +57,11 @@ public struct MovieBoxProvider: Provider {
         let id = url.lastPathComponent
 
         let playURL = baseURL.appendingPathComponent("tvshow").appendingPathComponent("play")
-        guard let maxSeason = media.data.max_season else {
+        guard var maxSeason = media.data.max_season else {
             throw MovieBoxProviderError.episodeURLNotFound
         }
+        
+        maxSeason = maxSeason < 1 ? 1 : maxSeason
 
         let seasons = try await (1...maxSeason).concurrentMap { seasonNumber in
             let seasonURL = baseURL.appendingPathComponent("tvshow").appendingPathComponent(id).appendingPathComponent(seasonNumber)

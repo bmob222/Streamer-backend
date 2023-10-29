@@ -1,6 +1,11 @@
 import Foundation
 
 public struct Stream: Codable, Hashable, Identifiable, Comparable {
+    public enum StreamType: Codable {
+        case direct
+        case realdebrid(Int)
+
+    }
     public var id: String {
         return streamURL.absoluteString
     }
@@ -9,13 +14,22 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
     public let quality: Quality
     public var subtitles: [Subtitle]
     public let headers: [String: String]?
+    public let type: StreamType
 
-    public init(Resolver: String, streamURL: URL, quality: Quality? = nil, headers: [String: String]? = nil, subtitles: [Subtitle] = []) {
+    public init(
+        Resolver: String,
+        streamURL: URL,
+        quality: Quality? = nil,
+        headers: [String: String]? = nil,
+        subtitles: [Subtitle] = [],
+        type: StreamType = .direct
+    ) {
         self.Resolver = Resolver
         self.streamURL = streamURL
         self.quality = quality ?? Quality(url: streamURL)
         self.headers = headers
         self.subtitles = subtitles
+        self.type = type
     }
 
     public static func <(lhs: Stream, rhs: Stream) -> Bool {
@@ -28,6 +42,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         self.quality = stream.quality
         self.headers = stream.headers
         self.subtitles = subtitles
+        self.type = .direct
     }
     public init(stream: Stream, quality: Quality? = nil ) {
         self.streamURL = stream.streamURL
@@ -35,10 +50,56 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         self.quality = quality ?? stream.quality
         self.headers = stream.headers
         self.subtitles = stream.subtitles
+        self.type = .direct
     }
 
     public var canBePlayedOnVlc: Bool {
         return (headers?.isEmpty ?? true) && streamURL.pathExtension != "m3u8" && streamURL.pathExtension != "m3u"
+    }
+
+    public static func == (lhs: Stream, rhs: Stream) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(Resolver)
+        hasher.combine(streamURL)
+        hasher.combine(quality)
+        hasher.combine(headers)
+
+    }
+
+    enum CodingKeys: CodingKey {
+        case Resolver
+        case streamURL
+        case quality
+        case subtitles
+        case headers
+        case type
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container: KeyedDecodingContainer<Stream.CodingKeys> = try decoder.container(keyedBy: Stream.CodingKeys.self)
+
+        self.Resolver = try container.decode(String.self, forKey: Stream.CodingKeys.Resolver)
+        self.streamURL = try container.decode(URL.self, forKey: Stream.CodingKeys.streamURL)
+        self.quality = try container.decode(Quality.self, forKey: Stream.CodingKeys.quality)
+        self.subtitles = try container.decode([Subtitle].self, forKey: Stream.CodingKeys.subtitles)
+        self.headers = try container.decodeIfPresent([String: String].self, forKey: Stream.CodingKeys.headers)
+        self.type = .direct
+
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container: KeyedEncodingContainer<Stream.CodingKeys> = encoder.container(keyedBy: Stream.CodingKeys.self)
+
+        try container.encode(self.Resolver, forKey: Stream.CodingKeys.Resolver)
+        try container.encode(self.streamURL, forKey: Stream.CodingKeys.streamURL)
+        try container.encode(self.quality, forKey: Stream.CodingKeys.quality)
+        try container.encode(self.subtitles, forKey: Stream.CodingKeys.subtitles)
+        try container.encodeIfPresent(self.headers, forKey: Stream.CodingKeys.headers)
+        try container.encode(self.type, forKey: Stream.CodingKeys.type)
     }
 }
 
@@ -149,7 +210,7 @@ public enum Quality: String, CaseIterable, Comparable, Codable {
             self = .p720
         case url.absoluteString.contains("1080"):
             self = .p1080
-        case url.absoluteString.contains("4K"):
+        case url.absoluteString.lowercased().contains("4K".lowercased()):
             self = .k4
         case url.absoluteString.contains("auto"):
             self = .auto
@@ -168,7 +229,7 @@ public enum Quality: String, CaseIterable, Comparable, Codable {
             self = .p720
         case quality?.contains("1080"):
             self = .p1080
-        case quality?.contains("4K"):
+        case quality?.lowercased().contains("4K".lowercased()):
             self = .k4
         case quality?.contains("auto"):
             self = .auto

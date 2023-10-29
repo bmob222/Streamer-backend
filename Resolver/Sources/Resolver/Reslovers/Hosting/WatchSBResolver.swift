@@ -78,12 +78,16 @@ struct WatchSBResolver: Resolver {
 }
 
 extension Data {
-    struct HexEncodingOptions: OptionSet {
-        let rawValue: Int
+    public struct HexEncodingOptions: OptionSet {
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        public let rawValue: Int
         static let upperCase = HexEncodingOptions(rawValue: 1 << 0)
     }
 
-    func hexEncodedString(options: HexEncodingOptions = []) -> String {
+    public func hexEncodedString(options: HexEncodingOptions = []) -> String {
         let format = options.contains(.upperCase) ? "%02hhX" : "%02x"
         return self.map { String(format: format, $0) }.joined()
     }

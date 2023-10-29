@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -22,7 +22,9 @@ let package = Package(
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.3.4"),
         .package(url: "https://github.com/ChanTsune/SwiftyPyString.git", from: "2.2.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
-        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.4.3"))
+        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.4.3")),
+        .package(url: "https://github.com/adamayoung/TMDb.git", branch: "main")
+
 
     ],
     targets: [
@@ -34,8 +36,8 @@ let package = Package(
                 "SwiftSoup",
                 "SwiftyPyString",
                 "CryptoSwift",
-                .product(name: "Logging", package: "swift-log")
-
+                .product(name: "Logging", package: "swift-log"),
+                .product(name: "TMDb", package: "TMDb")
             ],
             resources: [
                 .process("Resources")
