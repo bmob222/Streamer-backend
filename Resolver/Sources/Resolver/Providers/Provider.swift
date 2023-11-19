@@ -48,7 +48,6 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case tmdb
     case aniwatch
 
-
 }
 
 public enum ProviderType: Codable, Equatable, Hashable {

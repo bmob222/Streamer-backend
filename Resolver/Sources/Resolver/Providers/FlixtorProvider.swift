@@ -114,7 +114,7 @@ public struct FlixtorProvider: Provider {
             return Season(seasonNumber: seasonNumber, webURL: seasonURL, episodes: episodes)
         }
 
-        return TVshow(title: title, webURL: url, posterURL: posterURL,year: year, seasons: seasons)
+        return TVshow(title: title, webURL: url, posterURL: posterURL, year: year, seasons: seasons)
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {

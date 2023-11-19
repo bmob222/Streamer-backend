@@ -63,7 +63,7 @@ public struct FlixHQProvider: Provider {
         let idURL = sourceURL.appending("id", value: media.id)
         let posterURL = media.image ?? URL(staticString: "https://feelagain.ca/images/placeholder-poster-sm.png")
         var year: Int?
-        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear){
+        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear) {
             year = yearInt
         }
         return Movie(title: media.title, webURL: url, posterURL: posterURL, year: year, sources: [.init(hostURL: idURL )])
@@ -89,11 +89,11 @@ public struct FlixHQProvider: Provider {
         }
         let posterURL = media.image ?? URL(staticString: "https://feelagain.ca/images/placeholder-poster-sm.png")
         var year: Int?
-        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear){
+        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear) {
             year = yearInt
         }
 
-        return TVshow(title: media.title, webURL: url, posterURL: posterURL,year: year, seasons: seasons)
+        return TVshow(title: media.title, webURL: url, posterURL: posterURL, year: year, seasons: seasons)
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {

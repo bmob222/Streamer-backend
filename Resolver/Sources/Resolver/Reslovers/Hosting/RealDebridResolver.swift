@@ -223,9 +223,7 @@ struct RealDebridResolver: Resolver {
     static let domains: [String] = ["olgply.xyz"]
 
     func canHandle(url: URL) -> Bool {
-        print("URL---- \(url)")
         for regex in regexs {
-            print("URL---- \(url.absoluteString.matches(for: regex))")
             if url.absoluteString.matches(for: regex).count > 0 {
                 return true
             }
@@ -236,54 +234,6 @@ struct RealDebridResolver: Resolver {
     func getMediaURL(url: URL) async throws -> [Stream] {
         return [
             .init(Resolver: "RD", streamURL: .init(staticString: "https://29.stream.real-debrid.com/t/Q2U4X77UUANYA55/eng1/none/aac/full.m3u8"))]
-//        let parameters = [
-//            [
-//                "key": "link",
-//                "value": url.absoluteString,
-//                "type": "text"
-//            ]] as [[String: Any]]
-//
-//        let boundary = "Boundary-\(UUID().uuidString)"
-//        var body = ""
-//        for param in parameters {
-//            if param["disabled"] != nil { continue }
-//            let paramName = param["key"]!
-//            body += "--\(boundary)\r\n"
-//            body += "Content-Disposition:form-data; name=\"\(paramName)\""
-//            if param["contentType"] != nil {
-//                body += "\r\nContent-Type: \(param["contentType"] as! String)"
-//            }
-//            let paramType = param["type"] as! String
-//            if paramType == "text" {
-//                let paramValue = param["value"] as! String
-//                body += "\r\n\r\n\(paramValue)\r\n"
-//            } else {
-//                let paramSrc = param["src"] as! String
-//                let fileData = try NSData(contentsOfFile: paramSrc, options: []) as Data
-//                let fileContent = String(data: fileData, encoding: .utf8)!
-//                body += "; filename=\"\(paramSrc)\"\r\n"
-//                + "Content-Type: \"content-type header\"\r\n\r\n\(fileContent)\r\n"
-//            }
-//        }
-//        body += "--\(boundary)--\r\n";
-//        let postData = body.data(using: .utf8)
-//
-//        let data = try await Utilities.requestData(
-//            url: .init(staticString: "https://api.real-debrid.com/rest/1.0/unrestrict/link"),
-//            httpMethod: "POST",
-//            data: postData,
-//            extraHeaders: [
-//                "Authorization":"Bearer \(token)",
-//                "Content-Type":"multipart/form-data; boundary=\(boundary)"
-//            ]
-//        )
-//
-//        let results = try JSONDecoder().decode(RDResult.self, from: data)
-//        if results.streamable == 1 {
-//            return [.init(Resolver: "RD", streamURL: "https://29.stream.real-debrid.com/t/Q2U4X77UUANYA55/eng1/none/aac/full.m3u8")]
-//        } else {
-//            return []
-//        }
     }
 
 }

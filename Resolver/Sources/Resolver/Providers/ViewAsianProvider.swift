@@ -63,11 +63,11 @@ public struct ViewAsianProvider: Provider {
         let posterPath = url.queryParameters?["poster"] ?? ""
         let posterURL = try URL(posterPath)
         var year: Int?
-        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear){
+        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear) {
             year = yearInt
         }
 
-        return Movie(title: media.title, webURL: url, posterURL: posterURL,year: year, sources: [.init(hostURL: idURL )])
+        return Movie(title: media.title, webURL: url, posterURL: posterURL, year: year, sources: [.init(hostURL: idURL )])
 
     }
 

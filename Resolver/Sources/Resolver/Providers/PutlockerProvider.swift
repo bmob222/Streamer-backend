@@ -56,13 +56,11 @@ public struct PutlockerProvider: Provider {
         let title = try document.select(".mvic-desc > h3").html()
         let posterPath = try document.select("[property=og:image]").first()?.attr("content") ?? ""
         let posterURL = try URL(posterPath)
-        
+
         var year: Int?
         if let releaseYear = try document.select(".mvici-right a").last()?.text(), let yearInt = releaseYear.components(separatedBy: "-").first {
             year = Int(yearInt) ?? 2023
         }
-
-        
 
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let movieID = components.path.components(separatedBy: "-").last?.dropLast() else {
@@ -81,7 +79,7 @@ public struct PutlockerProvider: Provider {
             let sourceURL = baseURL.appendingPathComponent("ajax/movie/episode/server/sources").appendingPathComponent(eposideNumber + "_1")
             return Source(hostURL: sourceURL)
         }
-        return Movie(title: title, webURL: url, posterURL: posterURL,year: year, sources: sources)
+        return Movie(title: title, webURL: url, posterURL: posterURL, year: year, sources: sources)
 
     }
 

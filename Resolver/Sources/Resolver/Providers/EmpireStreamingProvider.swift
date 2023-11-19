@@ -47,7 +47,7 @@ public struct EmpireStreamingProvider: Provider {
             "DNT": "1",
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
             "Sec-Fetch-Dest": "empty",
-            "Host": "empire-stream.net",
+            "Host": "empire-stream.net"
         ]
 
         let data = try await Utilities.requestData(url: url, extraHeaders: headers)

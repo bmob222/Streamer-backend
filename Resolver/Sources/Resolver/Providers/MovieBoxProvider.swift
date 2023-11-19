@@ -60,7 +60,7 @@ public struct MovieBoxProvider: Provider {
         guard var maxSeason = media.data.max_season else {
             throw MovieBoxProviderError.episodeURLNotFound
         }
-        
+
         maxSeason = maxSeason < 1 ? 1 : maxSeason
 
         let seasons = try await (1...maxSeason).concurrentMap { seasonNumber in

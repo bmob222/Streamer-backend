@@ -12,11 +12,11 @@ struct AniwatchReslover: Resolver {
     }
 
     func getMediaURL(url: URL) async throws -> [Stream] {
-       //https://aniwatch.to/ajax/v2/episode/servers?episodeId=107145&id=the-summer-18553
-        
+       // https://aniwatch.to/ajax/v2/episode/servers?episodeId=107145&id=the-summer-18553
+
         let data = try await Utilities.requestData(url: url)
         let serversContent = try JSONDecoder().decode(HTMLResponse.self, from: data)
-        
+
         let serversDocument = try SwiftSoup.parse(serversContent.html)
         let rows: Elements = try serversDocument.select(".server-item")
         return try await rows.array().map { row -> URL in
@@ -32,8 +32,7 @@ struct AniwatchReslover: Resolver {
         }
         .compactMap { $0 }
         .flatMap { $0 }
-        
-        
+
     }
 
     struct Response: Codable {

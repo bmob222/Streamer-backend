@@ -20,19 +20,19 @@ struct DoodstreamResolver: Resolver {
         "dooood.com",
         "doods.pro"
     ]
-    
+
     enum DoodstreamResolverrError: Error {
         case regxValueNotFound
         case urlNotValid
-        
+
     }
-    
+
     func getMediaURL(url: URL) async throws -> [Stream] {
         var url = url
         if url.absoluteString.contains("/d/"), let eurl = URL(string: url.absoluteString.replacingOccurrences(of: "/d/", with: "/e/")) {
             url = eurl
         }
-        
+
         let content = try await Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(content)
         let script = try document.select("script").array().filter {
@@ -41,7 +41,7 @@ struct DoodstreamResolver: Resolver {
         guard let md5UrlString = script.matches(for: #"\$\.get\('(\/pass_md5[^']+)"#).first  else {
             throw DoodstreamResolverrError.regxValueNotFound
         }
-        
+
         guard let md5URL = URL(string: "https://" + (url.host ?? "") + md5UrlString) else {
             throw DoodstreamResolverrError.urlNotValid
         }
@@ -55,5 +55,5 @@ struct DoodstreamResolver: Resolver {
         }
         return [.init(Resolver: "DoodStream", streamURL: directVideoURL)]
     }
-    
+
 }

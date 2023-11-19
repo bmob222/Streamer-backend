@@ -95,7 +95,7 @@ public struct Utilities {
             var request = URLRequest(url: url)
             request.httpMethod = httpMethod
             request.httpBody = data
-           
+
             request.setValue("same-origin", forHTTPHeaderField: "sec-fetch-site")
             request.setValue("cors", forHTTPHeaderField: "sec-fetch-mode")
             request.setValue(url.absoluteString, forHTTPHeaderField: "referer")
@@ -113,7 +113,7 @@ public struct Utilities {
                 request.setValue($0.value, forHTTPHeaderField: $0.key)
 
             }
-            
+
             if url.absoluteString.contains("easypanel.host") || url.absoluteString.contains("disable-ads") {
                 if let userID = Self.userID {
                     request.setValue(userID, forHTTPHeaderField: "x-streamer-id")
@@ -245,7 +245,7 @@ public struct Utilities {
             cookieProperties[.init(rawValue: "HttpOnly")] = cookie.httpOnly
             print(cookie.name)
             print(cookie.value)
-            if let newCookie = HTTPCookie(properties: cookieProperties){
+            if let newCookie = HTTPCookie(properties: cookieProperties) {
                 HTTPCookieStorage.shared.setCookie(newCookie)
             }
         }
