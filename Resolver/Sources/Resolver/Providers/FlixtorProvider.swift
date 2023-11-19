@@ -66,7 +66,8 @@ public struct FlixtorProvider: Provider {
 
         let dataId = try pageDocument.select(".watch-wrap").attr("data-id")
         let requestUrl = baseURL.appendingPathComponent("ajax/episode/list").appendingPathComponent(dataId)
-
+        let releaseDate = try pageDocument.select("[itemprop=dateCreated]").text()
+        let year = Int(releaseDate.components(separatedBy: " ").last ?? "2023")
         let vrf = try await encodeVrf(text: dataId)
         let data = try await Utilities.requestData(url: requestUrl, parameters: ["vrf": vrf])
         let content = try JSONCoder.decoder.decode(Response.self, from: data)
@@ -76,7 +77,7 @@ public struct FlixtorProvider: Provider {
         let epDataId: String = try row.attr("data-id")
         let sourceUrl = self.baseURL.appendingPathComponent("ajax/server/list").appendingPathComponent(epDataId)
         let sources =  [Source(hostURL: sourceUrl)]
-        return Movie(title: title, webURL: url, posterURL: posterURL, sources: sources, subtitles: nil)
+        return Movie(title: title, webURL: url, posterURL: posterURL, year: year, sources: sources, subtitles: nil)
     }
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
@@ -89,6 +90,8 @@ public struct FlixtorProvider: Provider {
 
         let dataId = try pageDocument.select(".watch-wrap").attr("data-id")
         let requestUrl = baseURL.appendingPathComponent("ajax/episode/list").appendingPathComponent(dataId)
+        let releaseDate = try pageDocument.select("[itemprop=dateCreated]").text()
+        let year = Int(releaseDate.components(separatedBy: " ").last ?? "2023")
 
         let vrf = try await encodeVrf(text: dataId)
         let data = try await Utilities.requestData(url: requestUrl, parameters: ["vrf": vrf])
@@ -111,7 +114,7 @@ public struct FlixtorProvider: Provider {
             return Season(seasonNumber: seasonNumber, webURL: seasonURL, episodes: episodes)
         }
 
-        return TVshow(title: title, webURL: url, posterURL: posterURL, seasons: seasons)
+        return TVshow(title: title, webURL: url, posterURL: posterURL,year: year, seasons: seasons)
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {

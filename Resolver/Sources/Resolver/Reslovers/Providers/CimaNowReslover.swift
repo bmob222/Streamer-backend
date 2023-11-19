@@ -5,7 +5,7 @@ struct CimaNowResolver: Resolver {
     let name = "CimaNow"
 
     static let domains: [String] = ["cimanow.cc"]
-    private let directStreamDomains: [String] = ["cn.box.com", "cimanow.net", "uqload.co", "newcima.xyz"]
+    private let directStreamDomains: [String] = ["cn.box.com", "cimanow.net", "uqload.co", "newcima.xyz", "cimanowtv.com"]
 
     func getMediaURL(url: URL) async throws -> [Stream] {
 

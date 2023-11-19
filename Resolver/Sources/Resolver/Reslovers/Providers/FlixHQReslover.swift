@@ -19,7 +19,7 @@ struct FlixHQResolver: Resolver {
 
         let episodeId = url.lastPathComponent
 
-        return try await ["upcloud", "vidcloud", "mixdrop"].concurrentMap { server -> [Stream]?  in
+        return try await ["upcloud", "vidcloud"].concurrentMap { server -> [Stream]?  in
             let watchURL = consumetURL.appendingPathComponent("movies/flixhq/watch")
                 .appending("episodeId", value: episodeId)
                 .appending("mediaId", value: mediaId)

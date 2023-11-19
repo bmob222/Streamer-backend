@@ -43,7 +43,7 @@ public class KaidoAnimeProvider: Provider {
 
         let title = try pageDocument.select(".anisc-detail > .film-name").text()
         let posterPath = try pageDocument.select(".anisc-poster > .film-poster> img").attr("src")
-        let posterURL = URL(string: posterPath)!
+        let posterURL = try URL(posterPath)
 
         // https://zoro.to/ajax/v2/episode/list/18079
         let mediaID = url.lastPathComponent.components(separatedBy: "-").last!
@@ -101,7 +101,7 @@ private extension KaidoAnimeProvider {
             let url = watchBaseURL.appendingPathComponent(path)
             let title: String = try row.select("img").attr("alt")
             let posterPath: String = try row.select("img").attr("data-src")
-            let posterURL = URL(string: posterPath)!
+            let posterURL = try URL(posterPath)
             return MediaContent(title: title, webURL: url, posterURL: posterURL, type: .tvShow, provider: .kaido)
         }
 

@@ -20,55 +20,61 @@ struct MyCloudResolver: Resolver {
         "vizcloud2.ru",
         "mcloud.bz"
     ]
-
-    @EnviromentValue(key: "mycloud_keys_url", defaultValue: URL(staticString: "https://google.com"))
-    var keysURL: URL
-
-    func canHandle(url: URL) -> Bool {
-        Self.domains.firstIndex(of: url.host!) != nil || url.host?.contains("vizcloud") == true
+    
+    @EnviromentValue(key: "consumet_url", defaultValue: URL(staticString: "https://api.consumet.org"))
+    private var consumetURL: URL
+    
+    enum RabbitstreamResolverError: Error {
+        case idNotFound
     }
-
     func getMediaURL(url: URL) async throws -> [Stream] {
-        let info = url.absoluteString
-            .replacingOccurrences(of: "https://", with: "")
-        let eURL = keysURL.appending("url", value: info.encodeURIComponent())
-        let encodedPath = try await Utilities.downloadPage(url: eURL)
-        let encodedURL = try URL(encodedPath)
-        let headers = [
-            "User-Agent": Constants.userAgent,
-            "Referer": url.absoluteString,
-            "origin": url.absoluteString,
-            "content-type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-origin"
-        ]
-
-        do {
-            let data = try await Utilities.requestData(url: encodedURL, extraHeaders: headers)
-
-            let content = try JSONCoder.decoder.decode(Response.self, from: data)
-            return content.result.sources.compactMap {
-                Stream(Resolver: "VizCloud", streamURL: $0.file, quality: .unknown)
-            }
-        } catch {
-            print(error)
-            throw error
+        let watchURL = consumetURL.appendingPathComponent("utils/extractor")
+            .appending("url", value: url.absoluteString.base64Encoded())
+            .appending("server", value: "vidcloud")
+        
+        guard let data = try? await Utilities.requestData(url: watchURL),
+              let response = try? JSONDecoder().decode(WatchResponse.self, from: data) else {
+            throw RabbitstreamResolverError.idNotFound
         }
-
+        
+        let subttiles = response.subtitles.map {
+            let lang = $0.lang.components(separatedBy: "-").first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? $0.lang
+            return Subtitle(url: $0.url, language: .init(rawValue: lang) ?? .english)
+            
+        }
+        return response.sources.map {
+            Stream(
+                Resolver: response.headers.Referer.host ?? "FlixHQ",
+                streamURL: $0.url,
+                quality: Quality(quality: $0.quality),
+                headers: ["Referer": response.headers.Referer.absoluteString],
+                subtitles: subttiles
+            )
+        }
+        
     }
-    struct Response: Codable {
-        let status: Int
-        let result: Media
+    
+    // MARK: - WatchResponse
+    struct WatchResponse: Codable, Equatable {
+        let headers: ConsumetHeaders
+        let sources: [ConsumetSource]
+        let subtitles: [ConsumetSubtitle]
     }
-
-    // MARK: - Media
-    struct Media: Codable {
-        let sources: [Source]
+    
+    // MARK: - Headers
+    struct ConsumetHeaders: Codable, Equatable {
+        let Referer: URL
     }
-
     // MARK: - Source
-    struct Source: Codable {
-        let file: URL
+    struct ConsumetSource: Codable, Equatable {
+        let url: URL
+        let quality: String
+        let isM3U8: Bool
+        
+    }
+    // MARK: - Subtitle
+    struct ConsumetSubtitle: Codable, Equatable {
+        let url: URL
+        let lang: String
     }
 }

@@ -6,12 +6,13 @@ public struct TVshow: Codable, Identifiable, Comparable, Hashable {
     public let title: String
     public let webURL: URL
     public let posterURL: URL
+    public let year: Int?
     public let overview: String?
     public let trailer: URL?
     public let actors: [Actor]?
     public let seasons: [Season]?
 
-    public init(title: String, webURL: URL, posterURL: URL, overview: String? = nil, trailer: URL? = nil, seasons: [Season]? = nil, actors: [Actor]? = nil) {
+    public init(title: String, webURL: URL, posterURL: URL, year: Int? = nil, overview: String? = nil, trailer: URL? = nil, seasons: [Season]? = nil, actors: [Actor]? = nil) {
         self.id = webURL.absoluteString.base64Encoded() ?? ""
         self.title = title
         self.webURL = webURL
@@ -20,6 +21,7 @@ public struct TVshow: Codable, Identifiable, Comparable, Hashable {
         self.seasons = seasons?.sorted()
         self.trailer = trailer
         self.actors = actors
+        self.year = year
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -34,6 +36,8 @@ public struct TVshow: Codable, Identifiable, Comparable, Hashable {
         hasher.combine(title)
         hasher.combine(webURL)
         hasher.combine(posterURL)
+        hasher.combine(year)
+
     }
 }
 

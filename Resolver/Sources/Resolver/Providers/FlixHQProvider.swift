@@ -5,7 +5,7 @@ public struct FlixHQProvider: Provider {
     public var type: ProviderType = .init(.flixHQ)
     public let title: String = "FlixHQ.to"
     public let langauge: String = "🇺🇸"
-    public let baseURL: URL = URL(staticString: "https://flixhq.to/")
+    public let baseURL: URL = URL(staticString: "https://flixhq.pe")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("movie")
     }
@@ -31,7 +31,12 @@ public struct FlixHQProvider: Provider {
         let rows: Elements = try document.select(".flw-item")
         return try rows.array().map { row in
             let path: String = try row.select(".film-name a").attr("href")
-            let url = baseURL.appendingPathComponent(path)
+            let url: URL
+            if path.hasPrefix("https") {
+                url = try URL(path)
+            } else {
+                url = baseURL.appendingPathComponent(path)
+            }
             let title: String = try row.select(".film-name a").text()
             let posterPath: String = try row.select(".film-poster img").attr("data-src")
             let posterURL = try URL(posterPath)
@@ -57,13 +62,16 @@ public struct FlixHQProvider: Provider {
         }
         let idURL = sourceURL.appending("id", value: media.id)
         let posterURL = media.image ?? URL(staticString: "https://feelagain.ca/images/placeholder-poster-sm.png")
-
-        return Movie(title: media.title, webURL: url, posterURL: posterURL, sources: [.init(hostURL: idURL )])
+        var year: Int?
+        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear){
+            year = yearInt
+        }
+        return Movie(title: media.title, webURL: url, posterURL: posterURL, year: year, sources: [.init(hostURL: idURL )])
 
     }
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
-        let detailsURL = detailsURL.appendingQueryItem(name: "id", value: url.relativePath.removeprefix("//"))
+        let detailsURL = detailsURL.appendingQueryItem(name: "id", value: url.relativePath.removeprefix("/"))
         let data = try await Utilities.requestData(url: detailsURL)
         let media = try JSONCoder.decoder.decode(ConsumetMedia.self, from: data)
 
@@ -80,8 +88,12 @@ public struct FlixHQProvider: Provider {
             Season(seasonNumber: number, webURL: url, episodes: ep)
         }
         let posterURL = media.image ?? URL(staticString: "https://feelagain.ca/images/placeholder-poster-sm.png")
+        var year: Int?
+        if let releaseDate = media.releaseDate, let releaseYear = releaseDate.components(separatedBy: "-").first, let yearInt = Int(releaseYear){
+            year = yearInt
+        }
 
-        return TVshow(title: media.title, webURL: url, posterURL: posterURL, seasons: seasons)
+        return TVshow(title: media.title, webURL: url, posterURL: posterURL,year: year, seasons: seasons)
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
@@ -115,7 +127,7 @@ public struct ConsumetMedia: Codable, Equatable {
     public let description: String
     public let otherNames: [String]?
     public let episodes: [ConsumetEpisode]
-
+    public let releaseDate: String?
 }
 
 // MARK: - Episode

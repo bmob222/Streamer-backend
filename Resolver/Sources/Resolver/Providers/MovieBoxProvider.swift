@@ -47,7 +47,7 @@ public struct MovieBoxProvider: Provider {
         let hostURL = baseURL.appendingPathComponent("movie").appendingPathComponent("play").appendingPathComponent(id)
         let posterURL = media.data.poster ?? .init(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
 
-        return Movie(title: media.data.title, webURL: url, posterURL: posterURL, sources: [.init(hostURL: hostURL )])
+        return Movie(title: media.data.title, webURL: url, posterURL: posterURL, year: media.data.year, sources: [.init(hostURL: hostURL )])
 
     }
 
@@ -79,7 +79,7 @@ public struct MovieBoxProvider: Provider {
             }
         }.compactMap { $0 }
         let posterURL = media.data.poster ?? .init(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
-        return TVshow(title: media.data.title, webURL: url, posterURL: posterURL, seasons: seasons)
+        return TVshow(title: media.data.title, webURL: url, posterURL: posterURL, year: media.data.year, seasons: seasons)
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
@@ -113,8 +113,10 @@ public struct MovieBoxProvider: Provider {
         let poster: URL?
         let boxType: Int
         let max_season: Int?
+        let year: Int?
         enum CodingKeys: String, CodingKey {
             case id, title, poster
+            case year
             case boxType = "box_type"
             case max_season = "max_season"
 
@@ -133,6 +135,7 @@ public struct MovieBoxProvider: Provider {
             }
             self.boxType = try container.decode(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.boxType)
             self.max_season = try container.decodeIfPresent(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.max_season)
+            self.year = try container.decodeIfPresent(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.year)
 
         }
 
@@ -144,7 +147,9 @@ public struct MovieBoxProvider: Provider {
             try container.encodeIfPresent(self.poster, forKey: MovieBoxProvider.Datum.CodingKeys.poster)
             try container.encode(self.boxType, forKey: MovieBoxProvider.Datum.CodingKeys.boxType)
             try container.encodeIfPresent(self.max_season, forKey: MovieBoxProvider.Datum.CodingKeys.max_season)
+            try container.encodeIfPresent(self.year, forKey: MovieBoxProvider.Datum.CodingKeys.year)
         }
+
     }
 
     // MARK: - HomeResponse

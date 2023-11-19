@@ -29,7 +29,7 @@ public struct ArabseedProvider: Provider {
     private func parsePage(content: String, onlyType: MediaContent.MediaContentType? = nil) throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)
         let rows: Elements = try document.select(".MovieBlock")
-        return try rows.array().compactMap { row in
+        return try rows.array().compactMap { row -> MediaContent? in
             let category = try row.select(".BottomBar > .category").text()
             guard category.contains("افلام") || category.contains("مسلسل") || category.contains("برامج") else {
                 return nil
@@ -46,8 +46,9 @@ public struct ArabseedProvider: Provider {
                 posterPath = try row.select(".Poster > img").attr("data-src")
 
             }
-            let posterURL = URL(string: posterPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!
-            let webURL = URL(string: url)!
+            guard let posterURL = try? URL(posterPath), let webURL = try? URL(url) else {
+                return nil
+            }
             let type: MediaContent.MediaContentType
             if category.contains("برامج") && title.contains("الحلقة") {
                 type = .movie

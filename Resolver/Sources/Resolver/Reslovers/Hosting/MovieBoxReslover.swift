@@ -29,7 +29,8 @@ struct MovieBoxResolver: Resolver {
 
             let subtitles = content.data.list.compactMap { section in
                 return section.subtitles.map {
-                    let srtPath = subtitlesBaseURL.appendingQueryItem(name: "url", value: $0.filePath)
+                    let p = $0.filePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? $0.filePath
+                    let srtPath = subtitlesBaseURL.appendingQueryItem(name: "url", value: p)
                     return Subtitle(url: srtPath, language: .init(rawValue: section.language) ?? .english)
                 }
             }.flatMap { $0 }
