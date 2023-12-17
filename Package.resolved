@@ -113,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/postgres-nio.git",
       "state" : {
-        "revision" : "036931d968aab819f5e380a932237118ac4e87ba",
-        "version" : "1.19.1"
+        "revision" : "fa3137d39bca84843739db1c5a3db2d7f4ae65e6",
+        "version" : "1.20.0"
       }
     },
     {
@@ -131,8 +131,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/RediStack.git",
       "state" : {
-        "revision" : "a476f69cbbe31de5ba040309630d365d13c687f8",
-        "version" : "1.6.1"
+        "revision" : "622ce440f90d79b58e45f3a3efdd64c51d1dfd17",
+        "version" : "1.6.2"
       }
     },
     {
@@ -347,8 +347,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "00c902ce53f8b00703e2edcd457400fef422c7fd",
-        "version" : "4.89.1"
+        "revision" : "67fe736c37b0ad958b9d248f010cff6c1baa5c3a",
+        "version" : "4.89.3"
       }
     },
     {
