@@ -143,7 +143,6 @@ iOSInjectionProject/
 ### SwiftPackageManager ###
 Packages
 xcuserdata
-*.xcodeproj
 
 
 ### SwiftPM ###
@@ -159,9 +158,7 @@ Config/secrets
 
 ## Xcode 8 and earlier
 
-### Xcode Patch ###
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
+
 
 
 .swiftpm/xcode/xcshareddata/xcschemes/streamer-backend_mo.xcscheme
