@@ -368,7 +368,7 @@ extension JSONValue: Codable {
 
     public func decode<T: Decodable>() throws -> T {
         let encoded = try JSONEncoder().encode(self)
-        return try JSONCoder.decoder.decode(T.self, from: encoded)
+        return try JSONDecoder().decode(T.self, from: encoded)
     }
 }
 

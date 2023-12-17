@@ -95,22 +95,8 @@ struct ArabSeedResolver: Resolver {
                 streamURL: $0,
                 quality: quality,
                 headers: [
-                    "Accept": "*/*",
-                    "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
-                    "Cache-Control": "no-cache",
-                    "Connection": "keep-alive",
-                    "DNT": "1",
-                    "Pragma": "no-cache",
                     "Host": url.host ?? "",
-                    "Referer": url.absoluteString,
-                    "Sec-Fetch-Dest": "video",
-                    "Sec-Fetch-Mode": "no-cors",
-                    "Sec-Fetch-Site": "cross-site",
-                    "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36",
-                    "sec-ch-ua": "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\"",
-                    "sec-ch-ua-mobile": "?1",
-                    "sec-ch-ua-platform": "\"Android\""
-
+                    "Referer": url.absoluteString
                 ]
             )
         }

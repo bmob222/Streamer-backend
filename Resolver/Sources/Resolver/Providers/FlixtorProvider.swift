@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct FlixtorProvider: Provider {
+    public init() {}
+
     public let type: ProviderType = .init(.flixtor)
     public let title: String = "Flixtorz.to"
 
@@ -17,12 +19,11 @@ public struct FlixtorProvider: Provider {
     }
     public let langauge: String = "🇺🇸"
 
-    public init() {}
     @EnviromentValue(key: "vrfSolverURL", defaultValue: URL(staticString: "https://google.com"))
     private var vrfSolverURL: URL
-
-    @EnviromentValue(key: "vrfSolverKey", defaultValue: "111111")
-    private var vrfSolverKey: String
+    enum FlixtorResolverError: Error {
+        case missingMovieInformation
+    }
 
     public func parsePage(url: URL) async throws -> [MediaContent] {
         let content = try await  Utilities.downloadPage(url: url)
@@ -70,10 +71,12 @@ public struct FlixtorProvider: Provider {
         let year = Int(releaseDate.components(separatedBy: " ").last ?? "2023")
         let vrf = try await encodeVrf(text: dataId)
         let data = try await Utilities.requestData(url: requestUrl, parameters: ["vrf": vrf])
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
 
         let document = try SwiftSoup.parse(content.result)
-        let row: Element = try document.select(".episode-range  a").array().first!
+        guard let row: Element = try document.select(".episode-range  a").array().first else {
+            throw FlixtorResolverError.missingMovieInformation
+        }
         let epDataId: String = try row.attr("data-id")
         let sourceUrl = self.baseURL.appendingPathComponent("ajax/server/list").appendingPathComponent(epDataId)
         let sources =  [Source(hostURL: sourceUrl)]
@@ -95,7 +98,7 @@ public struct FlixtorProvider: Provider {
 
         let vrf = try await encodeVrf(text: dataId)
         let data = try await Utilities.requestData(url: requestUrl, parameters: ["vrf": vrf])
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
         let document = try SwiftSoup.parse(content.result)
         let rows: Elements = try document.select(".episode-range")
         let seasons = try rows.array().map { seasonDoc in
@@ -156,8 +159,7 @@ private extension FlixtorProvider {
             let url: String
         }
         let url = vrfSolverURL.appendingPathComponent("fmovies-vrf").appending([
-            "query": text,
-            "apikey": vrfSolverKey
+            "query": text
         ])
         let data = try await Utilities.requestData(url: url)
         let result = try JSONDecoder().decode(SearchData.self, from: data).url

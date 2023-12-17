@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct FaselHDProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "ar_SA")
     public let type: ProviderType = .init(.faselHD)
 
@@ -96,7 +98,7 @@ public struct FaselHDProvider: Provider {
         let title = cleanTitle(fullTitle)
 
         let seasonsRows: Elements = try document.select(".seasonDiv ")
-        let seasons = try await seasonsRows.array().enumerated().concurrentMap { (index, row) -> Season in
+        let seasons = try await seasonsRows.array().enumerated().asyncMap { (index, row) -> Season in
             let seasonNumber: Int = index + 1
             let onClick: String = try row.attr("onclick")
             let id = onClick.components(separatedBy: "p=").last ?? ""

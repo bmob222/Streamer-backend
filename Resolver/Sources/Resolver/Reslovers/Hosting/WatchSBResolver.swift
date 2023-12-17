@@ -38,7 +38,7 @@ struct WatchSBResolver: Resolver {
             "accept-language": "en-US,en;q=0.9,ar;q=0.8"
         ]
         let data = try await Utilities.requestData(url: sourceURL, extraHeaders: extraHeaders)
-        let decoder = JSONCoder.decoder
+        let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let streamData = try decoder.decode(StreamSBAPIResponse.self, from: data).streamData
         let headers = [

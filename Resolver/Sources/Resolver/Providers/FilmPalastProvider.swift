@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct FilmPalastProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "de_DE")
     public let type: ProviderType = .init(.filmPalast)
     public let title: String = "FilmPalast.so"

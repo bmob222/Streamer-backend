@@ -12,7 +12,7 @@ struct TheMovieArchiveReslover: Resolver {
 
     func getMediaURL(url: URL) async throws -> [Stream] {
         let data = try await Utilities.requestData(url: url)
-        let embed = try JSONCoder.decoder.decode(Response.self, from: data)
+        let embed = try JSONDecoder().decode(Response.self, from: data)
         let subtitles = embed.subtitles.compactMap { s -> Subtitle? in
             guard let url = URL(string: s.url),
                   let language = s.language.components(separatedBy: "-").first? .trimmingCharacters(in: .whitespaces) else { return nil}

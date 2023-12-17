@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct MovieBoxProvider: Provider {
+    public init() {}
+
     public var type: ProviderType = .init(.moviebox)
     public let title: String = "Moviebox"
     public let langauge: String = "🇺🇸"
@@ -16,6 +18,36 @@ public struct MovieBoxProvider: Provider {
     private var homeURL: URL {
         baseURL.appendingPathComponent("home")
     }
+    public var categories: [Category] = [
+        .init(id: 0, name: "4K Movies"),
+        .init(id: 1, name: "Action"),
+        .init(id: 2, name: "Adventure"),
+        .init(id: 3, name: "Animation"),
+        .init(id: 4, name: "Biography"),
+        .init(id: 5, name: "Comedy"),
+        .init(id: 6, name: "Crime"),
+        .init(id: 7, name: "Documentary"),
+        .init(id: 8, name: "Drama"),
+        .init(id: 9, name: "Family"),
+        .init(id: 10, name: "Fantasy"),
+        .init(id: 11, name: "Film-Noir"),
+        .init(id: 12, name: "History"),
+        .init(id: 13, name: "Horror"),
+        .init(id: 14, name: "Music"),
+        .init(id: 15, name: "Mystery"),
+        .init(id: 16, name: "Romance"),
+        .init(id: 17, name: "Sci-Fi"),
+        .init(id: 18, name: "Sport"),
+        .init(id: 19, name: "Thriller"),
+        .init(id: 20, name: "War"),
+        .init(id: 21, name: "Western"),
+        .init(id: 22, name: "Christmas"),
+        .init(id: 24, name: "Reality-TV"),
+        .init(id: 45, name: "News"),
+        .init(id: 51, name: "Game-Show"),
+        .init(id: 52, name: "Talk-Show"),
+        .init(id: 53, name: "Short")
+    ]
 
     enum MovieBoxProviderError: Error {
         case episodeURLNotFound
@@ -32,6 +64,19 @@ public struct MovieBoxProvider: Provider {
         }
     }
 
+    public func latestCategory(id: Int, page: Int) async throws -> [MediaContent] {
+        guard let category = categories.first(where: { $0.id == id }) else {
+            return []
+        }
+        let url: URL
+        if id == 0 {
+            url = baseURL.appendingPathComponent("4k/movies").appendingPathComponent(page)
+        } else {
+            url = baseURL.appendingPathComponent("category/movies").appendingPathComponent(id).appendingPathComponent(page)
+        }
+        return try await parsePage(url: url)
+    }
+
     public func latestMovies(page: Int) async throws -> [MediaContent] {
         return try await parsePage(url: moviesURL.appendingPathComponent(page))
     }
@@ -42,7 +87,7 @@ public struct MovieBoxProvider: Provider {
 
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
         let data = try await Utilities.requestData(url: url)
-        let media = try JSONCoder.decoder.decode(MovieResponse.self, from: data)
+        let media = try JSONDecoder().decode(MovieResponse.self, from: data)
         let id = url.lastPathComponent
         let hostURL = baseURL.appendingPathComponent("movie").appendingPathComponent("play").appendingPathComponent(id)
         let posterURL = media.data.poster ?? .init(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
@@ -53,7 +98,7 @@ public struct MovieBoxProvider: Provider {
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
         let data = try await Utilities.requestData(url: url)
-        let media = try JSONCoder.decoder.decode(TVShowResponse.self, from: data)
+        let media = try JSONDecoder().decode(TVShowResponse.self, from: data)
         let id = url.lastPathComponent
 
         let playURL = baseURL.appendingPathComponent("tvshow").appendingPathComponent("play")
@@ -66,7 +111,7 @@ public struct MovieBoxProvider: Provider {
         let seasons = try await (1...maxSeason).concurrentMap { seasonNumber in
             let seasonURL = baseURL.appendingPathComponent("tvshow").appendingPathComponent(id).appendingPathComponent(seasonNumber)
             let data = try await Utilities.requestData(url: seasonURL)
-            let season = try JSONCoder.decoder.decode(SeasonResponse.self, from: data)
+            let season = try JSONDecoder().decode(SeasonResponse.self, from: data)
 
             let ep = season.data.map { ep in
                 let hostURLs = playURL.appendingPathComponent(id).appendingPathComponent(seasonNumber).appendingPathComponent(ep.episode)
@@ -92,7 +137,7 @@ public struct MovieBoxProvider: Provider {
         let data = try await Utilities.requestData(url: homeURL)
         var response = try JSONDecoder().decode(HomeResponse.self, from: data).data
         response.removeFirst(2)
-        return response.compactMap {
+        var homeSections: [MediaContentSection] = response.compactMap {
             guard $0.box_type != 6, $0.list.count > 0 else { return nil }
             let media =  $0.list.map { row in
                 let type: MediaContent.MediaContentType = row.boxType == 1 ? .movie :  .tvShow
@@ -102,6 +147,10 @@ public struct MovieBoxProvider: Provider {
             }
             return MediaContentSection(title: $0.name, media: media)
         }
+
+        homeSections.insert(MediaContentSection(title: "Genres", media: [], categories: categories), at: 2)
+
+        return homeSections
     }
 
     struct ListingResponse: Codable {
@@ -135,7 +184,12 @@ public struct MovieBoxProvider: Provider {
             }
             self.boxType = try container.decode(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.boxType)
             self.max_season = try container.decodeIfPresent(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.max_season)
-            self.year = try container.decodeIfPresent(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.year)
+            do {
+                self.year = try container.decodeIfPresent(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.year)
+            } catch {
+                let sYear = try container.decodeIfPresent(String.self, forKey: MovieBoxProvider.Datum.CodingKeys.year)
+                self.year = Int(sYear ?? "")
+            }
 
         }
 

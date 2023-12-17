@@ -8,7 +8,9 @@ public protocol Provider {
     var type: ProviderType { get }
     var title: String { get }
     var langauge: String { get }
+    var categories: [Category] { get }
 
+    func latestCategory(id: Int, page: Int) async throws -> [MediaContent]
     func latestMovies(page: Int) async throws -> [MediaContent]
     func latestTVShows(page: Int) async throws -> [MediaContent]
     func fetchMovieDetails(for url: URL) async throws -> Movie
@@ -18,8 +20,14 @@ public protocol Provider {
 }
 
 extension Provider {
+    public func latestCategory(id: Int, page: Int) async throws -> [MediaContent] {
+        return []
+    }
     public var locale: Locale {
         return Locale(identifier: "en_US_POSIX")
+    }
+    public var categories: [Category] {
+        return []
     }
 }
 
@@ -47,6 +55,7 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case gogoAnimeHD
     case tmdb
     case aniwatch
+    case wecima
 
 }
 
@@ -124,6 +133,8 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return TMDBProvider()
             case .aniwatch:
                 return AniwatchAnimeProvider()
+            case .wecima:
+                return WeCimaProvider()
             }
         case .remote(let id):
             let config = Self.activeProvidersConfig.first { $0.id == id}!

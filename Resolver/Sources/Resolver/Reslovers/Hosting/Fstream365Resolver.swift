@@ -27,7 +27,7 @@ struct Fstream365Resolver: Resolver {
         ]
 
         let data = try await Utilities.requestData(url: encodedURL, extraHeaders: headers)
-        let response = try JSONCoder.decoder.decode(Response.self, from: data)
+        let response = try JSONDecoder().decode(Response.self, from: data)
         return response.sources.map {
             let subtitles = response.tracks.compactMap { track -> Subtitle? in
                 guard let label = track.label, let lan = label.components(separatedBy: "-").first, let subtitle = SubtitlesLangauge(rawValue: lan), let file = track.file else { return  nil }

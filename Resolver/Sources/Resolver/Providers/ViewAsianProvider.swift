@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct ViewAsianProvider: Provider {
+    public init() {}
+
     public var type: ProviderType = .init(.viewAsian)
 
     public let title: String = "ViewAsian.co"
@@ -54,7 +56,7 @@ public struct ViewAsianProvider: Provider {
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
         let detailsURL = detailsURL.appendingQueryItem(name: "id", value: url.relativePath.removeprefix("//"))
         let data = try await Utilities.requestData(url: detailsURL)
-        let media = try JSONCoder.decoder.decode(ConsumetMedia.self, from: data)
+        let media = try JSONDecoder().decode(ConsumetMedia.self, from: data)
         guard let sourceURL = media.episodes.first?.url else {
             throw ViewAsianProviderError.episodeURLNotFound
         }
@@ -74,7 +76,7 @@ public struct ViewAsianProvider: Provider {
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
         let detailsURL = detailsURL.appendingQueryItem(name: "id", value: url.relativePath.removeprefix("//"))
         let data = try await Utilities.requestData(url: detailsURL)
-        let media = try JSONCoder.decoder.decode(ConsumetMedia.self, from: data)
+        let media = try JSONDecoder().decode(ConsumetMedia.self, from: data)
 
         var seasonsDict: [Int: [Episode]] = [:]
         media.episodes.forEach { ep in

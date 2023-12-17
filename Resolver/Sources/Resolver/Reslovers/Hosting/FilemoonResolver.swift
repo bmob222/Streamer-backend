@@ -2,7 +2,10 @@ import Foundation
 
 struct FilemoonResolver: Resolver {
     let name = "Filemoon"
-    static let domains: [String] = ["filemoon.sx", "filemoon.to"]
+    static let domains: [String] = ["filemoon.sx", "filemoon.to", "alions.pro", "filelions.com", "filelions.to", "ajmidyadfihayh.sbs", "alhayabambi.sbs", "techradar.ink",
+                                    "moflix-stream.click", "azipcdn.com", "mlions.pro", "alions.pro", "dlions.pro",
+                                    "filelions.live", "motvy55.store", "filelions.xyz", "lumiawatch.top", "filelions.online",
+                                    "javplaya.com", "fviplions.com", "egsyxutd.sbs"]
 
     enum FilemoonResolverError: Error {
         case urlNotValid
@@ -22,11 +25,11 @@ struct FilemoonResolver: Resolver {
                 throw FilemoonResolverError.codeNotFound
             }
 
-            guard let url = URL(string: decodedScript[match, at: 1]) else {
+            guard let aurl = URL(string: decodedScript[match, at: 1]) else {
                 throw FilemoonResolverError.urlNotValid
             }
 
-            return [.init(Resolver: "Filemoon", streamURL: url)]
+            return [.init(Resolver: url.host?.localizedCapitalized ?? "Filemoon", streamURL: aurl)]
 
         } catch {
             throw FilemoonResolverError.urlNotValid

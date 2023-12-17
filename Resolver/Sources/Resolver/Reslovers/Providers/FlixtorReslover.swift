@@ -8,9 +8,6 @@ struct FlixtorResolver: Resolver {
     @EnviromentValue(key: "vrfSolverURL", defaultValue: URL(staticString: "https://google.com"))
     private var vrfSolverURL: URL
 
-    @EnviromentValue(key: "vrfSolverKey", defaultValue: "111111")
-    private var vrfSolverKey: String
-
     struct Response: Codable {
         let result: String
     }
@@ -39,7 +36,7 @@ struct FlixtorResolver: Resolver {
         let data = try await Utilities.requestData(url: url, parameters: ["vrf": vrf])
 
         // https://flixtor.video/ajax/server/838771?vrf=ZExJX053anY%3D
-        let servers = try JSONCoder.decoder.decode(Response.self, from: data)
+        let servers = try JSONDecoder().decode(Response.self, from: data)
 
         let document = try SwiftSoup.parse(servers.result)
         let rows: Elements = try document.select(".video-server")
@@ -50,7 +47,7 @@ struct FlixtorResolver: Resolver {
             // https://flixtor.video/ajax/server/838771?vrf=ZExJX053anY%3D
             let url = try URL("https://\(url.host ?? "")").appendingPathComponent("ajax/server").appendingPathComponent(id)
             let data = try await Utilities.requestData(url: url, parameters: ["vrf": epVrf], extraHeaders: ["if-none-match": ""])
-            let serversResponse = try JSONCoder.decoder.decode(MediaResponse.self, from: data)
+            let serversResponse = try JSONDecoder().decode(MediaResponse.self, from: data)
             return URL(string: try await decryptVrf(text: serversResponse.result.url))
         }.compactMap { $0 }
     }
@@ -60,7 +57,7 @@ struct FlixtorResolver: Resolver {
         if let subtitleInfo = url.queryParameters?["sub.info"],
            let subtitleURL = URL(string: subtitleInfo) {
             let data = try await Utilities.requestData(url: subtitleURL)
-            let subtitlesResponse = try JSONCoder.decoder.decode([SubtitleResponse].self, from: data)
+            let subtitlesResponse = try JSONDecoder().decode([SubtitleResponse].self, from: data)
 
             subtitles = subtitlesResponse.compactMap {
                 if let language = SubtitlesLangauge(rawValue: $0.label) {
@@ -99,20 +96,18 @@ private extension FlixtorResolver {
             let url: String
         }
         let url = vrfSolverURL.appendingPathComponent("fmovies-vrf").appending([
-            "query": text,
-            "apikey": vrfSolverKey
+            "query": text
         ])
         let data = try await Utilities.requestData(url: url)
         let result = try JSONDecoder().decode(SearchData.self, from: data).url
-        return result.encodeURIComponent()
+        return result
     }
     func decryptVrf(text: String) async throws -> String {
         struct SearchData: Codable {
             let url: String
         }
         let url = vrfSolverURL.appendingPathComponent("fmovies-decrypt").appending([
-            "query": text,
-            "apikey": vrfSolverKey
+            "query": text
         ])
         let data = try await Utilities.requestData(url: url)
         return try JSONDecoder().decode(SearchData.self, from: data).url

@@ -17,7 +17,7 @@ struct MovieBoxResolver: Resolver {
     }
     func getMediaURL(url: URL) async throws -> [Stream] {
         let data = try await Utilities.requestData(url: url)
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
 
         return try await content.data.list.concurrentMap { item -> Stream? in
             guard let playUrl = URL(string: item.path) else { return nil }
@@ -25,7 +25,7 @@ struct MovieBoxResolver: Resolver {
             let subtitlesURL = url.appendingPathComponent("srt").appendingPathComponent(item.fid)
             let data = try await Utilities.requestData(url: subtitlesURL)
 
-            let content = try JSONCoder.decoder.decode(SubtitleResponse.self, from: data)
+            let content = try JSONDecoder().decode(SubtitleResponse.self, from: data)
 
             let subtitles = content.data.list.compactMap { section in
                 return section.subtitles.map {
@@ -37,7 +37,13 @@ struct MovieBoxResolver: Resolver {
 
             var name = item.quality == "org" ? "MovieBox Original" : "MovieBox"
             name = name + ( item.hdr == 1 ? " HDR" : "")
-            return Stream(Resolver: name, streamURL: playUrl, quality: Quality(quality: item.realQuality), subtitles: subtitles)
+            return Stream(
+                Resolver: name,
+                description: item.filename + " - \(item.size)",
+                streamURL: playUrl,
+                quality: Quality(quality: item.realQuality),
+                subtitles: subtitles
+            )
         }
         .compactMap { $0 }
     }
@@ -57,11 +63,15 @@ struct MovieBoxResolver: Resolver {
         let quality: String
         let realQuality: String
         let fid: Int
+        let filename: String
+        let size: String
         let hdr: Int
 
         enum CodingKeys: String, CodingKey {
             case path
             case quality
+            case filename
+            case size
             case realQuality = "real_quality"
             case fid
             case hdr

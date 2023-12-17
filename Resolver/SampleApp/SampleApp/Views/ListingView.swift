@@ -7,7 +7,7 @@ public struct ListingView: View {
     private let provider: Provider
 
     private var gridItems: [GridItem] {
-        [GridItem(.adaptive(minimum: 90), spacing: 5)]
+        [GridItem(.adaptive(minimum: 180), spacing: 5)]
     }
     public init(mediaContent: [MediaContent], provider: Provider) {
         self.mediaContent = mediaContent

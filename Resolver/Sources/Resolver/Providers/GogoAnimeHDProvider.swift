@@ -2,12 +2,14 @@ import Foundation
 import SwiftSoup
 
 public struct GogoAnimeHDProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "en")
     public let type: ProviderType = .init(.gogoAnimeHD)
     public let title: String = "GogoAnimeHD"
     public let langauge: String = ""
 
-    public let baseURL: URL = URL(staticString: "https://gogoanimehd.to")
+    public let baseURL: URL = URL(staticString: "https://anitaku.to")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("anime-movies.html")
     }
@@ -19,7 +21,7 @@ public struct GogoAnimeHDProvider: Provider {
         baseURL
     }
 
-    enum EmpireStreamingProviderError: Error {
+    enum GogoAnimeHDProviderError: Error {
         case missingMovieInformation
     }
 
@@ -56,8 +58,7 @@ public struct GogoAnimeHDProvider: Provider {
     }
 
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
-
-        fatalError("")
+        throw GogoAnimeHDProviderError.missingMovieInformation
     }
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {

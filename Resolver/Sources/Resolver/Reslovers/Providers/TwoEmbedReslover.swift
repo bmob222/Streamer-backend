@@ -32,7 +32,7 @@ struct TwoEmbedResolver: Resolver {
                     .appendingQueryItem(name: "id", value: serverId)
                     .appendingQueryItem(name: "_token", value: token)
                 let data = try await Utilities.requestData(url: serverURL, extraHeaders: ["referer": url.absoluteString])
-                let embed = try JSONCoder.decoder.decode(EmbedJSON.self, from: data)
+                let embed = try JSONDecoder().decode(EmbedJSON.self, from: data)
                 let subtitles = try await self.getSubtitles(url: embed.link)
                 return try? await HostsResolver.resolveURL(url: embed.link).map {
                     Stream(stream: $0, subtitles: subtitles)
@@ -47,7 +47,7 @@ struct TwoEmbedResolver: Resolver {
         if let subtitleInfo = url.queryParameters?["sub.info"],
            let subtitleURL = URL(string: subtitleInfo) {
             let data = try await Utilities.requestData(url: subtitleURL)
-            let subtitlesResponse = try JSONCoder.decoder.decode([SubtitleResponse].self, from: data)
+            let subtitlesResponse = try JSONDecoder().decode([SubtitleResponse].self, from: data)
 
             subtitles = subtitlesResponse.compactMap {
                 if let language = SubtitlesLangauge(rawValue: $0.label) {

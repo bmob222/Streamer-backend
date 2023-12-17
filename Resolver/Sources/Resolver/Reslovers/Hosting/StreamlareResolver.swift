@@ -11,7 +11,7 @@ struct StreamlareResolver: Resolver {
         let id = url.lastPathComponent
         let url = URL(string: "https://\(url.host!)/api/video/stream/get")!
         let data  = try await Utilities.requestData(url: url, httpMethod: "POST", data: "{\"id\":\"\(id)\"}".data(using: .utf8))
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
         guard case .object(let value) = content.result else {
             throw StreamlareResolverError.urlNotValid
         }

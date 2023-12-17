@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct ArabseedProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "ar_SA")
     public let type: ProviderType = .init(.arabseed)
 
@@ -64,22 +66,19 @@ public struct ArabseedProvider: Provider {
     }
 
     public func latestMovies(page: Int) async throws -> [MediaContent] {
-        let content = try await Utilities.downloadPage(url: moviesURL.appending(
-            [
-                "s": "",
-                "offset": String(page)
-            ]
-        ))
+        let url = Self.baseURL
+            .appendingPathComponent("/category/arabic-movies-5")
+            .appending(["page": String(page)])
+
+        let content = try await Utilities.downloadPage(url: url)
         return try parsePage(content: content, onlyType: .movie)
     }
 
     public func latestTVShows(page: Int) async throws -> [MediaContent] {
-        let content = try await Utilities.downloadPage(url: moviesURL.appending(
-            [
-                "s": "",
-                "offset": String(page)
-            ]
-        ))
+        let url = Self.baseURL
+            .appendingPathComponent("category/arabic-series")
+            .appending(["page": String(page)])
+        let content = try await Utilities.downloadPage(url: url)
         return try parsePage(content: content, onlyType: .tvShow)
     }
 
@@ -205,7 +204,8 @@ public struct ArabseedProvider: Provider {
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
         // let keyword = keyword.replace(" ", new: "+")
-        let searchURL = ArabseedProvider.baseURL.appendingPathComponent("wp-content/themes/Elshaikh2021/Ajaxat/SearchingTwo.php")
+        let arabseedURL = try await Utilities.getRedirect(url: ArabseedProvider.baseURL)
+        let searchURL = arabseedURL.appendingPathComponent("wp-content/themes/Elshaikh2021/Ajaxat/SearchingTwo.php")
         let payloadSeries = "search=\(keyword)&type=series"
         let contentSeries = try await Utilities.downloadPage(
             url: searchURL,

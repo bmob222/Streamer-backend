@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct PutlockerProvider: Provider {
+    public init() {}
+
     public var type: ProviderType = .init(.putlocker)
 
     public let title: String = "PutLocker.vip"
@@ -109,14 +111,16 @@ public struct PutlockerProvider: Provider {
         let serversDocument = try SwiftSoup.parse(serversContent.html)
         let rows: Elements = try serversDocument.select("a")
 
-        let seasons = try await rows.array().concurrentMap { row in
+        let seasons = try await rows.array().concurrentMap { row -> Season? in
 
             let seasonNumber = try row.attr("data-id")
             // https://ww7.putlocker.vip/ajax/movie/season/episodes/97711_1
 
             let epsURL = self.baseURL.appendingPathComponent("ajax/movie/season/episodes").appendingPathComponent(seriesID + "_" + seasonNumber)
             let epsData = try await Utilities.requestData(url: epsURL)
-            let epsContent = try JSONDecoder().decode(Response.self, from: epsData)
+            guard let epsContent = try? JSONDecoder().decode(Response.self, from: epsData) else {
+                return nil
+            }
             let epsDocument = try SwiftSoup.parse(epsContent.html)
             let epsRows: Elements = try epsDocument.select("a")
             let eposides = try epsRows.array().map { ep in
@@ -128,7 +132,7 @@ public struct PutlockerProvider: Provider {
             }
 
             return Season(seasonNumber: Int(seasonNumber) ?? 1, webURL: epsURL, episodes: eposides)
-        }
+        }.compactMap { $0 }
         return TVshow(title: title, webURL: url, posterURL: posterURL, year: year, seasons: seasons)
     }
 

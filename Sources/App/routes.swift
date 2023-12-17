@@ -3,11 +3,14 @@ import Resolver
 import Redis
 import Prometheus
 import Metrics
+import JWTKit
 
 func routes(_ app: Application) throws {
     enum Constants {
         static let resolveCacheExpiration: Int = 60*30
-        static let providerCacheExpiration: Int = 2*60*60
+        static let detailsProviderCacheExpiration: Int = 6*60*60
+        static let listingProviderCacheExpiration: Int = 4*60*60
+        static let tmdb = TMDBProvider()
     }
 
     struct Paging: Content {
@@ -62,7 +65,7 @@ func routes(_ app: Application) throws {
                         try await app.redis.setex(
                             RedisKey(req.url.string),
                             toJSON: response,
-                            expirationInSeconds: Constants.providerCacheExpiration
+                            expirationInSeconds: Constants.listingProviderCacheExpiration
                         )
                     }
                 }
@@ -100,7 +103,7 @@ func routes(_ app: Application) throws {
                     try await app.redis.setex(
                         RedisKey(req.url.string),
                         toJSON: response,
-                        expirationInSeconds: Constants.providerCacheExpiration
+                        expirationInSeconds: Constants.listingProviderCacheExpiration
                     )
                 }
             }
@@ -138,7 +141,7 @@ func routes(_ app: Application) throws {
                     try await app.redis.setex(
                         RedisKey(req.url.string),
                         toJSON: response,
-                        expirationInSeconds: Constants.providerCacheExpiration
+                        expirationInSeconds: Constants.detailsProviderCacheExpiration
                     )
                 }
             }
@@ -173,7 +176,7 @@ func routes(_ app: Application) throws {
                         try await app.redis.setex(
                             RedisKey(req.url.string),
                             toJSON: response,
-                            expirationInSeconds: Constants.providerCacheExpiration
+                            expirationInSeconds: Constants.listingProviderCacheExpiration
                         )
                     }
                 }
@@ -212,7 +215,52 @@ func routes(_ app: Application) throws {
                     try await app.redis.setex(
                         RedisKey(req.url.string),
                         toJSON: response,
-                        expirationInSeconds: Constants.providerCacheExpiration
+                        expirationInSeconds: Constants.detailsProviderCacheExpiration
+                    )
+                }
+            }
+            return response
+        }
+    }
+
+    app.get("providers", ":provider", "categories") { req -> [Resolver.Category] in
+        guard let providerString = req.parameters.get("provider"),
+              let localProvider = LocalProvider(rawValue: providerString)
+        else {
+            throw Abort(.badRequest)
+        }
+        let provider = ProviderType.local(id: localProvider).provider
+        return provider.categories
+    }
+
+    app.get("providers", ":provider", "categories", ":categoryId") { req -> [Resolver.MediaContent] in
+        guard let providerString = req.parameters.get("provider"),
+              let categoryId = Int(req.parameters.get("categoryId") ?? ""),
+              let localProvider = LocalProvider(rawValue: providerString) else {
+            throw Abort(.badRequest)
+        }
+
+        let provider = ProviderType.local(id: localProvider).provider
+
+        do {
+            if app.environment == .production {
+                guard let response = try await app.redis.get(RedisKey(req.url.string), asJSON: [Resolver.MediaContent].self) else {
+                    throw CacheError.noCacheFound
+                }
+
+                return response
+            } else {
+                throw Abort(.badRequest)
+            }
+        } catch {
+            let page = try req.query.decode(Paging.self).page ?? 1
+            let response =  try await provider.latestCategory(id: categoryId, page: page)
+            if app.environment == .production {
+                Task {
+                    try await app.redis.setex(
+                        RedisKey(req.url.string),
+                        toJSON: response,
+                        expirationInSeconds: Constants.listingProviderCacheExpiration
                     )
                 }
             }
@@ -247,7 +295,7 @@ func routes(_ app: Application) throws {
                         try await app.redis.setex(
                             RedisKey(req.url.string),
                             toJSON: response,
-                            expirationInSeconds: Constants.providerCacheExpiration
+                            expirationInSeconds: Constants.listingProviderCacheExpiration
                         )
                     }
                 }
@@ -296,12 +344,18 @@ func routes(_ app: Application) throws {
     app.get("tmdb", "movie", ":movieId") { req -> [Resolver.Source] in
         guard let id = req.parameters.get("movieId"),
               let tmdbID = Int(id),
-              let themoviearchiveURL = URL(string: "https://prod.omega.themoviearchive.site/v3/movie/sources/\(tmdbID)") else {
+              let themoviearchiveURL = URL(string: "https://api.themoviearchive.site/v3/movie/sources/\(tmdbID)") else {
             throw Abort(.badRequest)
         }
-        return [
-            .init(hostURL: themoviearchiveURL)
-        ]
+
+        var links: [Resolver.Source] = []
+        links.append(.init(hostURL: themoviearchiveURL))
+        if let imdb = try await Constants.tmdb.convertMovieTMDBToIMDB(tmdb: tmdbID),
+           let superflixURL =  URL(string: "https://23dfbfad8cb2-stremio-addon-superflix.baby-beamup.club/177229384590013630001/stream/movie/\(imdb).json") {
+            links.append(.init(hostURL: superflixURL))
+        }
+
+        return links
     }
 
     app.get("tmdb", "tv", ":tvShowID", ":seasonNumber", ":episodeNumber") { req -> [Resolver.Source] in
@@ -311,11 +365,20 @@ func routes(_ app: Application) throws {
             let seasonNumberString = req.parameters.get("seasonNumber"),
             let seasonNumber = Int(seasonNumberString),
             let episodeNumberString = req.parameters.get("episodeNumber"),
-            let episodeNumber = Int(episodeNumberString)
+            let episodeNumber = Int(episodeNumberString),
+            let themoviearchiveURL = URL(string: "https://api.themoviearchive.site/v3/tv/sources/\(tmdbID)/\(seasonNumber)/\(episodeNumber)")
         else {
             throw Abort(.badRequest)
         }
-        return []
+
+        var links: [Resolver.Source] = []
+        links.append(.init(hostURL: themoviearchiveURL))
+        if let imdb = try await Constants.tmdb.convertTVTMDBToIMDB(tmdb: tmdbID),
+           let superflixURL =  URL(string: "https://23dfbfad8cb2-stremio-addon-superflix.baby-beamup.club/177229384590013630001/stream/series/\(imdb):\(seasonNumber):\(episodeNumber).json") {
+            links.append(.init(hostURL: superflixURL))
+        }
+
+        return links
     }
 
     func incCounter(provider: String, type: String) {
@@ -342,5 +405,9 @@ extension Resolver.TVshow: Content {
 }
 
 extension Resolver.Source: Content {
+
+}
+
+extension Resolver.Category: Content {
 
 }

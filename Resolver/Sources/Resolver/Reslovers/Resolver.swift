@@ -62,7 +62,11 @@ public struct HostsResolver {
         StreamWishResolver(),
         GogoAnimeHDResolver(),
         TheMovieArchiveReslover(),
-        AniwatchReslover()
+        AniwatchReslover(),
+        GogoCDNResolver(),
+        Mp4UploadReslover(),
+        SuperflixReslover(),
+        WeCimaReslover()
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {
         logger.info("🕸 Resolving \(url)")

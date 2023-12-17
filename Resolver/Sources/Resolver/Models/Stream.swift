@@ -3,13 +3,14 @@ import Foundation
 public struct Stream: Codable, Hashable, Identifiable, Comparable {
     public enum StreamType: Codable {
         case direct
-        case realdebrid(Int)
+        case realdebrid
 
     }
     public var id: String {
         return streamURL.absoluteString
     }
     public let Resolver: String
+    public let description: String?
     public let streamURL: URL
     public let quality: Quality
     public var subtitles: [Subtitle]
@@ -18,6 +19,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
 
     public init(
         Resolver: String,
+        description: String? = nil,
         streamURL: URL,
         quality: Quality? = nil,
         headers: [String: String]? = nil,
@@ -25,6 +27,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         type: StreamType = .direct
     ) {
         self.Resolver = Resolver
+        self.description = description
         self.streamURL = streamURL
         self.quality = quality ?? Quality(url: streamURL)
         self.headers = headers
@@ -43,6 +46,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         self.headers = stream.headers
         self.subtitles = subtitles
         self.type = .direct
+        self.description = nil
     }
     public init(stream: Stream, quality: Quality? = nil ) {
         self.streamURL = stream.streamURL
@@ -51,6 +55,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         self.headers = stream.headers
         self.subtitles = stream.subtitles
         self.type = .direct
+        self.description = nil
     }
 
     public var canBePlayedOnVlc: Bool {
@@ -77,6 +82,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         case subtitles
         case headers
         case type
+        case description
     }
 
     public init(from decoder: Decoder) throws {
@@ -87,6 +93,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         self.quality = try container.decode(Quality.self, forKey: Stream.CodingKeys.quality)
         self.subtitles = try container.decode([Subtitle].self, forKey: Stream.CodingKeys.subtitles)
         self.headers = try container.decodeIfPresent([String: String].self, forKey: Stream.CodingKeys.headers)
+        self.description = try container.decodeIfPresent(String.self, forKey: Stream.CodingKeys.description)
         self.type = .direct
 
     }
@@ -100,6 +107,7 @@ public struct Stream: Codable, Hashable, Identifiable, Comparable {
         try container.encode(self.subtitles, forKey: Stream.CodingKeys.subtitles)
         try container.encodeIfPresent(self.headers, forKey: Stream.CodingKeys.headers)
         try container.encode(self.type, forKey: Stream.CodingKeys.type)
+        try container.encodeIfPresent(self.description, forKey: Stream.CodingKeys.description)
     }
 }
 
@@ -231,7 +239,7 @@ public enum Quality: String, CaseIterable, Comparable, Codable {
             self = .p1080
         case quality?.lowercased().contains("4K".lowercased()):
             self = .k4
-        case quality?.contains("auto"):
+        case quality?.lowercased().contains("auto"):
             self = .auto
         default:
             return nil

@@ -70,12 +70,12 @@ struct VidCloud9Resolver: Resolver {
         var request = URLRequest(url: embedUrl)
         request.allHTTPHeaderFields = headers
         let (data, _)  = try await ResolverURLSession.shared.session.asyncData(for: request)
-        let encryptedContent = try JSONCoder.decoder.decode(EncryptedResponse.self, from: data)
+        let encryptedContent = try JSONDecoder().decode(EncryptedResponse.self, from: data)
 
         guard let data = encryptedContent.data.aesDecrypt(key: key, iv: iv)?.data(using: .utf8) else {
             throw VidCloud9ResolverError.decryptionFaild
         }
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
         if content.source.count == 0, let linkiframe = content.linkiframe {
             return try await HostsResolver.resolveURL(url: linkiframe)
         } else {

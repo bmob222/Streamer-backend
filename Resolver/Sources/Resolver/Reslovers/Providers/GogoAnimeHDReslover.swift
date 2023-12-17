@@ -3,7 +3,7 @@ import SwiftSoup
 
 struct GogoAnimeHDResolver: Resolver {
     let name = "GogoAnime"
-    static let domains: [String] = ["gogoanimehd.to"]
+    static let domains: [String] = ["gogoanimehd.to", "anitaku.to"]
 
     func getMediaURL(url: URL) async throws -> [Stream] {
         let content = try await Utilities.downloadPage(url: url)

@@ -85,6 +85,167 @@ public enum SubtitlesLangauge: String, Codable, CaseIterable {
 
     case unknown = "Unknown"
 
+    init?(code: String) {
+        switch code {
+        case "af":
+            self = .afrikaans
+        case "sq":
+            self = .albanian
+        case "ar":
+            self = .arabic
+        case "an":
+            self = .aragonese
+        case "hy":
+            self = .armenian
+        case "at":
+            self = .asturian
+        case "eu":
+            self = .basque
+        case "be":
+            self = .bengali
+        case "bn":
+            self = .bosnian
+        case "bs":
+            self = .breton
+        case "br":
+            self = .belarusian
+        case "bg":
+            self = .bulgarian
+        case "my":
+            self = .burmese
+        case "ca":
+            self = .catalan
+        case "ze":
+            self = .chineseBilingual
+        case "zh-cn":
+            self = .chineseSimplified
+        case "zh-tw":
+            self = .chineseTraditional
+        case "hr":
+            self = .croatian
+        case "cs":
+            self = .czech
+        case "da":
+            self = .danish
+        case "nl":
+            self = .dutch
+        case "en":
+            self = .english
+        case "eo":
+            self = .esperanto
+        case "et":
+            self = .estonian
+        case "fi":
+            self = .finnish
+        case "fr":
+            self = .french
+        case "gl":
+            self = .georgian
+        case "ka":
+            self = .galician
+        case "de":
+            self = .german
+        case "el":
+            self = .greek
+        case "he":
+            self = .hebrew
+        case "hi":
+            self = .hindi
+        case "hu":
+            self = .hungarian
+        case "is":
+            self = .icelandic
+        case "id":
+            self = .indonesian
+        case "it":
+            self = .italian
+        case "ja":
+            self = .japanese
+        case "kk":
+            self = .kazakh
+        case "km":
+            self = .khmer
+        case "ko":
+            self = .korean
+        case "lv":
+            self = .latvian
+        case "lt":
+            self = .lithuanian
+        case "lb":
+            self = .luxembourgish
+        case "mk":
+            self = .macedonian
+        case "ms":
+            self = .malay
+        case "ml":
+            self = .manipuri
+        case "ma":
+            self = .mongolian
+        case "mn":
+            self = .malayalam
+        case "me":
+            self = .norwegian
+        case "oc":
+            self = .occitan
+        case "fa":
+            self = .persian
+        case "pl":
+            self = .polish
+        case "pt-pt":
+            self = .portuguese
+        case "pt-br":
+            self = .portugueseBrazilian
+        case "ro":
+            self = .romanian
+        case "ru":
+            self = .russian
+        case "cnr":
+            self = .montenegrin
+        case "sr":
+            self = .serbian
+        case "si":
+            self = .sinhalese
+        case "sk":
+            self = .slovak
+        case "sl":
+            self = .slovenian
+        case "es":
+            self = .spanish
+        case "sw":
+            self = .swahili
+        case "sv":
+            self = .swedish
+        case "sy":
+            self = .syriac
+        case "tl":
+            self = .tamil
+        case "ta":
+            self = .telugu
+        case "te":
+            self = .tagalog
+        case "th":
+            self = .thai
+        case "tr":
+            self = .turkish
+        case "uk":
+            self = .ukrainian
+        case "ur":
+            self = .urdu
+        case "uz":
+            self = .uzbek
+        case "vi":
+            self = .vietnamese
+        case "zh":
+            self = .chinese
+        case "kn":
+            self = .kannada
+        case "nb":
+            self = .norwegianBokmål
+        default:
+            return nil
+        }
+    }
+
     public var code: String? {
         switch self {
         case .afrikaans:

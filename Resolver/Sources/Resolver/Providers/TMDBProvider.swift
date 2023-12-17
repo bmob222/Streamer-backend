@@ -3,6 +3,7 @@ import SwiftSoup
 import TMDb
 
 public class TMDBProvider: Provider {
+
     public var type: ProviderType = .local(id: .tmdb)
     public var title: String = "TMDB"
     public let langauge: String = ""
@@ -13,9 +14,40 @@ public class TMDBProvider: Provider {
     public var homeURL: URL = URL(staticString: "https://api.themoviedb.org")
 
     var imagesConfiguration: ImagesConfiguration?
-
+    public var categories: [Category] = [
+        .init(id: 213, name: "Netflix", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/wwemzKWzjKYJFfCeiB57q3r4Bcm.png")),
+        .init(id: 2552, name: "Apple TV+", poster: .init(staticString: "https://image.tmdb.org/t/p/w300_filter(negate,000,666)/4KAy34EHvRM25Ih8wb82AuGU7zJ.png")),
+        .init(id: 2739, name: "Disney+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/uzKjVDmQ1WRMvGBb7UNRE0wTn1H.png")),
+        .init(id: 1024, name: "Amazon Prime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png")),
+        .init(id: 453, name: "Hulu", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/pqUTCleNUiTLAVlelGxUgWn1ELh.png")),
+        .init(id: 49, name: "HBO", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300_filter(negate,000,666)/tuomPhY2UtuPTqqFnKMVHvSb724.png")),
+        .init(id: 4330, name: "Paramount", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/fi83B1oztoS47xxcemFdPMhIzK.png")),
+        .init(id: 318, name: "Starz", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/GMDGZk9iDG4WDijY3VgUgJeyus.png")),
+        .init(id: 67, name: "Showtime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/Allse9kbjiP6ExaQrnSpIhkurEi.png")),
+        .init(id: 3353, name: "Peacock", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/gIAcGTjKKr0KOHL5s4O36roJ8p7.png")),
+        .init(id: 4353, name: "Discovery+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/1D1bS3Dyw4ScYnFWTlBOvJXC3nb.png")),
+        .init(id: 6219, name: "MGM+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/89TXvQzvoKvyqD9EEogohzMJ8D6.png")),
+        .init(id: 77, name: "SYFY", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/iYfrkobwDhTOFJ4AXYPSLIEeaAT.png"))
+    ]
     enum TMDBProvider: Error {
         case missingPoster
+    }
+
+    public func convertMovieTMDBToIMDB(tmdb: Int) async throws -> String? {
+        if imagesConfiguration == nil {
+            try await setupImagesConfiguration()
+        }
+        let movieService = MovieService()
+        return try await movieService.externalIDs(forMovie: tmdb).imdbId
+
+    }
+
+    public func convertTVTMDBToIMDB(tmdb: Int) async throws -> String? {
+        if imagesConfiguration == nil {
+            try await setupImagesConfiguration()
+        }
+        let movieService = TVSeriesService()
+        return try await movieService.externalIDs(forTVSeries: tmdb).imdbId
     }
 
     public init() {
@@ -31,6 +63,18 @@ public class TMDBProvider: Provider {
 
     public func parsePage(url: URL) async throws -> [MediaContent] {
         return []
+    }
+
+    public func latestCategory(id: Int, page: Int) async throws -> [MediaContent] {
+        if imagesConfiguration == nil {
+            try await setupImagesConfiguration()
+        }
+        guard let category = categories.first(where: { $0.id == id }) else {
+            return []
+        }
+        let discoverService = DiscoverService()
+        let shows =  try await discoverService.tvSeries(sortedBy: .popularity(descending: true), page: page, with_networks: category.id).results.compactMap { convert($0)}
+        return shows
     }
 
     public func latestMovies(page: Int) async throws -> [MediaContent] {
@@ -153,24 +197,10 @@ public class TMDBProvider: Provider {
             MediaContentSection(title: "Trending Movies Today", media: tendingMoviesDay),
             MediaContentSection(title: "Trending Movies This Week", media: tendingMoviesWeek),
             MediaContentSection(title: "Trending TV Shows Today", media: tendingTvSeriesDay),
-            MediaContentSection(title: "Trending TV Shows This Week", media: tendingTvSeriesWeek)
+            MediaContentSection(title: "Trending TV Shows This Week", media: tendingTvSeriesWeek),
+            MediaContentSection(title: "Popular Networks", media: [], categories: categories)
         ]
 
-        let networks = [
-            "Netflix": 213,
-            "Apple TV+": 2552,
-            "Amazon Prime": 1024,
-            "Hulu": 453,
-            "HBO": 49,
-            "Paramount": 4330
-        ]
-        let netflix = 212
-
-        let discoverService = DiscoverService()
-        for network in networks {
-            let shows =  try await discoverService.tvSeries(sortedBy: .popularity(descending: true), with_networks: network.value).results.compactMap { convert($0)}
-            mediaSections.append(.init(title: "\(network.key)", media: shows))
-        }
         return mediaSections
     }
 
@@ -188,12 +218,12 @@ public class TMDBProvider: Provider {
         let superStreamURL = movieboxprovider_url.appendingPathComponent("tmdb/movie/").appendingPathComponent(movieID)
 
         return [
-//            .init(hostURL: superStreamURL),
-//            .init(hostURL: embedURL),
-//            .init(hostURL: animetv),
-//            .init(hostURL: vidsrcURL),
-//            .init(hostURL: databasegdriveplayerURL),
-//            .init(hostURL: myfilestorageURL)
+            //            .init(hostURL: superStreamURL),
+            //            .init(hostURL: embedURL),
+            //            .init(hostURL: animetv),
+            //            .init(hostURL: vidsrcURL),
+            //            .init(hostURL: databasegdriveplayerURL),
+            //            .init(hostURL: myfilestorageURL)
         ]
     }
 
@@ -219,11 +249,11 @@ public class TMDBProvider: Provider {
             .appendingPathComponent(episodeNumber)
 
         return [
-//            .init(hostURL: superStreamURL),
-//            .init(hostURL: embedURL),
-//            .init(hostURL: animetv),
-//            .init(hostURL: vidsrcURL),
-//            .init(hostURL: databasegdriveplayerURL)
+            //            .init(hostURL: superStreamURL),
+            //            .init(hostURL: embedURL),
+            //            .init(hostURL: animetv),
+            //            .init(hostURL: vidsrcURL),
+            //            .init(hostURL: databasegdriveplayerURL)
         ]
     }
 }

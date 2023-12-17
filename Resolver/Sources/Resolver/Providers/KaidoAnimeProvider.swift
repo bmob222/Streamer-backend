@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public class KaidoAnimeProvider: Provider {
+    public init() {}
+
     public let type: ProviderType = .init(.kaido)
 
     public let title: String = "Kaido.to"
@@ -50,7 +52,7 @@ public class KaidoAnimeProvider: Provider {
         let requestUrl = baseURL.appendingPathComponent("ajax/episode/list/").appendingPathComponent(mediaID)
 
         let data = try await Utilities.requestData(url: requestUrl)
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
         let document = try SwiftSoup.parse(content.html)
         let rows: Elements = try document.select(".ss-list > a")
         let episodes = try rows.array().map { row -> Episode in

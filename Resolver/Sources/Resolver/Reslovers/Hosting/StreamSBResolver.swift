@@ -90,7 +90,7 @@ struct StreamSBResolver: Resolver {
         ]
 
         let data = try await Utilities.requestData(url: sourceURL, extraHeaders: requestHeaders)
-        let decoder = JSONCoder.decoder
+        let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let streamData = try decoder.decode(StreamSBAPIResponse.self, from: data).streamData
         let headers = [

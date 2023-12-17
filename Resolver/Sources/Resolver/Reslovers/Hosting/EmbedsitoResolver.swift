@@ -14,7 +14,7 @@ struct EmbedsitoResolver: Resolver {
             throw EmbedsitoResolverError.urlNotValid
         }
         let data  = try await Utilities.requestData(url: url, httpMethod: "POST")
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
         return content.data.reversed().map {
             return .init(Resolver: "Fembed.com", streamURL: $0.file, quality: Quality(quality: $0.label), headers: [:])
         }

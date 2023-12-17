@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct CimaNowProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "ar_SA")
     public let type: ProviderType = .init(.cimaNow)
     public let title: String = "CimaNow.cc"

@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public class AniwatchAnimeProvider: Provider {
+    public init() {}
+
     public let type: ProviderType = .init(.aniwatch)
 
     public let title: String = "aniwatch.to"
@@ -47,7 +49,7 @@ public class AniwatchAnimeProvider: Provider {
         let mediaID = url.lastPathComponent.components(separatedBy: "-").last!
         let requestUrl = baseURL.appendingPathComponent("ajax/v2/episode/list/").appendingPathComponent(mediaID)
         let data = try await Utilities.requestData(url: requestUrl)
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
         let document = try SwiftSoup.parse(content.html)
         let rows: Elements = try document.select(".ss-list > a")
         let episodes = try rows.array().map { row -> Episode in

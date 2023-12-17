@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct EmpireStreamingProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "fr_FR")
     public let type: ProviderType = .init(.empire)
     public let title: String = "EmpireStreaming"
@@ -27,6 +29,84 @@ public struct EmpireStreamingProvider: Provider {
         return []
     }
 
+    public var categories: [Category] = [
+        .init(id: 5, name: "Marvel Studios", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/hUzeosd33nzE5MCNsZxCGEKTXaQ.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 6, name: "DC Entertainment", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/2Tc1P3Ac8M479naPp1kYT3izLS5.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 7, name: "Warner Bros. Pictures", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/ky0xOc5OrhzkZ1N6KyUxacfQsCk.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 8, name: "Netflix", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/wwemzKWzjKYJFfCeiB57q3r4Bcm.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 9, name: "HBO", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300_filter(negate,000,666)/tuomPhY2UtuPTqqFnKMVHvSb724.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 10, name: "Amazon prime video", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 11, name: "Pixar", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 12, name: "Walt Disney Pictures", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/wdrCwmRnLFJhEoH8GSfymY85KHT.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 13, name: "Anime", poster: .init(staticString: "https://pnghq.com/wp-content/uploads/2023/02/anime-word-clip-art-png-6772.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 14, name: "Ocs", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/f3hRdCaK1w9qH1Qs8nLd2L2bae1.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 15, name: "Apple TV", poster: .init(staticString: "https://image.tmdb.org/t/p/w300_filter(negate,000,666)/4KAy34EHvRM25Ih8wb82AuGU7zJ.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 16, name: "StarzPlay", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/xwJCudY7u7w3brf4JDeeBHXKfix.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 17, name: "Hulu", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/pqUTCleNUiTLAVlelGxUgWn1ELh.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 18, name: "Nat geo", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/q9rPBG1rHbUjII1Qn98VG2v7cFa.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 19, name: "Paramount+", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/fi83B1oztoS47xxcemFdPMhIzK.png"), url: .init(staticString: "https://google.com/movies")),
+        .init(id: 20, name: "Canal +", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/9aotxauvc9685tq9pTcRJszuT06.png"), url: .init(staticString: "https://google.com/movies")),
+
+        .init(id: 21, name: "Action", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 22, name: "Animation", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 23, name: "Anime", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 24, name: "Aventure", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 25, name: "Comedy", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 26, name: "Crime", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 27, name: "Documentary", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 28, name: "Drama", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 29, name: "Fantastic", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 30, name: "War", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 31, name: "History", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 32, name: "Horror", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 33, name: "Music", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 34, name: "Mystery", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 35, name: "Romance", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 36, name: "Science Fiction", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 37, name: "Thriller", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 38, name: "Reality show", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 39, name: "TV movie", url: .init(staticString: "https://google.com/movies")),
+        .init(id: 40, name: "Western", url: .init(staticString: "https://google.com/movies")),
+
+        .init(id: 41, name: "Marvel Studios", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/hUzeosd33nzE5MCNsZxCGEKTXaQ.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 42, name: "DC Entertainment", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/2Tc1P3Ac8M479naPp1kYT3izLS5.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 43, name: "Warner Bros. Pictures", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/ky0xOc5OrhzkZ1N6KyUxacfQsCk.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 44, name: "Netflix", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/wwemzKWzjKYJFfCeiB57q3r4Bcm.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 45, name: "HBO", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300_filter(negate,000,666)/tuomPhY2UtuPTqqFnKMVHvSb724.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 46, name: "Amazon prime video", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 47, name: "Pixar", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 48, name: "Walt Disney Pictures", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/wdrCwmRnLFJhEoH8GSfymY85KHT.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 49, name: "Anime", poster: .init(staticString: "https://pnghq.com/wp-content/uploads/2023/02/anime-word-clip-art-png-6772.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 50, name: "Ocs", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/f3hRdCaK1w9qH1Qs8nLd2L2bae1.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 51, name: "Apple TV", poster: .init(staticString: "https://image.tmdb.org/t/p/w300_filter(negate,000,666)/4KAy34EHvRM25Ih8wb82AuGU7zJ.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 52, name: "StarzPlay", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/xwJCudY7u7w3brf4JDeeBHXKfix.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 53, name: "Hulu", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/pqUTCleNUiTLAVlelGxUgWn1ELh.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 54, name: "Nat geo", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/q9rPBG1rHbUjII1Qn98VG2v7cFa.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 55, name: "Paramount+", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/fi83B1oztoS47xxcemFdPMhIzK.png"), url: .init(staticString: "https://google.com/tv")),
+        .init(id: 56, name: "Canal +", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/9aotxauvc9685tq9pTcRJszuT06.png"), url: .init(staticString: "https://google.com/tv")),
+
+        .init(id: 57, name: "Action", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 58, name: "Animation", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 59, name: "Anime", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 60, name: "Aventure", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 61, name: "Comedy", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 62, name: "Crime", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 63, name: "Documentary", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 64, name: "Drama", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 65, name: "Fantastic", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 66, name: "War", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 67, name: "History", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 68, name: "Horror", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 69, name: "Music", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 70, name: "Mystery", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 71, name: "Romance", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 72, name: "Science Fiction", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 73, name: "Thriller", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 74, name: "Reality show", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 75, name: "TV movie", url: .init(staticString: "https://google.com/tv")),
+        .init(id: 76, name: "Western", url: .init(staticString: "https://google.com/tv"))
+
+    ]
     static var contentItemsResponse: ContentItemsResponse?
 
     func trigger() async throws {
@@ -54,13 +134,13 @@ public struct EmpireStreamingProvider: Provider {
         Self.contentItemsResponse = try JSONDecoder().decode(ContentItemsResponse.self, from: data)
     }
 
-    public func parsePage(type: String, page: Int) async throws -> [MediaContent] {
+    public func parsePage(type: String, page: Int, univers: Int? = nil, categories: Int? = nil) async throws -> [MediaContent] {
         let jsonData = [
             "data": [
                 "type": type,
                 "page": page,
-                "univers": nil,
-                "categories": nil,
+                "univers": univers,
+                "categories": categories.map { [$0] } ?? nil,
                 "note": nil,
                 "year": nil
             ]
@@ -110,6 +190,27 @@ public struct EmpireStreamingProvider: Provider {
         return try await parsePage(type: "series", page: page)
     }
 
+    public func latestCategory(id: Int, page: Int) async throws -> [MediaContent] {
+        var type = ""
+        var cat: Int?
+        var universe: Int?
+        if id <= 40 {
+            type = "films"
+            if id <= 20 {
+                universe = id
+            } else {
+                cat = id - 20
+            }
+        } else {
+            type = "series"
+            if id <= 56 {
+                universe = id - 36
+            } else {
+                cat = id - 56
+            }
+        }
+        return try await parsePage(type: type, page: page, univers: universe, categories: cat)
+    }
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
         let content = try await Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(content)
@@ -255,9 +356,8 @@ public struct EmpireStreamingProvider: Provider {
         let content = try await Utilities.downloadPage(url: baseURL)
         let document = try SwiftSoup.parse(content)
         let sectionRows: Elements = try document.select(".block-forme")
-        return try sectionRows.array().compactMap { section -> MediaContentSection?  in
-
-            let title = try section.select(".mr-3").text()
+        var home: [MediaContentSection] =  try sectionRows.array().compactMap { section -> MediaContentSection?  in
+            let title = try section.select(".mr-3").text().replacingOccurrences(of: "Empire-streaming", with: "").strip()
             let media = try section.select(".slick-slide").array().compactMap { content -> MediaContent? in
                 let posterPath = try content.select("img").attr("data-src").replacingOccurrences(of: "/images/medias/", with: "")
                 let posterURL = posterBaseURL.appendingPathComponent(posterPath)
@@ -275,11 +375,31 @@ public struct EmpireStreamingProvider: Provider {
 
             }
             if media.count > 0 {
-                return MediaContentSection(title: title, media: media)
+                return MediaContentSection(title: title.isEmpty ? "À L'AFFICHE" : title, media: media)
             } else {
                 return nil
             }
         }
+
+        var all = categories
+        let moviesUniverses =  all.filter { $0.id <= 20}
+        all.removeFirst(16)
+
+        let moviesCategries =  all.filter { $0.id <= 40 }
+        all.removeFirst(20)
+
+        let tvUniverses =  all.filter { $0.id <= 56}
+        all.removeFirst(16)
+
+        let tvCategries =  all.filter { $0.id <= 76 }
+        all.removeFirst(20)
+
+        home.append(MediaContentSection(title: "Film Univers", media: [], categories: moviesUniverses))
+        home.append(MediaContentSection(title: "Film Catégories", media: [], categories: moviesCategries))
+        home.append(MediaContentSection(title: "Series Universe", media: [], categories: tvUniverses))
+        home.append(MediaContentSection(title: "Series Catégories", media: [], categories: tvCategries))
+
+        return home
 
     }
 

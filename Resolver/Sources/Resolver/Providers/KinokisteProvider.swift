@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct KinokisteProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "de_DE")
     public var type: ProviderType = .init(.kinokiste)
 
@@ -19,7 +21,7 @@ public struct KinokisteProvider: Provider {
 
     public func parsePage(url: URL) async throws -> [MediaContent] {
         let content = try await Utilities.requestData(url: url)
-        let response = try JSONCoder.decoder.decode(KinoResponse.self, from: content)
+        let response = try JSONDecoder().decode(KinoResponse.self, from: content)
         return response.movies.map { movie in
             let url = baseURL.appending("id", value: movie._id).appending("title", value: movie.original_title ?? movie.title)
             let title: String = movie.original_title ?? movie.title
@@ -44,7 +46,7 @@ public struct KinokisteProvider: Provider {
 
         let requestURL = URL(staticString: "https://api.kinokiste.info/data/watch/").appending("_id", value: _id)
         let content = try await Utilities.requestData(url: requestURL)
-        let response = try JSONCoder.decoder.decode(KinoDetails.self, from: content)
+        let response = try JSONDecoder().decode(KinoDetails.self, from: content)
         let sources = response.streams.sorted {
             $0.added ?? Date() > $1.added ?? Date()
         }.prefix(20).compactMap { $0.stream }.map { Source(hostURL: $0)}
@@ -62,7 +64,7 @@ public struct KinokisteProvider: Provider {
 
         let requestURL = URL(staticString: "https://api.kinokiste.info/data/watch/").appending("_id", value: _id)
         let content = try await Utilities.requestData(url: requestURL)
-        let response = try JSONCoder.decoder.decode(KinoDetails.self, from: content)
+        let response = try JSONDecoder().decode(KinoDetails.self, from: content)
 
         guard let original_title = response.original_title else {
             throw KinokisteProviderError.idNotFound
@@ -70,13 +72,13 @@ public struct KinokisteProvider: Provider {
         let seasonsURL = URL(staticString: "https://api.kinokiste.info/data/seasons/?lang=2").appending("original_title", value: original_title)
         let seasonsData = try await Utilities.requestData(url: seasonsURL)
 
-        let seasonsResponse = try JSONCoder.decoder.decode(TVKinoDetailsResponse.self, from: seasonsData)
+        let seasonsResponse = try JSONDecoder().decode(TVKinoDetailsResponse.self, from: seasonsData)
 
         let seasons = try await seasonsResponse.movies.concurrentMap { seasonResponse -> Season in
             // https://api.kinokiste.info/pending_streams?_id=6492b18a0c897c64e6006212&lang=de
             let streamsURL = URL(staticString: "https://api.kinokiste.info/pending_streams").appending("_id", value: seasonResponse._id)
             let steamData = try await Utilities.requestData(url: streamsURL)
-            let streamResponse = try JSONCoder.decoder.decode(TVKinoStreams.self, from: steamData)
+            let streamResponse = try JSONDecoder().decode(TVKinoStreams.self, from: steamData)
 
             let episodesNumber = streamResponse.streams
                 .compactMap { $0.e }

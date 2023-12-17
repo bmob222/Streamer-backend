@@ -11,10 +11,12 @@ public struct MediaContentSection: Codable, Identifiable, Comparable, Hashable {
 
     public let title: String
     public let media: [MediaContent]
+    public let categories: [Category]?
 
-    init(title: String, media: [MediaContent]) {
+    init(title: String, media: [MediaContent] = [], categories: [Category]? = nil) {
         self.title = title
         self.media = media
+        self.categories = categories
     }
 }
 

@@ -4,7 +4,6 @@ import SwiftSoup
 struct StreamWishResolver: Resolver {
     let name = "StreamWish"
     static let domains: [String] = [
-        "alions.pro",
         "awish.pro",
         "streamwish.to",
         "mwish.pro",
@@ -14,9 +13,38 @@ struct StreamWishResolver: Resolver {
         "streamhide.to",
         "movhide.pro",
         "ztreamhub.com",
-        "files.im",
-        "mlions.pro",
-        "filelions.com"
+        "streamwish.com",
+        "streamwish.to",
+        "khadhnayad.sbs",
+        "yadmalik.sbs",
+        "hayaatieadhab.sbs",
+        "kharabnahs.sbs",
+        "atabkhha.sbs",
+        "atabknha.sbs",
+        "atabknhk.sbs",
+        "atabknhs.sbs",
+        "abkrzkr.sbs",
+        "abkrzkz.sbs",
+        "wishembed.pro",
+        "mwish.pro",
+        "strmwis.xyz",
+        "dwish.pro",
+        "vidmoviesb.xyz",
+        "embedwish.com",
+        "cilootv.store",
+        "tuktukcinema.store",
+        "doodporn.xyz",
+        "ankrzkz.sbs",
+        "volvovideo.top",
+        "streamwish.site",
+        "wishfast.top",
+        "ankrznm.sbs",
+        "sfastwish.com",
+        "eghjrutf.sbs",
+        "eghzrutw.sbs",
+        "playembed.online",
+        "egsyxurh.sbs",
+        "egtpgrvh.sbs"
     ]
 
     enum WolfstreamResolverError: Error {
@@ -26,8 +54,8 @@ struct StreamWishResolver: Resolver {
 
         var subtitles: [Subtitle] = []
         if let caption_1 = url.queryParameters?["caption_1"],
-            let subtitleURL = URL(string: caption_1),
-            let sub_1 = url.queryParameters?["sub_1"] {
+           let subtitleURL = URL(string: caption_1),
+           let sub_1 = url.queryParameters?["sub_1"] {
             subtitles.append(Subtitle(url: subtitleURL, language: .init(rawValue: sub_1) ?? .unknown))
         }
         // caption_1=https://sub.membed.net/sub/star-wars-episode-v-the-empire-strikes-back-stj/star-wars-episode-v-the-empire-strikes-back-stj.vtt&sub_1=English
@@ -40,7 +68,14 @@ struct StreamWishResolver: Resolver {
         guard let path = Utilities.extractURLs(content: script.replacingOccurrences(of: "'", with: " '")).filter({ $0.pathExtension == "m3u8"}).first else {
             throw WolfstreamResolverError.videoNotFound
         }
-        return [.init(Resolver: url.host?.localizedCapitalized ?? "StreamWish", streamURL: path, subtitles: subtitles)]
+        return [
+            .init(
+                Resolver: "StreamWish",
+                streamURL: path,
+                headers: ["Origin": "https://awish.pro", "Referer": "https://awish.pro/"],
+                subtitles: subtitles
+            )
+        ]
     }
 
 }

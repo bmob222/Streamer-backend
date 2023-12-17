@@ -35,7 +35,7 @@ struct MoplayResolver: Resolver {
         dataRequest.allHTTPHeaderFields = headers
         dataRequest.httpBody = try? JSONSerialization.data(withJSONObject: json)
         let (urlData, _)  = try await ResolverURLSession.shared.session.asyncData(for: dataRequest)
-        let content = try JSONCoder.decoder.decode(Response.self, from: urlData)
+        let content = try JSONDecoder().decode(Response.self, from: urlData)
         guard let path = content.url.base64Decoded(),
               let mediaURL = URL(string: "https://moplay.org"+path) else {
                   throw MoplayResolverError.dataRequestFailed

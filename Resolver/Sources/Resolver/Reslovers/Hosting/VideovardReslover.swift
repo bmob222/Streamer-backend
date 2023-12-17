@@ -18,7 +18,7 @@ struct VideovardResolver: Resolver {
             .appendingPathComponent(resourceIdentifier)
 
         let data = try await Utilities.requestData(url: hashURL)
-        let hashResponse = try JSONCoder.decoder.decode(HashResponse.self, from: data)
+        let hashResponse = try JSONDecoder().decode(HashResponse.self, from: data)
 
         let playerSetupURL = baseURL
             .appendingPathComponent("player")
@@ -46,7 +46,7 @@ struct VideovardResolver: Resolver {
             data: httpBody as Data,
             extraHeaders: extraHeaders
         )
-        let setupResponse = try JSONCoder.decoder.decode(SetupResponse.self, from: playerData)
+        let setupResponse = try JSONDecoder().decode(SetupResponse.self, from: playerData)
         let fileAsset =  try Utilities.tearDecode(file: setupResponse.src, seed: setupResponse.seed)
 
         guard let url = URL(string: fileAsset) else {

@@ -16,7 +16,7 @@ struct ShowBoxResolver: Resolver {
     }
     func getMediaURL(url: URL) async throws -> [Stream] {
         let data = try await Utilities.requestData(url: url)
-        let content = try JSONCoder.decoder.decode(Response.self, from: data)
+        let content = try JSONDecoder().decode(Response.self, from: data)
 
         return try await content.data.list.concurrentMap { item -> Stream? in
             guard let playUrl = URL(string: item.path) else { return nil }
@@ -24,7 +24,7 @@ struct ShowBoxResolver: Resolver {
             let subtitlesURL = url.appendingPathComponent("srt").appendingPathComponent(item.fid)
             let data = try await Utilities.requestData(url: subtitlesURL)
 
-            let content = try JSONCoder.decoder.decode(SubtitleResponse.self, from: data)
+            let content = try JSONDecoder().decode(SubtitleResponse.self, from: data)
 
             let subtitles = content.data.list.compactMap { section in
                 return section.subtitles.map {

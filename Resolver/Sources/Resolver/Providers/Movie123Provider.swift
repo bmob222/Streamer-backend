@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct Movie123Provider: Provider {
+    public init() {}
+
     public var type: ProviderType = .init(.movie123)
     public let title: String = "123moviesfree.so"
     public let langauge: String = "🇺🇸"
