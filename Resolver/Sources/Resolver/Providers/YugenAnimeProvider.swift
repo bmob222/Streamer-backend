@@ -162,15 +162,13 @@ public struct YugenAnimeProvider: Provider {
         let data = try await Utilities.downloadPage(url: requestUrl)
         let document = try SwiftSoup.parse(data)
         let rows: Elements = try document.select(".ep-card a")
-
         let episodes = try rows.array().map { row -> Episode in
-            let number: String = try row.attr("data-number")
             let path = try row.attr("href")
             let url = self.baseURL.appendingPathComponent(path)
             let source = Source(hostURL: url)
-            return Episode(number: Int(number) ?? 1, sources: [source])
+            return Episode(number: Int(url.lastPathComponent) ?? 1, sources: [source])
 
-        }.sorted()
+        }.uniqued().sorted()
         let title = try pageDocument.select(".content h1").text()
         let finalTitle = title.replacingOccurrences(of: #"(\d+)(st|nd|rd|th) Season"#, with: "", options: .regularExpression).strip()
         let seasonNumber = Int(title.replacingOccurrences(of: #".+(\d+)(st|nd|rd|th) Season"#, with: "$1", options: .regularExpression)) ?? 1
