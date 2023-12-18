@@ -56,6 +56,7 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case tmdb
     case aniwatch
     case wecima
+    case yugen
 
 }
 
@@ -135,6 +136,8 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return AniwatchAnimeProvider()
             case .wecima:
                 return WeCimaProvider()
+            case .yugen:
+                return YugenAnimeProvider()
             }
         case .remote(let id):
             let config = Self.activeProvidersConfig.first { $0.id == id}!
