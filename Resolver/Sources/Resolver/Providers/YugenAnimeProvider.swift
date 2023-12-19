@@ -77,7 +77,7 @@ public struct YugenAnimeProvider: Provider {
     }
 
     public func parsePage(url: URL) async throws -> [MediaContent] {
-        let content = try await Utilities.downloadPage(url: url)
+        let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         return try await parsePage(content: content, episodes: true)
     }
 
@@ -152,7 +152,7 @@ public struct YugenAnimeProvider: Provider {
 
         }
         url = url.appendingPathComponent("watch")
-        let pageContent = try await Utilities.downloadPage(url: url)
+        let pageContent = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         let pageDocument = try SwiftSoup.parse(pageContent)
         let posterPath = try pageDocument.select("meta[property=og:image]").attr("content")
         let episodesPath = try pageDocument.select("meta[property=og:url]").attr("content")
@@ -184,13 +184,13 @@ public struct YugenAnimeProvider: Provider {
             .appending("genreIncluded", value: category.name)
             .appending("page", value: String(page))
 
-        let content = try await Utilities.downloadPage(url: url)
+        let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         return try await parsePage(content: content, episodes: false)
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
         let url = discoverURL.appending("q", value: keyword)
-        let content = try await Utilities.downloadPage(url: url)
+        let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         return try await parsePage(content: content, episodes: false)
     }
 
@@ -238,6 +238,15 @@ public struct YugenAnimeProvider: Provider {
         )
         showItems.removeFirst(6)
 
-        return [sub, chinese, TrendingAiringSeries, EditorPick, UnderratedSeries, NewonYugenAnime, MostPopularSeries ]
+        return [
+            sub,
+            chinese,
+            MediaContentSection(title: "Genres", media: [], categories: categories),
+            TrendingAiringSeries,
+            EditorPick,
+            UnderratedSeries,
+            NewonYugenAnime,
+            MostPopularSeries
+        ]
     }
 }

@@ -11,7 +11,7 @@ struct YugenAnimeResolver: Resolver {
 
     func getMediaURL(url: URL) async throws -> [Stream] {
         // Fetch and parse the main content
-        guard let content = try? await Utilities.downloadPage(url: url) else {
+        guard let content = try? await Utilities.downloadPage(url: Utilities.workerURL(url)) else {
             throw YugenAnimeResolverError.contentFetchingError
         }
         let document = try SwiftSoup.parse(content)
