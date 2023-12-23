@@ -17,10 +17,10 @@ public struct HomeView: View {
     public var body: some View {
         ScrollView {
             LazyVGrid(columns: gridItems) {
-                
+
                 ForEach(mediaContentSections, id: \.self) { section in
                     Section(header: Text(section.title).font(.title3)) {
-                        
+
                         ForEach(section.media, id: \.self) { media in
                             VStack {
                                 NavigationLink(value: media) {

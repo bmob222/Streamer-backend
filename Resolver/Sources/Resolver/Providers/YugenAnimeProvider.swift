@@ -83,7 +83,6 @@ public struct YugenAnimeProvider: Provider {
 
     public func parsePage(content: String, episodes: Bool) async throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)
-        
         if episodes {
             let rows: Elements = try document.select(".ep-grid > li")
             return try rows.array().compactMap { row -> MediaContent? in
@@ -92,7 +91,8 @@ public struct YugenAnimeProvider: Provider {
                 guard let title = try titleElement?.text() else {
                     return nil
                 }
-                let posterPath: String = try row.select("img").attr("data-src")
+
+                let posterPath: String = try row.select("img").attr("data-src").replacingOccurrences(of: "f_webp", with: "f_jpg")
 
                 guard let posterURL = URL(string: posterPath) else {
                     return nil
@@ -106,12 +106,13 @@ public struct YugenAnimeProvider: Provider {
                     provider: self.type
                 )
             }
+
         } else {
             let rows: Elements = try document.select(".anime-meta")
             return try rows.array().compactMap { row -> MediaContent? in
-                let path = try row.select("a").attr("href")
+                let path = try rows.attr("href")
                 let title = try row.attr("title")
-                let posterPath: String = try row.select("img").attr("data-src")
+                let posterPath: String = try row.select("img").attr("data-src").replacingOccurrences(of: "f_webp", with: "f_jpg")
                 guard let posterURL = URL(string: posterPath) else {
                     return nil
                 }
@@ -124,9 +125,9 @@ public struct YugenAnimeProvider: Provider {
                     provider: self.type
                 )
             }
+
         }
     }
-
     public func latestMovies(page: Int) async throws -> [MediaContent] {
         return []
     }
