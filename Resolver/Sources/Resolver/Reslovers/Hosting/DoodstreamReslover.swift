@@ -18,7 +18,9 @@ struct DoodstreamResolver: Resolver {
         "dood.yt",
         "ds2play.com",
         "dooood.com",
-        "doods.pro"
+        "doods.pro",
+        "ds2video.com",
+        "s2.protectlink.stream"
     ]
 
     enum DoodstreamResolverrError: Error {
@@ -41,8 +43,9 @@ struct DoodstreamResolver: Resolver {
         guard let md5UrlString = script.matches(for: #"\$\.get\('(\/pass_md5[^']+)"#).first  else {
             throw DoodstreamResolverrError.regxValueNotFound
         }
+        let host = url.host == "s2.protectlink.stream" ? "dood.to" :  url.host
 
-        guard let md5URL = URL(string: "https://" + (url.host ?? "") + md5UrlString) else {
+        guard let md5URL = URL(string: "https://" + (host ?? "") + md5UrlString) else {
             throw DoodstreamResolverrError.urlNotValid
         }
         let md5Token = md5URL.lastPathComponent

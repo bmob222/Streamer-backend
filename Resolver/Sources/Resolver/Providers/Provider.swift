@@ -39,6 +39,7 @@ public enum ProviderError: Error, Equatable {
 
 public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case flixtor
+    case yugen
     case movie123
     case putlocker
     case akwam
@@ -56,7 +57,7 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case tmdb
     case aniwatch
     case wecima
-    case yugen
+    case tantifilm
 
 }
 
@@ -138,6 +139,8 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return WeCimaProvider()
             case .yugen:
                 return YugenAnimeProvider()
+            case .tantifilm:
+                return TantifilmProvider()
             }
         case .remote(let id):
             let config = Self.activeProvidersConfig.first { $0.id == id}!
