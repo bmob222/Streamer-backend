@@ -14,7 +14,7 @@ public struct FailableDecodableArray<Element: Decodable>: Decodable {
                 element = try container.decode(Element.self)
             } catch {
                 element = nil
-                logger.error("FailableDecodableArray - Invalid element: \(error)")
+                logger.warning("FailableDecodableArray - Invalid element: \(error)")
             }
         }
     }

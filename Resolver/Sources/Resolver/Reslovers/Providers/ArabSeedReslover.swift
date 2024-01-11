@@ -65,7 +65,7 @@ struct ArabSeedResolver: Resolver {
 
         return try await linksDic.concurrentMap { quality, links in
             try await links.concurrentMap { link -> [Stream] in
-                if link.absoluteString.contains("reviewtech") || link.absoluteString.contains("reviewrate.net") {
+                if link.absoluteString.contains("reviewtech") || link.absoluteString.contains("reviewrate.net") || link.absoluteString.contains("techinsider.wiki") {
                     return (try? await getMp4Link(url: link, quality: quality)) ?? []
                 } else {
                     return (try? await HostsResolver.resolveURL(url: link).map {

@@ -18,7 +18,8 @@ struct GogoCDNResolver: Resolver {
         "playtaku.net",
         "playtaku.online",
         "gotaku1.com",
-        "goone.pro"
+        "goone.pro",
+        "embtaku.pro"
     ]
     @EnviromentValue(key: "consumet_url", defaultValue: URL(staticString: "https://api.consumet.org"))
     private var consumetURL: URL

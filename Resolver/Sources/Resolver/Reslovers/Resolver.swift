@@ -67,11 +67,17 @@ public struct HostsResolver {
         Mp4UploadReslover(),
         SuperflixReslover(),
         WeCimaReslover(),
+        AniworldResolver(),
+        AnixAnimeResolver(),
         YugenAnimeResolver(),
-        TantifilmResolver()
+        UprotReslover(),
+        VembedNetResolver()
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {
         logger.info("🕸 Resolving \(url)")
+        guard url.host != nil else {
+            return []
+        }
         let Resolvers = Self.Resolvers.filter({ $0.canHandle(url: url)})
         guard !Resolvers.isEmpty else {
             logger.error("URL host not supported : \(url.absoluteString)")

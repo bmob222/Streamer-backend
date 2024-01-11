@@ -2,10 +2,31 @@ import Foundation
 
 struct FilemoonResolver: Resolver {
     let name = "Filemoon"
-    static let domains: [String] = ["filemoon.sx", "filemoon.to", "alions.pro", "filelions.com", "filelions.to", "ajmidyadfihayh.sbs", "alhayabambi.sbs", "techradar.ink",
-                                    "moflix-stream.click", "azipcdn.com", "mlions.pro", "alions.pro", "dlions.pro",
-                                    "filelions.live", "motvy55.store", "filelions.xyz", "lumiawatch.top", "filelions.online",
-                                    "javplaya.com", "fviplions.com", "egsyxutd.sbs"]
+    static let domains: [String] = [
+        "filemoon.sx",
+        "filemoon.to",
+        "alions.pro",
+        "filelions.com",
+        "filelions.to",
+        "ajmidyadfihayh.sbs",
+        "alhayabambi.sbs",
+        "techradar.ink",
+        "moflix-stream.click",
+        "azipcdn.com",
+        "mlions.pro",
+        "alions.pro",
+        "dlions.pro",
+        "filelions.live",
+        "motvy55.store",
+        "filelions.xyz",
+        "lumiawatch.top",
+        "filelions.online",
+        "javplaya.com",
+        "fviplions.com",
+        "egsyxutd.sbs",
+        "filelions.site",
+        "vidhidepro.com"
+    ]
 
     enum FilemoonResolverError: Error {
         case urlNotValid

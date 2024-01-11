@@ -16,7 +16,7 @@ public struct ArabseedProvider: Provider {
 
     private let homeURL: URL = ArabseedProvider.baseURL.appendingPathComponent("main")
 
-    @EnviromentValue(key: "arabseed_url", defaultValue: URL(staticString: "https://k5o.arabseed.ink"))
+    @EnviromentValue(key: "arabseed_url", defaultValue: URL(staticString: "https://arabseed.show/"))
     static var baseURL: URL
 
     enum ArabseedProviderError: Error {
@@ -67,7 +67,7 @@ public struct ArabseedProvider: Provider {
 
     public func latestMovies(page: Int) async throws -> [MediaContent] {
         let url = Self.baseURL
-            .appendingPathComponent("/category/arabic-movies-5")
+            .appendingPathComponent("category/arabic-movies-5")
             .appending(["page": String(page)])
 
         let content = try await Utilities.downloadPage(url: url)
@@ -156,7 +156,7 @@ public struct ArabseedProvider: Provider {
                     "x-requested-with": "XMLHttpRequest"
                 ]
                 let contents = try await Utilities.downloadPage(
-                    url: baseURL.appendingPathComponent("/wp-content/themes/Elshaikh2021/Ajaxat/Single/Episodes.php"),
+                    url: baseURL.appendingPathComponent("wp-content/themes/Elshaikh2021/Ajaxat/Single/Episodes.php"),
                     httpMethod: "POST",
                     data: payload,
                     extraHeaders: headers

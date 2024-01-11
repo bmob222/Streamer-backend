@@ -10,18 +10,31 @@ public struct KinokisteProvider: Provider {
     public let title: String = "KinoKiste"
     public let langauge: String = "🇩🇪"
 
-    private let moviesURL: URL = URL(staticString: "https://api.kinokiste.info/data/browse/?lang=2&type=movies")
-    private let tvShowsURL: URL = URL(staticString: "https://api.kinokiste.info/data/browse/?lang=2&type=tvseries")
-    private let baseURL = URL(staticString: "https://kinokiste.info")
+    private let moviesURL: URL = URL(staticString: "https://api.kinokiste.eu/data/browse/?lang=2&type=movies")
+    private let tvShowsURL: URL = URL(staticString: "https://api.kinokiste.eu/data/browse/?lang=2&type=tvseries")
+    private let baseURL = URL(staticString: "https://kinokiste.eu")
     private let posterBaseURL = URL(staticString: "https://image.tmdb.org/t/p/w342/")
 
     private enum KinokisteProviderError: Error {
         case idNotFound
     }
+    private let decoder: JSONDecoder  = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let encodedDate = try container.decode(String.self)
 
+            guard let date = DateCoder.decode(string: encodedDate) else {
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Unsupported date format!")
+            }
+
+            return date
+        }
+        return decoder
+    }()
     public func parsePage(url: URL) async throws -> [MediaContent] {
         let content = try await Utilities.requestData(url: url)
-        let response = try JSONDecoder().decode(KinoResponse.self, from: content)
+        let response = try decoder.decode(KinoResponse.self, from: content)
         return response.movies.map { movie in
             let url = baseURL.appending("id", value: movie._id).appending("title", value: movie.original_title ?? movie.title)
             let title: String = movie.original_title ?? movie.title
@@ -44,9 +57,9 @@ public struct KinokisteProvider: Provider {
             throw KinokisteProviderError.idNotFound
         }
 
-        let requestURL = URL(staticString: "https://api.kinokiste.info/data/watch/").appending("_id", value: _id)
+        let requestURL = URL(staticString: "https://api.kinokiste.eu/data/watch/").appending("_id", value: _id)
         let content = try await Utilities.requestData(url: requestURL)
-        let response = try JSONDecoder().decode(KinoDetails.self, from: content)
+        let response = try decoder.decode(KinoDetails.self, from: content)
         let sources = response.streams.sorted {
             $0.added ?? Date() > $1.added ?? Date()
         }.prefix(20).compactMap { $0.stream }.map { Source(hostURL: $0)}
@@ -62,33 +75,38 @@ public struct KinokisteProvider: Provider {
             throw KinokisteProviderError.idNotFound
         }
 
-        let requestURL = URL(staticString: "https://api.kinokiste.info/data/watch/").appending("_id", value: _id)
+        let requestURL = URL(staticString: "https://api.kinokiste.eu/data/watch/").appending("_id", value: _id)
         let content = try await Utilities.requestData(url: requestURL)
-        let response = try JSONDecoder().decode(KinoDetails.self, from: content)
+        let response = try decoder.decode(KinoDetails.self, from: content)
 
         guard let original_title = response.original_title else {
             throw KinokisteProviderError.idNotFound
         }
-        let seasonsURL = URL(staticString: "https://api.kinokiste.info/data/seasons/?lang=2").appending("original_title", value: original_title)
+        let seasonsURL = URL(staticString: "https://api.kinokiste.eu/data/seasons/?lang=2").appending("original_title", value: original_title)
         let seasonsData = try await Utilities.requestData(url: seasonsURL)
 
-        let seasonsResponse = try JSONDecoder().decode(TVKinoDetailsResponse.self, from: seasonsData)
+        let seasonsResponse = try decoder.decode(TVKinoDetailsResponse.self, from: seasonsData)
 
         let seasons = try await seasonsResponse.movies.concurrentMap { seasonResponse -> Season in
-            // https://api.kinokiste.info/pending_streams?_id=6492b18a0c897c64e6006212&lang=de
-            let streamsURL = URL(staticString: "https://api.kinokiste.info/pending_streams").appending("_id", value: seasonResponse._id)
+            // https://api.kinokiste.eu/pending_streams?_id=6492b18a0c897c64e6006212&lang=de
+            let streamsURL = URL(staticString: "https://api.kinokiste.eu/pending_streams").appending("_id", value: seasonResponse._id)
             let steamData = try await Utilities.requestData(url: streamsURL)
-            let streamResponse = try JSONDecoder().decode(TVKinoStreams.self, from: steamData)
+            let streamResponse = try decoder.decode(TVKinoStreams.self, from: steamData)
 
             let episodesNumber = streamResponse.streams
                 .compactMap { $0.e }
+
                 .uniqued()
 
             let episodes = episodesNumber.map { ep -> Episode in
-                let sources = streamResponse.streams.filter { $0.e == ep}.compactMap { $0.stream }.map { Source(hostURL: $0)}
+                let sources = streamResponse.streams.filter { $0.e == ep}.sorted {
+                    $0.added ?? Date() > $1.added ?? Date()
+                }.compactMap { $0.stream }.map { Source(hostURL: $0)}
                 return Episode(number: ep, sources: sources)
             }
             return Season(seasonNumber: seasonResponse.s ?? 1, webURL: url, episodes: episodes)
+        }.filter {
+            ($0.episodes?.count ?? 0) > 0
         }
 
         let posterURL = posterBaseURL.appendingPathComponent(response.poster_path ?? "")
@@ -96,7 +114,7 @@ public struct KinokisteProvider: Provider {
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
-        let url = URL(staticString: "https://api.kinokiste.info/data/browse/?lang=2")
+        let url = URL(staticString: "https://api.kinokiste.eu/data/browse/?lang=2")
             .appending("keyword", value: keyword.replacingOccurrences(of: " ", with: "+"))
             .appending("page", value: String(page))
         return try await parsePage(url: url)

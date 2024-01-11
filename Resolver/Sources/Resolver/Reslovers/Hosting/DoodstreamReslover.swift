@@ -19,8 +19,7 @@ struct DoodstreamResolver: Resolver {
         "ds2play.com",
         "dooood.com",
         "doods.pro",
-        "ds2video.com",
-        "s2.protectlink.stream"
+        "ds2video.com"
     ]
 
     enum DoodstreamResolverrError: Error {

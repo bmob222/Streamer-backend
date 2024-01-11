@@ -21,10 +21,12 @@ public extension String {
 
     func matches(for regex: String) -> [String] {
         do {
+            let nsString = self as NSString
+
             let regex = try NSRegularExpression(pattern: regex)
             let results = regex.matches(in: self, range: NSRange(self.startIndex..., in: self))
             return results.map {
-                String(self[Range($0.range(at: 1), in: self)!])
+                nsString.substring(with: $0.range(at: 1))
             }
         } catch let error {
             logger.error("invalid regex: \(error.localizedDescription)")

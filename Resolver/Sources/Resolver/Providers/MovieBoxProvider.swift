@@ -113,7 +113,8 @@ public struct MovieBoxProvider: Provider {
             let data = try await Utilities.requestData(url: seasonURL)
             let season = try JSONDecoder().decode(SeasonResponse.self, from: data)
 
-            let ep = season.data.map { ep in
+            let ep = season.data.compactMap { ep -> Episode? in
+                guard ep.source_file > 0 else { return nil }
                 let hostURLs = playURL.appendingPathComponent(id).appendingPathComponent(seasonNumber).appendingPathComponent(ep.episode)
                 return Episode(number: ep.episode, sources: [.init(hostURL: hostURLs)])
             }
@@ -184,6 +185,7 @@ public struct MovieBoxProvider: Provider {
             }
             self.boxType = try container.decode(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.boxType)
             self.max_season = try container.decodeIfPresent(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.max_season)
+
             do {
                 self.year = try container.decodeIfPresent(Int.self, forKey: MovieBoxProvider.Datum.CodingKeys.year)
             } catch {
@@ -248,5 +250,11 @@ public struct MovieBoxProvider: Provider {
 
     struct MEpisode: Codable {
         let season, episode: Int
+        let source_file: Int
+
+        enum CodingKeys: String, CodingKey {
+            case season, episode
+            case source_file = "source_file"
+        }
     }
 }

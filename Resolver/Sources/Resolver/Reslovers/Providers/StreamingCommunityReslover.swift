@@ -10,51 +10,63 @@ struct StreamingCommunityResolver: Resolver {
     }
 
     func getMediaURL(url: URL) async throws -> [Stream] {
-        var headers = [
-            "origin": url.host!,
-            "referer": url.host!,
-            "Sec-Fetch-Site": "cross-site",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Dest": "empty",
-            "Accept-Encoding": ""
-        ]
 
         let pageContent = try await Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(pageContent)
-        let rows = try document.select("video-player").attr("response")
-        let data = rows.data(using: .utf8)!
-        let response = try JSONDecoder().decode(MediaResponse.self, from: data)
-        let expire = Int(Date().timeIntervalSince1970 + 172800)
+        let path = try document.select("iframe").attr("src").removingPercentEncoding ?? ""
+        // https://vixcloud.co/embed/183340
+        let embedURL = try URL(path)
+        let embedID = embedURL.lastPathComponent
 
-        let ipData = try await Utilities.requestData(url: .init(string: "https://scws.work/videos/\(response.scws_id)")!)
-        let ipResponse = try JSONDecoder().decode(Response.self, from: ipData)
-        let uno = "\(expire)\(ipResponse.client_ip) Yc8U6r8KjAKAepEA"
-        let token = uno.data(using: .utf8)?.md5().toBase64URL() ?? ""
-        let m3umURL = try URL("streamer://scws.work/master/\(response.scws_id)?token=\(token)&expires=\(expire)")
-        headers["base_url"] = "https://sc-\(ipResponse.cdn.type)\(ipResponse.cdn.number)-01.scws-content.net/hls/\(ipResponse.storage.number)/\(ipResponse.folder_id)"
-        return [.init(Resolver: "StreamingCommunity", streamURL: m3umURL, quality: .init(quality: "\(ipResponse.quality ?? 0)"), headers: headers)]
+        let embedContent = try await Utilities.downloadPage(url: embedURL)
+        let embedDocument = try SwiftSoup.parse(embedContent)
+        let script = try embedDocument.select("script").array().filter { try $0.html().contains("window.video")}.first?.html() ?? ""
+
+        let win_video = script.matches(for: "window.video = (\\{.*\\})").first?.replacingOccurrences(of: "'", with: "\"")
+        let win_param = script.matches(for: "params: (\\{[\\s\\S]*\\}),").first?.replacingOccurrences(of: "'", with: "\"")
+
+        guard let videoData = win_video?.data(using: .utf8), let paramData = win_param?.data(using: .utf8) else {
+            throw ProviderError.noContent
+        }
+
+        let paramResponse = try JSONDecoder().decode(VideoData.self, from: videoData)
+        let videoResponse = try JSONDecoder().decode(VideoResponse.self, from: paramData)
+        let playlistURL = URL(staticString: "https://vixcloud.co/playlist/")
+        .appendingPathComponent(embedID)
+        .appending([
+            "token": videoResponse.token,
+            "token360p": videoResponse.token360p,
+            "token480p": videoResponse.token480p,
+            "token720p": videoResponse.token720p,
+            "token1080p": videoResponse.token1080p,
+            "expires": videoResponse.expires
+        ])
+        .appendingPathExtension("m3u")
+
+        return [.init(Resolver: "StreamingCommunity", streamURL: playlistURL, quality: .init(quality: "\(paramResponse.quality ?? 0)"))]
     }
 
-    struct Response: Codable {
-        let client_ip: String
+    struct VideoData: Codable {
+        let id: Int
+        let name: String
+        let filename: String
+        let size: Int
+        let quality: Int
+        let duration: Int
+        let views: Int
+        let is_viewable: Int
+        let status: String
+        let fps: Int
+        let legacy: Int
         let folder_id: String
-        let host: String
-        let storage: Storage
-        let cdn: CDN
-        let quality: Int?
+        let created_at_diff: String
     }
-    struct CDN: Codable {
-        let id: Int
-        let number: Int
-        let type: String
+    struct VideoResponse: Codable {
+        let token: String
+        let token360p: String
+        let token480p: String
+        let token720p: String
+        let token1080p: String
+        let expires: String
     }
-    struct Storage: Codable {
-        let id: Int
-        let number: Int
-    }
-
-    struct MediaResponse: Codable {
-        let scws_id: Int
-    }
-
 }

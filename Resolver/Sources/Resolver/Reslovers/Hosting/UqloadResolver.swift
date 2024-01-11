@@ -3,7 +3,7 @@ import SwiftSoup
 
 struct UqloadResolver: Resolver {
     let name = "Uqload"
-    static let domains: [String] = ["uqload.com", "uqload.co"]
+    static let domains: [String] = ["uqload.com", "uqload.co", "uqload.io"]
 
     enum UqloadResolverError: Error {
         case videoNotFound

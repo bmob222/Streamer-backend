@@ -21,12 +21,16 @@ struct StreamtapeResolver: Resolver {
 
         let data = try await Utilities.requestData(url: watchURL)
         let response = try JSONDecoder().decode(WatchResponse.self, from: data)
-        return response.sources.map {
-            Stream(
-                Resolver: response.headers.Referer.host ?? "FlixHQ",
-                streamURL: $0.url,
-                headers: ["Referer": response.headers.Referer.absoluteString]
-            )
+        return response.sources.compactMap {
+            if let url = URL(string: $0.url.replacingOccurrences(of: " ", with: "")) {
+                return Stream(
+                    Resolver: response.headers.Referer.host ?? "FlixHQ",
+                    streamURL: url,
+                    headers: ["Referer": response.headers.Referer.absoluteString]
+                )
+            } else {
+                return nil
+            }
         }
 
     }
@@ -43,7 +47,7 @@ struct StreamtapeResolver: Resolver {
     }
     // MARK: - Source
     struct ConsumetSource: Codable, Equatable {
-        let url: URL
+        let url: String
         let isM3U8: Bool
 
     }

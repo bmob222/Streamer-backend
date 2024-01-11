@@ -95,7 +95,7 @@ public struct Utilities {
             var request = URLRequest(url: url)
             request.httpMethod = httpMethod
             request.httpBody = data
-
+            request.timeoutInterval = 120
             request.setValue("same-origin", forHTTPHeaderField: "sec-fetch-site")
             request.setValue("cors", forHTTPHeaderField: "sec-fetch-mode")
             request.setValue(url.absoluteString, forHTTPHeaderField: "referer")

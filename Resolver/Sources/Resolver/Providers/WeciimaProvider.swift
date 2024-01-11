@@ -9,7 +9,7 @@ public struct WeCimaProvider: Provider {
     public let title: String = "WeCima"
     public let langauge: String = "🇸🇦"
 
-    public let baseURL: URL = URL(staticString: "https://weciimaa.online/")
+    public let baseURL: URL = URL(staticString: "https://wemycema.shop/")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("category/أفلام/افلام-عربي-arabic-movies/")
     }
@@ -24,11 +24,26 @@ public struct WeCimaProvider: Provider {
         case missingMovieInformation
     }
 
+    public var categories: [Category] = [
+        .init(id: 1, name: "مسلسلات-هندية", url: .init(staticString: "https://wemycema.shop/category/%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA/9-series-indian-%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA-%D9%87%D9%86%D8%AF%D9%8A%D8%A9")),
+        .init(id: 2, name: "مسلسلات-اسيوية", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d8%a7%d8%b3%d9%8a%d9%88%d9%8a%d8%a9/")),
+        .init(id: 3, name: "مسلسلات-تركية", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/8-%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d8%aa%d8%b1%d9%83%d9%8a%d8%a9-turkish-series/")),
+        .init(id: 4, name: "مسلسلات-وثائقية", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d9%88%d8%ab%d8%a7%d8%a6%d9%82%d9%8a%d8%a9-documentary-series/")),
+        .init(id: 7, name: "مسلسلات-كرتون", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d9%83%d8%b1%d8%aa%d9%88%d9%86/")),
+        .init(id: 8, name: "برامج-تليفزيونية", url: .init(staticString: "https://wemycema.shop/category/%d8%a8%d8%b1%d8%a7%d9%85%d8%ac-%d8%aa%d9%84%d9%8a%d9%81%d8%b2%d9%8a%d9%88%d9%86%d9%8a%d8%a9/")),
+
+        .init(id: 9, name: "افلام-اجنبي", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/10-movies-english-%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d8%a7%d8%ac%d9%86%d8%a8%d9%8a/")),
+        .init(id: 10, name: "افلام-هندي", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%87%d9%86%d8%af%d9%8a-indian-movies/")),
+        .init(id: 11, name: "افلام-تركى", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d8%aa%d8%b1%d9%83%d9%89-turkish-films/")),
+        .init(id: 12, name: "افلام-وثائقية", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%88%d8%ab%d8%a7%d8%a6%d9%82%d9%8a%d8%a9-documentary-films/")),
+        .init(id: 13, name: "افلام-كرتون", url: .init(staticString: "https://wemycema.shop/category/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%83%d8%b1%d8%aa%d9%88%d9%86/"))
+
+    ]
+
     public func parsePage(url: URL) async throws -> [MediaContent] {
         let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         return try await parsePage(content: content, query: ".Grid--WecimaPosts .GridItem")
     }
-
     func parsePage(content: String, query: String) async throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)
         let rows: Elements = try document.select(query)
@@ -69,6 +84,13 @@ public struct WeCimaProvider: Provider {
         return try await parsePage(url: tvShowsURL.appendingPathComponent("page").appendingPathComponent(page))
     }
 
+    public func latestCategory(id: Int, page: Int) async throws -> [MediaContent] {
+        guard let category = categories.first(where: { $0.id == id }), let url = category.url else {
+            return []
+        }
+        return try await parsePage(url: url.appendingPathComponent("page").appendingPathComponent(page))
+    }
+
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
         let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         let document = try SwiftSoup.parse(content)
@@ -93,15 +115,17 @@ public struct WeCimaProvider: Provider {
     }
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
+        var url = url
         var content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         var document = try SwiftSoup.parse(content)
 
         let breadCrumbs = try document.select("li[itemprop=itemListElement]").array()
-        let lastBreadCrumb = try breadCrumbs[breadCrumbs.count-1].text()
-        if lastBreadCrumb.contains("موسم") || lastBreadCrumb.contains("حلقة") {
+        let lastBreadCrumb = try breadCrumbs[safe: breadCrumbs.count-1]?.text()
+        if lastBreadCrumb?.contains("موسم") == true || lastBreadCrumb?.contains("حلقة") == true {
             let showPath = try breadCrumbs[3].select("a").attr("href")
             let showURL = try URL(showPath)
-            content = try await Utilities.downloadPage(url: showURL)
+            url = showURL
+            content = try await Utilities.downloadPage(url: Utilities.workerURL(showURL))
             document = try SwiftSoup.parse(content)
         }
 
@@ -130,7 +154,7 @@ public struct WeCimaProvider: Provider {
                 let path: String = try row.attr("href")
                 let url = try URL(path)
                 let episodeNumber = epRowsCount - index
-                return Episode(number: episodeNumber, sources: [.init(hostURL: url)])
+                return Episode(number: episodeNumber, sources: [.init(hostURL: url.appending("resolver", value: "weciimaa"))])
             }.sorted()
             seasons.append(Season(seasonNumber: 1, webURL: url, episodes: episodes))
         }
@@ -160,7 +184,7 @@ public struct WeCimaProvider: Provider {
             .appendingPathComponent(keyword)
         let data = try await Utilities.requestData(url: Utilities.workerURL(pageURL))
         let response = try JSONDecoder().decode(Response.self, from: data)
-       return try await parsePage(content: response.output, query: ".GridItem")
+        return try await parsePage(content: response.output, query: ".GridItem")
 
     }
     struct Response: Codable {
@@ -171,10 +195,13 @@ public struct WeCimaProvider: Provider {
         let content = try await Utilities.downloadPage(url: Utilities.workerURL(homeURL))
         let movies =  try await parsePage(content: content, query: ".Slider--Grid .GridItem")
         let tv =  try await parsePage(content: content, query: ".Grid--WecimaPosts .GridItem")
-
+        let tvshows = MediaContentSection(title: "مسلسلات", media: [], categories: Array(categories[0...5]))
+        let moviess = MediaContentSection(title: "افلام", media: [], categories: Array(categories[6...]))
         return [
             .init(title: "افلام جديدة", media: movies),
-            .init(title: "جديد وى سيما", media: tv)
+            .init(title: "جديد وى سيما", media: tv),
+            tvshows,
+            moviess
 
         ]
     }

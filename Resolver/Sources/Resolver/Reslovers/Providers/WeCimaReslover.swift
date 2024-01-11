@@ -13,7 +13,7 @@ struct WeCimaReslover: Resolver {
         || url.host?.contains("mywe-ciima") == true
         || url.host?.contains("ciima") == true
         || url.host?.contains("we-cima") == true
-        || url.host?.contains("wecema") == true
+        || url.absoluteString.contains("resolver=weciimaa") == true
     }
 
     func getMediaURL(url: URL) async throws -> [Stream] {

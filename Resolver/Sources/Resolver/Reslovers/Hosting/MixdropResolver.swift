@@ -2,7 +2,19 @@ import Foundation
 
 struct MixdropResolver: Resolver {
     let name = "Mixdrop"
-    static let domains: [String] = ["mixdrop.co", "mixdrop.to", "mixdrop.club", "mixdrop.sx", "mixdrop.bz", "mixdroop.bz", "mixdrop.vc", "mixdrop.ag"]
+    static let domains: [String] = [
+        "mixdrop.co",
+        "mixdrop.to",
+        "mixdrop.club",
+        "mixdrop.sx",
+        "mixdrop.bz",
+        "mixdroop.bz",
+        "mixdrop.vc",
+        "mixdrop.ag",
+        "mdy48tn97.com",
+        "md3b0j6hj.com",
+        "mdbekjwqa.pw"
+    ]
     @EnviromentValue(key: "consumet_url", defaultValue: URL(staticString: "https://api.consumet.org"))
     private var consumetURL: URL
 

@@ -16,7 +16,7 @@ struct SuperflixReslover: Resolver {
         return response.streams.compactMap { stream in
 
             let subtitles = stream.subtitles.compactMap { s -> Subtitle? in
-                guard let url = URL(string: s.url),
+                guard let url = URL(string: s.url.replacingOccurrences(of: "http://127.0.0.1:11470/subtitles.vtt?from=", with: "")),
                       let language = s.lang.components(separatedBy: .whitespaces).first? .trimmingCharacters(in: .whitespaces) else { return nil}
                 return Subtitle(url: url, language: .init(code: language) ?? .init(rawValue: language) ?? .unknown)
             }
@@ -33,8 +33,8 @@ struct SuperflixReslover: Resolver {
     }
 
     // MARK: - Superflix
-    struct Superflix: Codable {
-        let streams: [SuperFlixStream]
+    struct Superflix: Decodable {
+        @FailableDecodableArray var streams: [SuperFlixStream]
 
         enum CodingKeys: String, CodingKey {
             case streams

@@ -3,7 +3,6 @@ import SwiftSoup
 import TMDb
 
 public class TMDBProvider: Provider {
-
     public var type: ProviderType = .local(id: .tmdb)
     public var title: String = "TMDB"
     public let langauge: String = ""
@@ -15,19 +14,19 @@ public class TMDBProvider: Provider {
 
     var imagesConfiguration: ImagesConfiguration?
     public var categories: [Category] = [
-        .init(id: 213, name: "Netflix", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/wwemzKWzjKYJFfCeiB57q3r4Bcm.png")),
-        .init(id: 2552, name: "Apple TV+", poster: .init(staticString: "https://image.tmdb.org/t/p/w300_filter(negate,000,666)/4KAy34EHvRM25Ih8wb82AuGU7zJ.png")),
-        .init(id: 2739, name: "Disney+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/uzKjVDmQ1WRMvGBb7UNRE0wTn1H.png")),
-        .init(id: 1024, name: "Amazon Prime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png")),
-        .init(id: 453, name: "Hulu", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/pqUTCleNUiTLAVlelGxUgWn1ELh.png")),
-        .init(id: 49, name: "HBO", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300_filter(negate,000,666)/tuomPhY2UtuPTqqFnKMVHvSb724.png")),
-        .init(id: 4330, name: "Paramount", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/fi83B1oztoS47xxcemFdPMhIzK.png")),
-        .init(id: 318, name: "Starz", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/GMDGZk9iDG4WDijY3VgUgJeyus.png")),
-        .init(id: 67, name: "Showtime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/Allse9kbjiP6ExaQrnSpIhkurEi.png")),
-        .init(id: 3353, name: "Peacock", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/gIAcGTjKKr0KOHL5s4O36roJ8p7.png")),
-        .init(id: 4353, name: "Discovery+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/1D1bS3Dyw4ScYnFWTlBOvJXC3nb.png")),
-        .init(id: 6219, name: "MGM+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/89TXvQzvoKvyqD9EEogohzMJ8D6.png")),
-        .init(id: 77, name: "SYFY", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/iYfrkobwDhTOFJ4AXYPSLIEeaAT.png"))
+        .init(id: 8, name: "Netflix", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/wwemzKWzjKYJFfCeiB57q3r4Bcm.png")),
+        .init(id: 350, name: "Apple TV+", poster: .init(staticString: "https://image.tmdb.org/t/p/w300_filter(negate,000,666)/4KAy34EHvRM25Ih8wb82AuGU7zJ.png")),
+        .init(id: 337, name: "Disney+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/uzKjVDmQ1WRMvGBb7UNRE0wTn1H.png")),
+        .init(id: 9, name: "Amazon Prime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png")),
+        .init(id: 15, name: "Hulu", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/pqUTCleNUiTLAVlelGxUgWn1ELh.png")),
+        .init(id: 384, name: "HBO", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300_filter(negate,000,666)/tuomPhY2UtuPTqqFnKMVHvSb724.png")),
+        .init(id: 531, name: "Paramount", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/fi83B1oztoS47xxcemFdPMhIzK.png")),
+        .init(id: 43, name: "Starz", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/GMDGZk9iDG4WDijY3VgUgJeyus.png")),
+        .init(id: 37, name: "Showtime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/Allse9kbjiP6ExaQrnSpIhkurEi.png")),
+        .init(id: 386, name: "Peacock", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/gIAcGTjKKr0KOHL5s4O36roJ8p7.png")),
+        .init(id: 520, name: "Discovery+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/1D1bS3Dyw4ScYnFWTlBOvJXC3nb.png")),
+        .init(id: 34, name: "MGM+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/89TXvQzvoKvyqD9EEogohzMJ8D6.png")),
+        .init(id: 215, name: "SYFY", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/iYfrkobwDhTOFJ4AXYPSLIEeaAT.png"))
     ]
     enum TMDBProvider: Error {
         case missingPoster
@@ -73,8 +72,9 @@ public class TMDBProvider: Provider {
             return []
         }
         let discoverService = DiscoverService()
-        let shows =  try await discoverService.tvSeries(sortedBy: .popularity(descending: true), page: page, with_networks: category.id).results.compactMap { convert($0)}
-        return shows
+        let shows =  try await discoverService.tvSeries(sortedBy: .popularity(descending: true), page: page, with_watch_providers: category.id, watch_region: "US").results.compactMap { convert($0)}
+        let movies =  try await discoverService.movies(sortedBy: .popularity(descending: true), page: page, with_watch_providers: category.id, watch_region: "US").results.compactMap { convert($0)}
+        return (movies + shows).shuffled()
     }
 
     public func latestMovies(page: Int) async throws -> [MediaContent] {
@@ -145,7 +145,9 @@ public class TMDBProvider: Provider {
                 return Episode(number: episode.episodeNumber, sources: sources)
             }
             return Season(seasonNumber: season.seasonNumber, webURL: url, episodes: episodes)
-        }.compactMap { $0 }
+        }
+            .compactMap { $0 }
+            .filter { ($0.episodes?.count ?? 0) != 0 }
 
         guard let posterURL = imagesConfiguration?.posterURL(for: response.posterPath) else {
             throw TMDBProvider.missingPoster
