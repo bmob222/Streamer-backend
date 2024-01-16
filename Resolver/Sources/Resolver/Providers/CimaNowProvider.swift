@@ -2,8 +2,6 @@ import Foundation
 import SwiftSoup
 
 public struct CimaNowProvider: Provider {
-    public init() {}
-
     public let locale: Locale = Locale(identifier: "ar_SA")
     public let type: ProviderType = .init(.cimaNow)
     public let title: String = "CimaNow.cc"
@@ -122,17 +120,19 @@ public struct CimaNowProvider: Provider {
             let title = try section.select("span").text()
                 .replacingOccurrences(of: "شاهد الكل", with: "")
                 .replacingOccurrences(of: "جديد", with: "")
+                .replacingOccurrences(of: "‹ ›", with: "")
+                .strip()
             let rows: Elements = try section.select(".owl-body a")
 
             let media = try rows.array().compactMap { row -> MediaContent? in
                 let content = try row.select("a")
                 let url = try content.attr("href")
                 let posterPath: String = try row.select("img").attr("data-src").addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)!
-                let posterURL = URL(string: posterPath)!
-                let webURL = URL(string: url)!
-                let title: String = try content.select("[aria-label=title]").html().components(separatedBy: "<em>").first ?? ""
+                let posterURL = try URL(posterPath)
+                let webURL = try URL(url)
+                let title: String = try content.select("[aria-label=title]").html().components(separatedBy: "<em>").first?.strip() ?? ""
                 let type: MediaContent.MediaContentType
-                if url.contains("%d9%81%d9%8a%d9%84%d9%85") {
+                if url.contains("فيلم") {
                     type = .movie
                 } else if url.contains("selary") {
                     type = .tvShow

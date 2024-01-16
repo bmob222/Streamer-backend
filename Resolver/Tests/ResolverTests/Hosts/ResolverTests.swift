@@ -142,7 +142,7 @@ class ResolverTests: XCTestCase {
     }
 
     func testEmpire() async throws {
-        let url = URL(staticString: "https://empire-streaming.app/film/Il-faut-sauver-le-soldat-Ryan-en-streaming-hd/966a3812985672355386915476714698")
+        let url = URL(staticString: "https://empire-stream.net/film/Il-faut-sauver-le-soldat-Ryan-en-streaming-hd/966a3812985672355386915476714698")
         let streams = try await HostsResolver.resolveURL(url: url)
         print(streams)
         XCTAssertNotNil(streams)

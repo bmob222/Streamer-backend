@@ -71,7 +71,9 @@ public struct HostsResolver {
         AnixAnimeResolver(),
         YugenAnimeResolver(),
         UprotReslover(),
-        VembedNetResolver()
+        VembedNetResolver(),
+        TantifilmResolver(),
+        EmbedvReslover()
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {
         logger.info("🕸 Resolving \(url)")

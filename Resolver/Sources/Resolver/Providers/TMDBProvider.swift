@@ -51,7 +51,7 @@ public class TMDBProvider: Provider {
 
     public init() {
         let tmdbConfiguration = TMDbConfiguration(apiKey: Constants.TMDbAPIKey)
-        TMDb.configure(tmdbConfiguration)
+        TMDB.configure(tmdbConfiguration)
     }
 
     func setupImagesConfiguration() async throws {

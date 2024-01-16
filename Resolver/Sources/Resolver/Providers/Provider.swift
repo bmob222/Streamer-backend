@@ -60,6 +60,7 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case wecima
     case anix
     case streamingcommunity
+    case tantifilm
 
 }
 
@@ -147,6 +148,8 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return YugenAnimeProvider()
             case .streamingcommunity:
                 return StreamingCommunityProvider()
+            case .tantifilm:
+                return TantifilmProvider()
             }
         case .remote(let id):
             let config = Self.activeProvidersConfig.first { $0.id == id}!

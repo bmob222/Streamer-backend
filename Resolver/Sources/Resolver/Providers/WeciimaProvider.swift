@@ -2,8 +2,6 @@ import Foundation
 import SwiftSoup
 
 public struct WeCimaProvider: Provider {
-    public init() {}
-
     public let locale: Locale = Locale(identifier: "ar_SA")
     public let type: ProviderType = .init(.wecima)
     public let title: String = "WeCima"
@@ -44,6 +42,7 @@ public struct WeCimaProvider: Provider {
         let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
         return try await parsePage(content: content, query: ".Grid--WecimaPosts .GridItem")
     }
+
     func parsePage(content: String, query: String) async throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)
         let rows: Elements = try document.select(query)

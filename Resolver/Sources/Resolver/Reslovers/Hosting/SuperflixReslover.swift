@@ -21,10 +21,12 @@ struct SuperflixReslover: Resolver {
                 return Subtitle(url: url, language: .init(code: language) ?? .init(rawValue: language) ?? .unknown)
             }
             let q = Quality(quality: stream.name)
-            if q == .k4 { return nil }
 
+           // "🎬 Avatar: The Way of Water\n🟢 Stream Online\n⚙️ Source: VidSrc | Pro"
+           let source =  stream.description.components(separatedBy: "⚙️ Source:").last?.strip()
            return  Stream(
                 Resolver: "Superflix",
+                description: source,
                 streamURL: stream.url,
                 quality: q,
                 subtitles: subtitles

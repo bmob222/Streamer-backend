@@ -13,11 +13,11 @@ class FlixProviderTests: XCTestCase {
 
         print(streams)
 
-//        let movie = try await provider.fetchMovieDetails(for: .init(string: "https://empire-streaming.app/film/Il-faut-sauver-le-soldat-Ryan-en-streaming-hd/966a3812985672355386915476714698")!)
+//        let movie = try await provider.fetchMovieDetails(for: .init(string: "https://empire-stream.net/film/Il-faut-sauver-le-soldat-Ryan-en-streaming-hd/966a3812985672355386915476714698")!)
 //
 //        print(movie)
 //
-//        let tv = try await provider.fetchTVShowDetails(for: .init(string:"https://empire-streaming.app/serie/Euphoria-en-streaming-hd/d56729d477609727e903119194533612")!)
+//        let tv = try await provider.fetchTVShowDetails(for: .init(string:"https://empire-stream.net/serie/Euphoria-en-streaming-hd/d56729d477609727e903119194533612")!)
 //
 //        print(tv)
 

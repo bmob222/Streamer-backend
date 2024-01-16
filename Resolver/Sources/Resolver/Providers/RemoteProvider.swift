@@ -78,6 +78,11 @@ public class RemoteProvider: Provider {
         return try await parsePage(url: tvShowsURL.appendingQueryItem(name: "page", value: page))
     }
 
+    public func latestCategory(id: Int, page: Int) async throws -> [MediaContent] {
+        let url = baseURL.appendingPathComponent("providers").appendingPathComponent(type.rawValue).appendingPathComponent("categories").appendingPathComponent(id)
+        return try await parsePage(url: url.appendingQueryItem(name: "page", value: page))
+    }
+
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
         let url = moviesURL.appendingPathComponent(url.absoluteString.toBase64URL())
         let encryptedContent = try await Utilities.downloadPage(url: url)

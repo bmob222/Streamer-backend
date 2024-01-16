@@ -150,7 +150,7 @@ public struct FaselHDProvider: Provider {
             )
         }
 
-        guard items.count >= 36 else { throw FaselHDProviderError.errorLoadingHome }
+        guard items.count >= 24 else { throw FaselHDProviderError.errorLoadingHome }
 
         let recommendedMovies = MediaContentSection(title: NSLocalizedString("آخر الأفلام المضافة", comment: ""),
                                                     media: Array(items.prefix(12)))
@@ -161,6 +161,8 @@ public struct FaselHDProvider: Provider {
         let trending = MediaContentSection(title: NSLocalizedString("أفضل مسلسلات هذا الشهر", comment: ""),
                                            media: Array(items.prefix(12)))
 
-        return [recommendedMovies, recommendedTVShows, trending]    }
+        return [recommendedMovies, recommendedTVShows, trending]
+
+    }
 
 }

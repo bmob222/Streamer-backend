@@ -70,7 +70,7 @@ struct CimaNowResolver: Resolver {
                     "Cache-Control": "no-cache"
                 ]
 
-                let content = try await Utilities.downloadPage(url: url, extraHeaders: headers)
+                let content = try await Utilities.downloadPage(url: aurl, extraHeaders: headers)
                 let document = try SwiftSoup.parse(content)
                 var streamPath = try document.select("iframe").attr("src")
                 if !streamPath.contains("https:") {

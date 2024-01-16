@@ -4,7 +4,6 @@ import SwiftSoup
 struct YugenAnimeResolver: Resolver {
     let name = "YugenAnime"
     static let domains: [String] = ["yugenanime.tv"]
-
     enum YugenAnimeResolverError: Error {
         case urlNotValid, contentFetchingError, parsingError
     }
