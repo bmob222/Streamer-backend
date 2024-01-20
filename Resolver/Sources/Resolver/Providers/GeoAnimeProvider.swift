@@ -12,15 +12,13 @@ public struct GeoAnimeProvider: Provider {
     public let baseURL: URL = URL(staticString: "https://genoanime.com")
     public var moviesURL: URL = URL(staticString: "https://genoanime.com/browse?genre=dubbed")
 
-    public var tvShowsURL: URL {
-        baseURL.appendingPathComponent("browse")
-    }
+    public var tvShowsURL: URL = URL(staticString: "https://genoanime.com/browse?sort=top_rated&")
 
     private var homeURL: URL {
         baseURL.appendingPathComponent("home")
     }
 
-    enum GogoAnimeHDProviderError: Error {
+    enum GeoAnimeProviderError: Error {
         case missingMovieInformation
         case episodeLinkNotFound
         case invalidURL
@@ -28,8 +26,12 @@ public struct GeoAnimeProvider: Provider {
 
     public func parsePage(url: URL) async throws -> [MediaContent] {
         let content = try await Utilities.downloadPage(url: url)
+        return await try parsePage(content: content)
+    }
+
+    func parsePage(content: String) async throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)
-        let rows: Elements = try document.select(".col-lg-10 .product__item")
+        let rows: Elements = try document.select(".product__item")
 
         return try rows.array().compactMap { item in
             let path: String = try item.select("a").attr("href").replacingOccurrences(of: ".", with: "")
@@ -81,14 +83,15 @@ public struct GeoAnimeProvider: Provider {
     }
 
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
-        throw GogoAnimeHDProviderError.missingMovieInformation
+        throw GeoAnimeProviderError.missingMovieInformation
     }
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
         let pageContent = try await Utilities.downloadPage(url: url)
         let pageDocument = try SwiftSoup.parse(pageContent)
 
-        let title = try pageDocument.select("title").text()
+        // Extract title and poster URL
+        let title = try pageDocument.select("title").text().replacingOccurrences(of: "Episode List on Genoanime", with: "").replacingOccurrences(of: "Watch", with: "")
         let posterPath = try pageDocument.select("meta[property=og:image]").attr("content")
         let posterURL = try URL(posterPath)
 
@@ -116,17 +119,27 @@ public struct GeoAnimeProvider: Provider {
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
-        var components = URLComponents(url: baseURL.appendingPathComponent("search"), resolvingAgainstBaseURL: false)!
-        components.queryItems = [
-            URLQueryItem(name: "keyword", value: keyword),
-            URLQueryItem(name: "page", value: String(page))
+        let payload = "anime=\(keyword)".data(using: .utf8)
+        let searchURL = URL(staticString: "https://genoanime.com/data/searchdata-test.php")
+        let headers = [
+            "authority": "genoanime.com",
+            "accept": "text/html, */*; q=0.01",
+            "accept-language": "en-US,en;q=0.9,ar;q=0.8",
+            "cache-control": "no-cache",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "dnt": "1",
+            "origin": "https://genoanime.com",
+            "pragma": "no-cache",
+            "referer": "https://genoanime.com/search?ani=\(keyword)",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "x-requested-with": "XMLHttpRequest"
         ]
-
-        guard let searchURL = components.url else {
-            throw GogoAnimeHDProviderError.invalidURL
-        }
-
-        return try await parsePage(url: searchURL)
+        let content = try await Utilities.downloadPage(url: searchURL, httpMethod: "POST", data: payload, extraHeaders: headers)
+        return try await parsePage(content: content)
     }
 
     enum MediaType {
