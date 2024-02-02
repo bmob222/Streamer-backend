@@ -7,7 +7,9 @@ public struct WeCimaProvider: Provider {
     public let title: String = "WeCima"
     public let langauge: String = "🇸🇦"
 
-    public let baseURL: URL = URL(staticString: "https://wemycema.shop/")
+    static public let baseURL: URL = URL(staticString: "https://xn------nzebcaa6hd5qde3bjgmh.myciima-weciima.shop/")
+
+    public let baseURL: URL = URL(staticString: "https://xn------nzebcaa6hd5qde3bjgmh.myciima-weciima.shop/")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("category/أفلام/افلام-عربي-arabic-movies/")
     }
@@ -23,19 +25,61 @@ public struct WeCimaProvider: Provider {
     }
 
     public var categories: [Category] = [
-        .init(id: 1, name: "مسلسلات-هندية", url: .init(staticString: "https://wemycema.shop/category/%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA/9-series-indian-%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA-%D9%87%D9%86%D8%AF%D9%8A%D8%A9")),
-        .init(id: 2, name: "مسلسلات-اسيوية", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d8%a7%d8%b3%d9%8a%d9%88%d9%8a%d8%a9/")),
-        .init(id: 3, name: "مسلسلات-تركية", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/8-%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d8%aa%d8%b1%d9%83%d9%8a%d8%a9-turkish-series/")),
-        .init(id: 4, name: "مسلسلات-وثائقية", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d9%88%d8%ab%d8%a7%d8%a6%d9%82%d9%8a%d8%a9-documentary-series/")),
-        .init(id: 7, name: "مسلسلات-كرتون", url: .init(staticString: "https://wemycema.shop/category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d9%83%d8%b1%d8%aa%d9%88%d9%86/")),
-        .init(id: 8, name: "برامج-تليفزيونية", url: .init(staticString: "https://wemycema.shop/category/%d8%a8%d8%b1%d8%a7%d9%85%d8%ac-%d8%aa%d9%84%d9%8a%d9%81%d8%b2%d9%8a%d9%88%d9%86%d9%8a%d8%a9/")),
-
-        .init(id: 9, name: "افلام-اجنبي", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/10-movies-english-%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d8%a7%d8%ac%d9%86%d8%a8%d9%8a/")),
-        .init(id: 10, name: "افلام-هندي", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%87%d9%86%d8%af%d9%8a-indian-movies/")),
-        .init(id: 11, name: "افلام-تركى", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d8%aa%d8%b1%d9%83%d9%89-turkish-films/")),
-        .init(id: 12, name: "افلام-وثائقية", url: .init(staticString: "https://wemycema.shop/category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%88%d8%ab%d8%a7%d8%a6%d9%82%d9%8a%d8%a9-documentary-films/")),
-        .init(id: 13, name: "افلام-كرتون", url: .init(staticString: "https://wemycema.shop/category/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%83%d8%b1%d8%aa%d9%88%d9%86/"))
-
+        .init(
+            id: 1,
+            name: "مسلسلات-هندية",
+            url:  baseURL.appendingPathComponent("category/%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA/9-series-indian-%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA-%D9%87%D9%86%D8%AF%D9%8A%D8%A9")
+        ),
+        .init(
+            id: 2,
+            name: "مسلسلات-اسيوية",
+            url: baseURL.appendingPathComponent("category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d8%a7%d8%b3%d9%8a%d9%88%d9%8a%d8%a9/")
+        ),
+        .init(
+            id: 3,
+            name: "مسلسلات-تركية",
+            url: baseURL.appendingPathComponent("category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/8-%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d8%aa%d8%b1%d9%83%d9%8a%d8%a9-turkish-series/")
+        ),
+        .init(
+            id: 4,
+            name: "مسلسلات-وثائقية",
+            url: baseURL.appendingPathComponent("category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d9%88%d8%ab%d8%a7%d8%a6%d9%82%d9%8a%d8%a9-documentary-series/")
+        ),
+        .init(
+            id: 7,
+            name: "مسلسلات-كرتون",
+            url: baseURL.appendingPathComponent("category/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa-%d9%83%d8%b1%d8%aa%d9%88%d9%86/")
+        ),
+        .init(
+            id: 8,
+            name: "برامج-تليفزيونية",
+            url: baseURL.appendingPathComponent("category/%d8%a8%d8%b1%d8%a7%d9%85%d8%ac-%d8%aa%d9%84%d9%8a%d9%81%d8%b2%d9%8a%d9%88%d9%86%d9%8a%d8%a9/")
+        ),
+        .init(
+            id: 9,
+            name: "افلام-اجنبي",
+            url: baseURL.appendingPathComponent("category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/10-movies-english-%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d8%a7%d8%ac%d9%86%d8%a8%d9%8a/")
+        ),
+        .init(
+            id: 10,
+            name: "افلام-هندي",
+            url: baseURL.appendingPathComponent("category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%87%d9%86%d8%af%d9%8a-indian-movies/")
+        ),
+        .init(
+            id: 11,
+            name: "افلام-تركى",
+            url: baseURL.appendingPathComponent("category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d8%aa%d8%b1%d9%83%d9%89-turkish-films/")
+        ),
+        .init(
+            id: 12,
+            name: "افلام-وثائقية",
+            url: baseURL.appendingPathComponent("category/%d8%a3%d9%81%d9%84%d8%a7%d9%85/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%88%d8%ab%d8%a7%d8%a6%d9%82%d9%8a%d8%a9-documentary-films/")
+        ),
+        .init(
+            id: 13,
+            name: "افلام-كرتون",
+            url: baseURL.appendingPathComponent("category/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%83%d8%b1%d8%aa%d9%88%d9%86/")
+        )  
     ]
 
     public func parsePage(url: URL) async throws -> [MediaContent] {
@@ -46,7 +90,7 @@ public struct WeCimaProvider: Provider {
     func parsePage(content: String, query: String) async throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)
         let rows: Elements = try document.select(query)
-        return try rows.array().compactMap { row -> MediaContent? in
+        let content = try rows.array().compactMap { row -> MediaContent? in
             let content = try row.select("a")
             let url = try content.attr("href")
 
@@ -63,7 +107,11 @@ public struct WeCimaProvider: Provider {
             title = title.replacingOccurrences(of: "فيلم", with: "")
             title = title.replacingOccurrences(of: "والاخيرة", with: "")
             title = title.replacingOccurrences(of: "مترجم", with: "")
+            title = title.replacingOccurrences(of: "مدبلجة", with: "")
+            title = title.replacingOccurrences(of: "مدبلج", with: "")
             title = title.replacingOccurrences(of: "موسم \\d+ حلقة \\d+", with: "", options: .regularExpression)
+            title = title.replacingOccurrences(of: "حلقة \\d+", with: "", options: .regularExpression)
+
             title = title.replacingOccurrences(of: year, with: "").strip()
             if let webURL = URL(string: url), let posterURL = URL(string: posterPath) {
                 let type: MediaContent.MediaContentType = url.contains("%d9%81%d9%8a%d9%84%d9%85") ? .movie :  .tvShow
@@ -72,7 +120,15 @@ public struct WeCimaProvider: Provider {
                 return nil
             }
         }
-
+        
+        // remove duplicate content with the same title 
+        var uniqueContent: [MediaContent] = []
+        for item in content {
+            if !uniqueContent.contains(where: { $0.title == item.title }) {
+                uniqueContent.append(item)
+            }
+        }
+        return uniqueContent
     }
 
     public func latestMovies(page: Int) async throws -> [MediaContent] {
@@ -120,7 +176,7 @@ public struct WeCimaProvider: Provider {
 
         let breadCrumbs = try document.select("li[itemprop=itemListElement]").array()
         let lastBreadCrumb = try breadCrumbs[safe: breadCrumbs.count-1]?.text()
-        if lastBreadCrumb?.contains("موسم") == true || lastBreadCrumb?.contains("حلقة") == true {
+        if (lastBreadCrumb?.contains("موسم") == true || lastBreadCrumb?.contains("حلقة") == true ) && !url.absoluteString.contains("resolver=weciimaa")  {
             let showPath = try breadCrumbs[3].select("a").attr("href")
             let showURL = try URL(showPath)
             url = showURL
@@ -141,7 +197,7 @@ public struct WeCimaProvider: Provider {
                     let episodeNumber = epRowsCount - index
                     return Episode(number: episodeNumber, sources: [.init(hostURL: url.appending("resolver", value: "weciimaa"))])
                 }.sorted()
-                return Season(seasonNumber: index + 1, webURL: url, episodes: episodes)
+                return Season(seasonNumber: index + 1, webURL: url.appending("resolver", value: "weciimaa"), episodes: episodes)
             }
             return Season(seasonNumber: index + 1, webURL: url)
         }.sorted()

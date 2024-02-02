@@ -74,7 +74,13 @@ public struct HostsResolver {
         VembedNetResolver(),
         TantifilmResolver(),
         EmbedvReslover(),
-        GeoAnimeResolver()
+        GeoAnimeResolver(),
+        VKReslover(),
+        Shahid4UReslover(),
+        AnimesultraResolver(),
+        FawzeerResolver(),
+        PelisplusHDResolver(),
+        StreamsitoResolver()
 
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {

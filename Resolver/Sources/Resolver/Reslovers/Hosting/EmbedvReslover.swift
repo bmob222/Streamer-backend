@@ -1,6 +1,8 @@
 import Foundation
 import SwiftSoup
+#if canImport(JavaScriptCore)
 import JavaScriptCore
+#endif
 
 struct EmbedvReslover: Resolver {
     let name = "Embedv"
@@ -100,6 +102,7 @@ extension String {
     }
 
 func decode(_ text: String, alt: Bool = false) -> String {
+#if canImport(JavaScriptCore)
     var text = text.replacingOccurrences(of: "\\s+|/\\*.*?\\*/", with: "", options: .regularExpression)
     let data: String
     let chars: [String]
@@ -159,6 +162,9 @@ func decode(_ text: String, alt: Bool = false) -> String {
     let txtResult = txt.split(separator: "|").map { String($0) }.compactMap { Int($0, radix: 8) }.compactMap { UnicodeScalar($0) }.map { String($0) }.joined()
 
     return toStringCases(txtResult)
+    #else
+    return text
+    #endif
 }
 
 func toStringCases(_ txtResult: String) -> String {

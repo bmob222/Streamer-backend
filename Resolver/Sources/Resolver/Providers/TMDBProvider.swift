@@ -72,8 +72,8 @@ public class TMDBProvider: Provider {
             return []
         }
         let discoverService = DiscoverService()
-        let shows =  try await discoverService.tvSeries(sortedBy: .popularity(descending: true), page: page, with_watch_providers: category.id, watch_region: "US").results.compactMap { convert($0)}
-        let movies =  try await discoverService.movies(sortedBy: .popularity(descending: true), page: page, with_watch_providers: category.id, watch_region: "US").results.compactMap { convert($0)}
+        let shows =  try await discoverService.tvSeries(sortedBy: .popularity(descending: true), page: page, withWatchProviders: category.id, watchRegion: "US").results.compactMap { convert($0)}
+        let movies =  try await discoverService.movies(sortedBy: .popularity(descending: true), page: page, withWatchProviders: category.id, watchRegion: "US").results.compactMap { convert($0)}
         return (movies + shows).shuffled()
     }
 

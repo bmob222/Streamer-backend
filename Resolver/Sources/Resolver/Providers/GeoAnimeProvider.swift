@@ -1,3 +1,4 @@
+
 import Foundation
 import SwiftSoup
 
@@ -13,6 +14,7 @@ public struct GeoAnimeProvider: Provider {
     public var moviesURL: URL = URL(staticString: "https://genoanime.com/browse?genre=dubbed")
 
     public var tvShowsURL: URL = URL(staticString: "https://genoanime.com/browse?sort=top_rated&")
+
 
     private var homeURL: URL {
         baseURL.appendingPathComponent("home")
@@ -91,7 +93,7 @@ public struct GeoAnimeProvider: Provider {
         let pageDocument = try SwiftSoup.parse(pageContent)
 
         // Extract title and poster URL
-        let title = try pageDocument.select("title").text().replacingOccurrences(of: "Episode List on Genoanime", with: "").replacingOccurrences(of: "Watch", with: "")
+        let title = try pageDocument.select("title").text().replacingOccurrences(of: "Episode List on Genoanime", with:  "").replacingOccurrences(of: "Watch", with: "")
         let posterPath = try pageDocument.select("meta[property=og:image]").attr("content")
         let posterURL = try URL(posterPath)
 
@@ -141,6 +143,8 @@ public struct GeoAnimeProvider: Provider {
         let content = try await Utilities.downloadPage(url: searchURL, httpMethod: "POST", data: payload, extraHeaders: headers)
         return try await parsePage(content: content)
     }
+
+     
 
     enum MediaType {
         case movie

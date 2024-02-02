@@ -35,8 +35,11 @@ public class StreamingCommunityProvider: Provider {
         return decoder
     }()
 
-    @EnviromentValue(key: "streamingcommunity_url", defaultValue: URL(staticString: "https://streamingcommunity.cz"))
+    @EnviromentValue(key: "streamingcommunity_url", defaultValue: URL(staticString: "https://streamingcommunity.estate"))
     public var baseURL: URL
+    
+    @EnviromentValue(key: "streamingcommunity_url_cdn", defaultValue: URL(staticString: "https://cdn.streamingcommunity.estate/images"))
+    public var cdnBaseURL: URL
     public init() {}
 
     var _inhertia: String = ""
@@ -77,7 +80,7 @@ public class StreamingCommunityProvider: Provider {
             let webURL = baseURL.appendingPathComponent("titles").appendingPathComponent("\($0.id)-\($0.slug)")
             var posterURL = URL(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
             if let posterName = $0.images.filter { $0.type == .poster }.first?.filename {
-                posterURL = URL(staticString: "https://cdn.streamingcommunity.cz/images/").appendingPathComponent(posterName)
+                posterURL = cdnBaseURL.appendingPathComponent(posterName)
             }
             return MediaContent(title: $0.name, webURL: webURL, posterURL: posterURL, type: .movie, provider: type)
         }
@@ -110,7 +113,7 @@ public class StreamingCommunityProvider: Provider {
             let webURL = baseURL.appendingPathComponent("titles").appendingPathComponent("\($0.id)-\($0.slug)")
             var posterURL = URL(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
             if let posterName = $0.images.filter { $0.type == .poster }.first?.filename {
-                posterURL = URL(staticString: "https://cdn.streamingcommunity.cz/images/").appendingPathComponent(posterName)
+                posterURL = cdnBaseURL.appendingPathComponent(posterName)
             }
             return MediaContent(title: $0.name, webURL: webURL, posterURL: posterURL, type: .tvShow, provider: type)
         }
@@ -136,7 +139,7 @@ public class StreamingCommunityProvider: Provider {
         var year: Int?
 
         if let posterName = response.images.filter { $0.type == .poster }.first?.filename {
-            posterURL = URL(staticString: "https://cdn.streamingcommunity.cz/images/").appendingPathComponent(posterName)
+            posterURL = cdnBaseURL.appendingPathComponent(posterName)
             if let lastAirDate = response.releaseDate {
                 year = Calendar.current.component(.year, from: lastAirDate)
             }
@@ -165,7 +168,7 @@ public class StreamingCommunityProvider: Provider {
         var year: Int?
 
         if let posterName = response.images.filter { $0.type == .poster }.first?.filename {
-            posterURL = URL(staticString: "https://cdn.streamingcommunity.cz/images/").appendingPathComponent(posterName)
+            posterURL = cdnBaseURL.appendingPathComponent(posterName)
             if let lastAirDate = response.releaseDate {
                 year = Calendar.current.component(.year, from: lastAirDate)
             }
@@ -225,7 +228,7 @@ public class StreamingCommunityProvider: Provider {
             let webURL = baseURL.appendingPathComponent("titles").appendingPathComponent("\($0.id)-\($0.slug)")
             var posterURL = URL(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
             if let posterName = $0.images.filter { $0.type == .poster }.first?.filename {
-                posterURL = URL(staticString: "https://cdn.streamingcommunity.cz/images/").appendingPathComponent(posterName)
+                posterURL = cdnBaseURL.appendingPathComponent(posterName)
             }
             return MediaContent(title: $0.name, webURL: webURL, posterURL: posterURL, type: $0.type == .movie ? .movie : .tvShow, provider: type)
         }
@@ -247,7 +250,7 @@ public class StreamingCommunityProvider: Provider {
                 let webURL = baseURL.appendingPathComponent("titles").appendingPathComponent("\($0.id)-\($0.slug)")
                 var posterURL = URL(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
                 if let posterName = $0.images.filter { $0.type == .poster }.first?.filename {
-                    posterURL = URL(staticString: "https://cdn.streamingcommunity.cz/images/").appendingPathComponent(posterName)
+                    posterURL = cdnBaseURL.appendingPathComponent(posterName)
                 }
                 return MediaContent(title: $0.name, webURL: webURL, posterURL: posterURL, type: $0.type == .movie ? .movie : .tvShow, provider: type)
             }

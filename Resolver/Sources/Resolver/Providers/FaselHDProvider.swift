@@ -55,6 +55,8 @@ public struct FaselHDProvider: Provider {
             .replacingOccurrences(of: "مسلسل", with: "")
             .replacingOccurrences(of: "اون لاين", with: "")
             .replacingOccurrences(of: "مترجم", with: "")
+            .replacingOccurrences(of: "مدبلجة", with: "")
+            .replacingOccurrences(of: "مدبلج", with: "")
             .replacingOccurrences(of: "فيلم", with: "")
             .replacingOccurrences(of: "برنامج", with: "")
             .replacingOccurrences(of: "الموسم الأول", with: "")
@@ -97,7 +99,7 @@ public struct FaselHDProvider: Provider {
         let fullTitle = try document.select("title")[0].text().replacingOccurrences(of: " - فاصل إعلاني", with: "")
         let title = cleanTitle(fullTitle)
 
-        let seasonsRows: Elements = try document.select(".seasonDiv ")
+        let seasonsRows: Elements = try document.select(".seasonDiv")
         let seasons = try await seasonsRows.array().enumerated().asyncMap { (index, row) -> Season in
             let seasonNumber: Int = index + 1
             let onClick: String = try row.attr("onclick")
