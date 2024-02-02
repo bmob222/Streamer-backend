@@ -34,6 +34,13 @@ public struct MainView: View {
             }.tabItem {
                 Text("Movies")
             }
+            
+            NavigationStack {
+                SearchView(provider: provider)
+                    .navigationTitle("Search")
+            }.tabItem {
+                Text("Search")
+            }
         }
         .task(refreshTask)
 
