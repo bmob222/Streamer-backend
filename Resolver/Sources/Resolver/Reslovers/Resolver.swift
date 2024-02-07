@@ -80,7 +80,8 @@ public struct HostsResolver {
         AnimesultraResolver(),
         FawzeerResolver(),
         PelisplusHDResolver(),
-        StreamsitoResolver()
+        StreamsitoResolver(),
+        AnimeToastAnimeResolver()
 
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {

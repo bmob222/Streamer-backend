@@ -19,7 +19,10 @@ struct DoodstreamResolver: Resolver {
         "ds2play.com",
         "dooood.com",
         "doods.pro",
-        "ds2video.com"
+        "ds2video.com",
+        "d0000d.com",
+        "d0o0d.com",
+        "do0od.com"
     ]
 
     enum DoodstreamResolverrError: Error {
