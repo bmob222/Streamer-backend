@@ -84,7 +84,7 @@ public struct GogoAnimeHDProvider: Provider {
         let ep_end = episode_numbers.last?.1 ?? "1"
 
         // ?ep_start=0&ep_end=0&id=12883&default_ep=0&alias=bishoujo-senshi-sailor-moon-cosmos-movie
-        let loadEpisodes = URL(staticString: "https://ajax.gogo-load.com/ajax/load-list-episode")
+        let loadEpisodes = URL(staticString: "https://ajax.gogocdn.net/ajax/load-list-episode")
             .appending([
                 "ep_start": ep_start,
                 "ep_end": ep_end,
