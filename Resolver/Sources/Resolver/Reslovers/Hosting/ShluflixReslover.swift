@@ -1,9 +1,9 @@
 import Foundation
 import SwiftSoup
 
-struct SuperflixReslover: Resolver {
-    let name = "Superflix"
-    static let domains: [String] = ["23dfbfad8cb2-stremio-addon-superflix.baby-beamup.club"]
+struct ShluflixReslover: Resolver {
+    let name = "Shluflix"
+    static let domains: [String] = ["shluflix.elfhosted.com"]
 
     enum AnimetvStreamResolverError: Error {
         case idNotFound
@@ -20,15 +20,11 @@ struct SuperflixReslover: Resolver {
                       let language = s.lang.components(separatedBy: .whitespaces).first? .trimmingCharacters(in: .whitespaces) else { return nil}
                 return Subtitle(url: url, language: .init(code: language) ?? .init(rawValue: language) ?? .unknown)
             }
-            let q = Quality(quality: stream.name)
-
-           // "🎬 Avatar: The Way of Water\n🟢 Stream Online\n⚙️ Source: VidSrc | Pro"
-           let source =  stream.description.components(separatedBy: "⚙️ Source:").last?.strip()
+           let source =  stream.description.components(separatedBy: "Source:").last?.strip()
            return  Stream(
-                Resolver: "Superflix",
+                Resolver: "Shluflix",
                 description: source,
                 streamURL: stream.url,
-                quality: q,
                 subtitles: subtitles ?? []
             )
         }

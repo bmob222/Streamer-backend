@@ -31,7 +31,7 @@ struct MixdropResolver: Resolver {
 
         return response.sources.map {
             Stream(
-                Resolver: response.headers.Referer.host ?? "FlixHQ",
+                Resolver: response.headers.Referer.host ?? "MixDrop",
                 streamURL: $0.url,
                 headers: ["Referer": response.headers.Referer.absoluteString]
             )
@@ -52,7 +52,5 @@ struct MixdropResolver: Resolver {
     // MARK: - Source
     struct ConsumetSource: Codable, Equatable {
         let url: URL
-        let isM3U8: Bool
-
     }
 }

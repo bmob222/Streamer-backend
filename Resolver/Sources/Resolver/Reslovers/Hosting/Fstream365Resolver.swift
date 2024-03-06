@@ -28,17 +28,17 @@ struct Fstream365Resolver: Resolver {
 
         let data = try await Utilities.requestData(url: encodedURL, extraHeaders: headers)
         let response = try JSONDecoder().decode(Response.self, from: data)
-        return response.sources.map {
+        return response.sources?.compactMap {
             let subtitles = response.tracks.compactMap { track -> Subtitle? in
                 guard let label = track.label, let lan = label.components(separatedBy: "-").first, let subtitle = SubtitlesLangauge(rawValue: lan), let file = track.file else { return  nil }
                 return Subtitle(url: file, language: subtitle)
             }
             return .init(Resolver: "Fstream365", streamURL: $0.file, subtitles: subtitles)
-        }
+        } ?? []
     }
 
     struct Response: Decodable {
-        let sources: [ResponseSource]
+        let sources: [ResponseSource]?
         let tracks: [Track]
     }
     // MARK: - Source

@@ -122,11 +122,11 @@ public struct GogoAnimeHDProvider: Provider {
 
     public func home() async throws -> [MediaContentSection] {
 
-        let recentURL = URL(staticString: "https://ajax.gogo-load.com/ajax/page-recent-release.html").appending(["page": String(1), "type": String(1)])
+        let recentURL = URL(staticString: "https://ajax.gogocdn.net/ajax/page-recent-release.html").appending(["page": String(1), "type": String(1)])
         let recent = try await parsePage(url: recentURL)
-        let dubURL = URL(staticString: "https://ajax.gogo-load.com/ajax/page-recent-release.html").appending(["page": String(1), "type": String(2)])
+        let dubURL = URL(staticString: "https://ajax.gogocdn.net/ajax/page-recent-release.html").appending(["page": String(1), "type": String(2)])
         let dub = try await parsePage(url: dubURL)
-        let chineseURL = URL(staticString: "https://ajax.gogo-load.com/ajax/page-recent-release.html").appending(["page": String(1), "type": String(3)])
+        let chineseURL = URL(staticString: "https://ajax.gogocdn.net/ajax/page-recent-release.html").appending(["page": String(1), "type": String(3)])
         let chinese = try await parsePage(url: chineseURL)
 
         return [.init(title: "Recent", media: recent), .init(title: "Dub", media: dub), .init(title: "Chinese", media: chinese)]

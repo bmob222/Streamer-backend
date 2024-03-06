@@ -19,14 +19,13 @@ public class TMDBProvider: Provider {
         .init(id: 337, name: "Disney+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/uzKjVDmQ1WRMvGBb7UNRE0wTn1H.png")),
         .init(id: 9, name: "Amazon Prime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png")),
         .init(id: 15, name: "Hulu", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/pqUTCleNUiTLAVlelGxUgWn1ELh.png")),
-        .init(id: 384, name: "HBO", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300_filter(negate,000,666)/tuomPhY2UtuPTqqFnKMVHvSb724.png")),
+        .init(id: 1899, name: "MAX", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300_filter(negate,000,666)/rAb4M1LjGpWASxpk6Va791A7Nkw.png")),
         .init(id: 531, name: "Paramount", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/fi83B1oztoS47xxcemFdPMhIzK.png")),
         .init(id: 43, name: "Starz", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/GMDGZk9iDG4WDijY3VgUgJeyus.png")),
         .init(id: 37, name: "Showtime", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/Allse9kbjiP6ExaQrnSpIhkurEi.png")),
         .init(id: 386, name: "Peacock", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/gIAcGTjKKr0KOHL5s4O36roJ8p7.png")),
         .init(id: 520, name: "Discovery+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/1D1bS3Dyw4ScYnFWTlBOvJXC3nb.png")),
         .init(id: 34, name: "MGM+", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/89TXvQzvoKvyqD9EEogohzMJ8D6.png")),
-        .init(id: 215, name: "SYFY", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/iYfrkobwDhTOFJ4AXYPSLIEeaAT.png"))
     ]
     enum TMDBProvider: Error {
         case missingPoster

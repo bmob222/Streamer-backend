@@ -3,7 +3,7 @@ import SwiftSoup
 
 struct FaselHDResolver: Resolver {
     let name = "FaselHD"
-    static let domains: [String] = ["faselhd.express", "www.faselhd.express"]
+    static let domains: [String] = ["faselhd.link", "www.faselhd.link","web184.faselhd.cafe", "faselhd.cafe"]
 
     func canHandle(url: URL) -> Bool {
         Self.domains.firstIndex(of: url.host!) != nil || url.host?.contains("faselhd") == true

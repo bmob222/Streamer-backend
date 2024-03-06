@@ -10,7 +10,7 @@ public struct FaselHDProvider: Provider {
     public let title: String = "FaselHD"
     public let langauge: String = "🇸🇦"
 
-    public let baseURL: URL = URL(staticString: "https://faselhd.express/")
+    public let baseURL: URL = URL(staticString: "https://web184.faselhd.cafe/")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("all-movies")
     }

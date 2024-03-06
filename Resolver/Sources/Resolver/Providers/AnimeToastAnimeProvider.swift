@@ -52,10 +52,16 @@ public struct AnimeToastAnimeProvider: Provider {
     }
     
     public func latestMovies(page: Int) async throws -> [MediaContent] {
+        if page > 1 {
+            return []
+        }
         return try await parsePage(url: moviesURL.appending(["page": String(page)]))
     }
     
     public func latestTVShows(page: Int) async throws -> [MediaContent] {
+        if page > 1 {
+            return []
+        }
         return try await parsePage(url: tvShowsURL)
     }
     
