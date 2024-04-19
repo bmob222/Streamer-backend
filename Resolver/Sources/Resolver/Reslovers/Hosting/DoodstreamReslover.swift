@@ -16,14 +16,13 @@ struct DoodstreamResolver: Resolver {
         "dood.la",
         "dood.re",
         "dood.yt",
-        "ds2play.com",
         "dooood.com",
         "doods.pro",
         "ds2video.com",
         "d0000d.com",
         "d0o0d.com",
         "do0od.com",
-        "ds2play.com",
+        "do0od.com",
         "dooood.com",
         "doods.pro",
         "ds2video.com",
@@ -54,7 +53,8 @@ struct DoodstreamResolver: Resolver {
         "dood.la",
         "dood.ws",
         "dood.sh",
-        "doodstream.co"
+        "doodstream.co",
+        "d000d.com"
     ]
 
     enum DoodstreamResolverrError: Error {

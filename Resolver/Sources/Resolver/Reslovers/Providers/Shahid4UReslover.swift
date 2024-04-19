@@ -2,10 +2,10 @@ import Foundation
 import SwiftSoup
 
 public struct Shahid4UReslover: Resolver {
-    static var domains: [String] = ["shahee4u.cam"]
-    
+    static var domains: [String] = ["shahee4u.cam", "shii4u.cam"]
+
     var name: String = "Shahid4U"
-    
+
     func getMediaURL(url: URL) async throws -> [Stream] {
         let content = try await Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(content)
@@ -16,15 +16,14 @@ public struct Shahid4UReslover: Resolver {
 
         let jsonString = script.replacingOccurrences(of: "let servers = JSON.parse('", with: "").replacingOccurrences(of: "');", with: "").components(separatedBy: "\n").first ?? ""
         let data = jsonString.data(using: .utf8)!
-        let servers = try JSONDecoder().decode([ServerElement].self, from: data)    
+        let servers = try JSONDecoder().decode([ServerElement].self, from: data)
 
         return try await servers.concurrentMap {
             return (try? await HostsResolver.resolveURL(url: $0.url)) ?? []
         }
-        .flatMap{ $0 }
-        
+        .flatMap { $0 }
+
     }
-    
 
     struct ServerElement: Codable {
         let id: Int

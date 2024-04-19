@@ -8,47 +8,47 @@ struct StreamtapeResolver: Resolver {
         "streamtape.com", "streamtapeadblock.art", "streamtape.to", "tapeblocker.com", "streamtapeadblockuser.xyz"
     ]
 
-    @EnviromentValue(key: "consumet_url", defaultValue: URL(staticString: "https://api.consumet.org"))
-    private var consumetURL: URL
-
-    enum RabbitstreamResolverError: Error {
-        case idNotFound
+    enum StreamtapeResolverError: Error {
+        case urlNotValid
+        case redirectTokenNotFound
     }
-    func getMediaURL(url: URL) async throws -> [Stream] {
-        let watchURL = consumetURL.appendingPathComponent("utils/extractor")
-            .appending("url", value: url.absoluteString.base64Encoded())
-            .appending("server", value: "streamtape")
 
-        let data = try await Utilities.requestData(url: watchURL)
-        let response = try JSONDecoder().decode(WatchResponse.self, from: data)
-        return response.sources.compactMap {
-            if let url = URL(string: $0.url.replacingOccurrences(of: " ", with: "")) {
-                return Stream(
-                    Resolver: response.headers.Referer.host ?? "FlixHQ",
-                    streamURL: url,
-                    headers: ["Referer": response.headers.Referer.absoluteString]
-                )
-            } else {
-                return nil
-            }
+    func getMediaURL(url: URL) async throws -> [Stream] {
+        guard let embedUrl = URL(string: url.absoluteString.replacingOccurrences(of: "/v/", with: "/e/")) else {
+            throw StreamtapeResolverError.urlNotValid
         }
 
-    }
+        let content = try await  Utilities.downloadPage(url: embedUrl)
+        let document = try SwiftSoup.parse(content)
+        let path = try document.select("#ideoolink").text()
+        let tokenPattern = #"getElementById\('robotlink'\)\.innerHTML[^\n]*token=(?<token>[A-Za-z0-9-_]*)"#
+        let tokenRegex = try NSRegularExpression(pattern: tokenPattern, options: [])
 
-    // MARK: - WatchResponse
-    struct WatchResponse: Codable, Equatable {
-        let headers: ConsumetHeaders
-        let sources: [ConsumetSource]
-    }
+        guard let tokenMatch = tokenRegex.firstMatch(in: content, options: [], range: NSRange(location: 0, length: content.count)) else {
+            throw StreamtapeResolverError.redirectTokenNotFound
+        }
 
-    // MARK: - Headers
-    struct ConsumetHeaders: Codable, Equatable {
-        let Referer: URL
-    }
-    // MARK: - Source
-    struct ConsumetSource: Codable, Equatable {
-        let url: String
-        let isM3U8: Bool
+        let tokenMatchRange = tokenMatch.range(at: 1)
+        guard let tokenRange = Range(tokenMatchRange, in: content) else {
+            throw StreamtapeResolverError.redirectTokenNotFound
+        }
 
+        let token = String(content[tokenRange])
+
+        guard var urlComponents = URLComponents(string: "https:/\(path)&stream=1"),
+              let index = urlComponents.queryItems?.firstIndex(where: { item in
+                  item.name == "token"
+              }) else {
+            throw StreamtapeResolverError.urlNotValid
+        }
+
+        urlComponents.queryItems?.remove(at: index)
+        urlComponents.queryItems?.append(.init(name: "token", value: token))
+
+        guard let streamURL = urlComponents.url else {
+            throw StreamtapeResolverError.urlNotValid
+
+        }
+        return [.init(Resolver: "StreamTape", streamURL: streamURL)]
     }
 }

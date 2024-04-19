@@ -5,20 +5,7 @@ struct MyCloudResolver: Resolver {
     let name = "Mcloud"
 
     static let domains: [String] = [
-        "vidplay.online",
-        "vidplay.site",
         "mcloud.to",
-        "mwvn.vizcloud.info",
-        "vidstream.pro",
-        "vidstreamz.online",
-        "vizcloud.cloud",
-        "vizcloud.digital",
-        "vizcloud.info",
-        "vizcloud.live",
-        "vizcloud.online",
-        "vizcloud.xyz",
-        "vizcloud2.online",
-        "vizcloud2.ru",
         "mcloud.bz"
     ]
 
@@ -30,6 +17,7 @@ struct MyCloudResolver: Resolver {
     }
 
     func getMediaURL(url: URL) async throws -> [Stream] {
+        var url = url.removing("sub.info")
         let info = url.absoluteString
             .replacingOccurrences(of: "https://", with: "")
         let eURL = keysURL.appending("url", value: info.encodeURIComponent())

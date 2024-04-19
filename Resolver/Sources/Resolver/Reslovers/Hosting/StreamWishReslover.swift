@@ -1,6 +1,5 @@
 import Foundation
 import SwiftSoup
-// https://mwish.pro/e/etv05g2bjdyr?caption_1=https://sub.membed.net/sub/star-wars-episode-v-the-empire-strikes-back-stj/star-wars-episode-v-the-empire-strikes-back-stj.vtt&sub_1=English
 struct StreamWishResolver: Resolver {
     let name = "StreamWish"
     static let domains: [String] = [
@@ -44,7 +43,13 @@ struct StreamWishResolver: Resolver {
         "eghzrutw.sbs",
         "playembed.online",
         "egsyxurh.sbs",
-        "egtpgrvh.sbs"
+        "egtpgrvh.sbs",
+        "fsdcmo.sbs",
+        "vdbtm.shop",
+        "vbn2.vdbtm.shop",
+        "cdn4.1vid1shar.space",
+        "1vid1shar.space",
+        "goveed1.space"
     ]
 
     enum WolfstreamResolverError: Error {
@@ -62,20 +67,31 @@ struct StreamWishResolver: Resolver {
         let pageContent = try await Utilities.downloadPage(url: url)
         let pageDocument = try SwiftSoup.parse(pageContent)
 
-        let script = try pageDocument.select("script").filter {
-            try $0.html().contains("sources:")
-        }.first?.html() ?? ""
+        let script = (try? pageDocument.select("script").filter {
+            (try? $0.html().contains("sources:")) == true
+        }.first?.html()) ?? ""
         guard let path = Utilities.extractURLs(content: script.replacingOccurrences(of: "'", with: " '")).filter({ $0.pathExtension == "m3u8"}).first else {
             throw WolfstreamResolverError.videoNotFound
         }
         return [
             .init(
-                Resolver: "StreamWish",
+                Resolver: extractDomainName(from: url.host) ?? "",
                 streamURL: path,
-                headers: ["Origin": "https://awish.pro", "Referer": "https://awish.pro/"],
+                headers: ["Origin": "https://" + (url.host ?? ""), "Referer": "https://" + (url.host ?? "")],
                 subtitles: subtitles
             )
         ]
     }
 
+    func extractDomainName(from input: String?) -> String? {
+        let components = input?.components(separatedBy: ".") ?? []
+        guard components.count >= 2 else {
+            return nil
+        }
+        if components.count == 3 {
+            return components[1].capitalized
+        } else {
+            return components[0].capitalized
+        }
+    }
 }

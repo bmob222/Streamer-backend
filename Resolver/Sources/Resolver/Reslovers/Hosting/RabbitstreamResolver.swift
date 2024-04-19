@@ -17,6 +17,9 @@ struct RabbitstreamResolver: Resolver {
         if url.absoluteString.contains("/e-1/") {
             server = "rapidcloud"
         }
+        if url.absoluteString.contains("megacloud") {
+            server = "megacloud"
+        }
 
         let watchURL = consumetURL.appendingPathComponent("utils/extractor")
             .appending("url", value: url.absoluteString.base64Encoded())

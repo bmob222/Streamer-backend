@@ -209,6 +209,10 @@ public enum Quality: String, CaseIterable, Comparable, Codable {
     }
 
     public init(url: URL) {
+        guard !url.isPlaylist else {
+            self = .auto
+            return
+        }
         switch true {
         case url.absoluteString.contains("360"):
             self = .p360

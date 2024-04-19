@@ -182,7 +182,6 @@ public struct Utilities {
             data =  """
         {
             "cmd": "request.post",
-            "session": "\(url.host ?? "")",
             "postData": "",
             "url": "\(url.absoluteString)",
             "maxTimeout": 60000
@@ -192,7 +191,6 @@ public struct Utilities {
             data =  """
         {
             "cmd": "request.get",
-            "session": "\(url.host ?? "")",
             "url": "\(url.absoluteString)",
             "maxTimeout": 60000
         }
@@ -211,19 +209,17 @@ public struct Utilities {
             data =  """
         {
             "cmd": "request.post",
-            "session": "\(url.host ?? "")",
             "postData": "",
             "url": "\(url.absoluteString)",
-            "maxTimeout": 60000,
+            "maxTimeout": 600000,
         }
         """.data(using: .utf8)
         } else {
             data =  """
         {
             "cmd": "request.get",
-            "session": "\(url.host ?? "")",
             "url": "\(url.absoluteString)",
-            "maxTimeout": 60000
+            "maxTimeout": 600000
         }
         """.data(using: .utf8)
 
@@ -236,7 +232,9 @@ public struct Utilities {
         for cookie in response.solution.cookies {
             var cookieProperties = [HTTPCookiePropertyKey: Any]()
             cookieProperties[.domain] = cookie.domain
-            cookieProperties[.expires] = Date(timeIntervalSince1970: cookie.expiry)
+            if let expiry = cookie.expiry {
+                cookieProperties[.expires] = Date(timeIntervalSince1970: expiry)
+            }
             cookieProperties[.name] = cookie.name
             cookieProperties[.path] = cookie.path
             cookieProperties[.init(rawValue: "sameSitePolicy")] = cookie.sameSite
@@ -262,7 +260,7 @@ public struct Utilities {
     // MARK: - Cooky
     struct Cooky: Codable, Equatable {
         let name, value, domain, path: String
-        let expiry: Double
+        let expiry: Double?
         let httpOnly, secure: Bool
         let sameSite: String
     }

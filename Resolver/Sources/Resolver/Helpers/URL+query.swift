@@ -30,6 +30,12 @@ extension URL {
         return urlComponents.url!
     }
 
+    func removing( _ queryItem: String) -> URL {
+        guard var urlComponents = URLComponents(string: absoluteString) else { return absoluteURL }
+        urlComponents.queryItems = urlComponents.queryItems?.filter({ $0.name != queryItem })
+        return urlComponents.url!
+    }
+
     func appending(_ parameters: [String: String]) -> URL {
 
         guard var urlComponents = URLComponents(string: absoluteString) else { return absoluteURL }
@@ -41,6 +47,10 @@ extension URL {
         }
         urlComponents.queryItems = queryItems
         return urlComponents.url!
+    }
+
+    var isPlaylist: Bool {
+        ["cue", "m3u", "pls", "m3u8"].contains(pathExtension.lowercased())
     }
 
 }

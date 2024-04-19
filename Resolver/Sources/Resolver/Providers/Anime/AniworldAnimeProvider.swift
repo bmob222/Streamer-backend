@@ -1,25 +1,24 @@
 import Foundation
 import SwiftSoup
 
+// TODO: Fix Details
+
 public struct AniworldAnimeProvider: Provider {
-    public let locale: Locale = Locale(identifier: "en")
+    public init() {}
+
+    public let locale: Locale = Locale(identifier: "de_DE")
     public let type: ProviderType = .init(.aniworld)
-    public let title: String = "aniworld"
-    public let langauge: String = ""
+    public let title: String = "AniWorld"
+    public let langauge: String = "🇩🇪"
 
     public let baseURL: URL = URL(staticString: "https://aniworld.to")
     public var popularURL: URL {
         baseURL.appendingPathComponent("beliebte-animes")
     }
-    // testing
+
     public var germanURL: URL {
         baseURL.appendingPathComponent("genre/ger/1")
     }
-
-    public var kalendarURL: URL {
-        baseURL.appendingPathComponent("animekalender")
-    }
-
     // testing end
 
     public var tvShowsURL: URL {
@@ -37,15 +36,12 @@ public struct AniworldAnimeProvider: Provider {
     public func parsePage(url: URL) async throws -> [MediaContent] {
         let content = try await  Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(content)
-        let rows: Elements = try document.select("div a")
+        let rows: Elements = try document.select(".seriesListContainer div a")
         return try rows.array().compactMap { row -> MediaContent? in
             let path = try row.select("a").attr("href")
             let title: String = try row.select("img[alt]").attr("alt")
             let posterPath: String = try row.select("img").attr("data-src")
-
-            guard let posterURL = URL(string: posterPath) else {
-                return nil
-            }
+            let posterURL = baseURL.appendingPathComponent(posterPath)
             let webURL = baseURL.appendingPathComponent(path)
             return MediaContent(
                 title: title,
@@ -79,7 +75,7 @@ public struct AniworldAnimeProvider: Provider {
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
         var url = url
-        if !url.absoluteString.contains("genre/") {
+        if url.absoluteString.contains("genre/") {
             let pageContent = try await Utilities.downloadPage(url: url)
             let pageDocument = try SwiftSoup.parse(pageContent)
             let path = try pageDocument.select("a").attr("href")
@@ -160,14 +156,13 @@ public struct AniworldAnimeProvider: Provider {
     }
     // new function use as base
     public func home() async throws -> [MediaContentSection] {
+        let calanderURL = baseURL.appendingPathComponent("animekalender")
+        let recent = try await parsePage(url: calanderURL)
 
-        let recentURL = URL(staticString: "animekalender")
-        let recent = try await parsePage(url: recentURL)
-        let dubURL = URL(staticString: "https://aniworld.to/genre/ger/1").appending(["1": String(1), "type": String(2)])
+        let dubURL = baseURL.appendingPathComponent("genre/ger/1").appending(["1": String(1), "type": String(2)])
         let dub = try await parsePage(url: dubURL)
-        let germanDubSection = MediaContentSection(title: "German Dub", media: dub)
 
-        return [.init(title: "Recent", media: recent), germanDubSection]
+        return [.init(title: "Recent", media: recent), MediaContentSection(title: "German Dub", media: dub)]
     }
 
 }

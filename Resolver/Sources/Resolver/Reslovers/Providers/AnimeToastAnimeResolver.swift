@@ -3,14 +3,12 @@ import SwiftSoup
 
 struct AnimeToastAnimeResolver: Resolver {
     let name = "AnimeToast"
-    static let domains: [String] = ["www.animetoast.cc"]
+    static let domains: [String] = ["animetoast.cc", "www.animetoast.cc"]
 
     enum AnimeToastResolverError: Error {
         case urlNotValid, contentFetchingError, parsingError
     }
 
-
-        
     func getMediaURL(url: URL) async throws -> [Stream] {
         let content = try await Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(content)

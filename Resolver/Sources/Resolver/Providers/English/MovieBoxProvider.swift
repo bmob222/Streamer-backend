@@ -114,7 +114,7 @@ public struct MovieBoxProvider: Provider {
             let season = try JSONDecoder().decode(SeasonResponse.self, from: data)
 
             let ep = season.data.compactMap { ep -> Episode? in
-                guard ep.source_file > 0 else { return nil }
+                // guard ep.source_file > 0 else { return nil }
                 let hostURLs = playURL.appendingPathComponent(id).appendingPathComponent(seasonNumber).appendingPathComponent(ep.episode)
                 return Episode(number: ep.episode, sources: [.init(hostURL: hostURLs)])
             }

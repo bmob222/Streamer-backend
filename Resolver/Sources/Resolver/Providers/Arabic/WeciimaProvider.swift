@@ -2,23 +2,25 @@ import Foundation
 import SwiftSoup
 
 public struct WeCimaProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "ar_SA")
     public let type: ProviderType = .init(.wecima)
     public let title: String = "WeCima"
     public let langauge: String = "🇸🇦"
 
-    static public let baseURL: URL = URL(staticString: "https://xn------nzebcaa6hd5qde3bjgmh.myciima-weciima.shop/")
+    @EnviromentValue(key: "wecima_baseURL", defaultValue: URL(staticString: "https://mycima.wecima.show/"))
+    static public var baseURL: URL
 
-    public let baseURL: URL = URL(staticString: "https://xn------nzebcaa6hd5qde3bjgmh.myciima-weciima.shop/")
     public var moviesURL: URL {
-        baseURL.appendingPathComponent("category/أفلام/افلام-عربي-arabic-movies/")
+        Self.baseURL.appendingPathComponent("category/أفلام/افلام-عربي-arabic-movies/")
     }
     public var tvShowsURL: URL {
-        baseURL.appendingPathComponent("category/مسلسلات/13-مسلسلات-عربيه-arabic-series/")
+        Self.baseURL.appendingPathComponent("category/مسلسلات/مسلسلات-رمضان-2024/")
     }
 
     private var homeURL: URL {
-        baseURL
+        Self.baseURL
     }
     enum AkwamProviderError: Error {
         case missingMovieInformation
@@ -28,7 +30,7 @@ public struct WeCimaProvider: Provider {
         .init(
             id: 1,
             name: "مسلسلات-هندية",
-            url:  baseURL.appendingPathComponent("category/%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA/9-series-indian-%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA-%D9%87%D9%86%D8%AF%D9%8A%D8%A9")
+            url: baseURL.appendingPathComponent("category/%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA/9-series-indian-%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA-%D9%87%D9%86%D8%AF%D9%8A%D8%A9")
         ),
         .init(
             id: 2,
@@ -79,11 +81,11 @@ public struct WeCimaProvider: Provider {
             id: 13,
             name: "افلام-كرتون",
             url: baseURL.appendingPathComponent("category/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d9%83%d8%b1%d8%aa%d9%88%d9%86/")
-        )  
+        )
     ]
 
     public func parsePage(url: URL) async throws -> [MediaContent] {
-        let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
+        let content = try await Utilities.downloadPage(url: url)
         return try await parsePage(content: content, query: ".Grid--WecimaPosts .GridItem")
     }
 
@@ -92,7 +94,10 @@ public struct WeCimaProvider: Provider {
         let rows: Elements = try document.select(query)
         let content = try rows.array().compactMap { row -> MediaContent? in
             let content = try row.select("a")
-            let url = try content.attr("href")
+            var url = try content.attr("href")
+            if let tempURL = try? URL(url), let host1 = tempURL.host, let host2 = Self.baseURL.host {
+                url = url.replacingOccurrences(of: host1, with: host2)
+            }
 
             let posterPath: String = try content.select(".BG--GridItem").attr("data-lazy-style")
                 .replacingOccurrences(of: "--image:url(", with: "")
@@ -100,7 +105,7 @@ public struct WeCimaProvider: Provider {
                 .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
 
             var title: String = try row.select(".hasyear").text()
-            var year: String = try row.select(".year").text()
+            let year: String = try row.select(".year").text()
 
             title = title.replacingOccurrences(of: "مسلسل", with: "")
             title = title.replacingOccurrences(of: "مشاهدة", with: "")
@@ -113,15 +118,16 @@ public struct WeCimaProvider: Provider {
             title = title.replacingOccurrences(of: "حلقة \\d+", with: "", options: .regularExpression)
 
             title = title.replacingOccurrences(of: year, with: "").strip()
-            if let webURL = URL(string: url), let posterURL = URL(string: posterPath) {
+            if let webURL = URL(string: url) {
+                let posterURL = URL(string: posterPath) ?? URL(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
                 let type: MediaContent.MediaContentType = url.contains("%d9%81%d9%8a%d9%84%d9%85") ? .movie :  .tvShow
                 return MediaContent(title: title, webURL: webURL, posterURL: posterURL, type: type, provider: self.type)
             } else {
                 return nil
             }
         }
-        
-        // remove duplicate content with the same title 
+
+        // remove duplicate content with the same title
         var uniqueContent: [MediaContent] = []
         for item in content {
             if !uniqueContent.contains(where: { $0.title == item.title }) {
@@ -147,7 +153,7 @@ public struct WeCimaProvider: Provider {
     }
 
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
-        let content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
+        let content = try await Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(content)
         let posterPath = try document.select("wecima")
             .attr("data-lazy-style")
@@ -171,16 +177,16 @@ public struct WeCimaProvider: Provider {
 
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
         var url = url
-        var content = try await Utilities.downloadPage(url: Utilities.workerURL(url))
+        var content = try await Utilities.downloadPage(url: url)
         var document = try SwiftSoup.parse(content)
 
         let breadCrumbs = try document.select("li[itemprop=itemListElement]").array()
         let lastBreadCrumb = try breadCrumbs[safe: breadCrumbs.count-1]?.text()
-        if (lastBreadCrumb?.contains("موسم") == true || lastBreadCrumb?.contains("حلقة") == true ) && !url.absoluteString.contains("resolver=weciimaa")  {
+        if (lastBreadCrumb?.contains("موسم") == true || lastBreadCrumb?.contains("حلقة") == true ) && !url.absoluteString.contains("resolver=weciimaa") {
             let showPath = try breadCrumbs[3].select("a").attr("href")
             let showURL = try URL(showPath)
             url = showURL
-            content = try await Utilities.downloadPage(url: Utilities.workerURL(showURL))
+            content = try await Utilities.downloadPage(url: showURL)
             document = try SwiftSoup.parse(content)
         }
 
@@ -199,7 +205,7 @@ public struct WeCimaProvider: Provider {
                 }.sorted()
                 return Season(seasonNumber: index + 1, webURL: url.appending("resolver", value: "weciimaa"), episodes: episodes)
             }
-            return Season(seasonNumber: index + 1, webURL: url)
+            return Season(seasonNumber: index + 1, webURL: url.appending("resolver", value: "weciimaa"))
         }.sorted()
 
         if seasons.count == 0 {
@@ -234,10 +240,10 @@ public struct WeCimaProvider: Provider {
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
-        let pageURL = baseURL
+        let pageURL = Self.baseURL
             .appendingPathComponent("AjaxCenter/Searching/")
             .appendingPathComponent(keyword)
-        let data = try await Utilities.requestData(url: Utilities.workerURL(pageURL))
+        let data = try await Utilities.requestData(url: pageURL)
         let response = try JSONDecoder().decode(Response.self, from: data)
         return try await parsePage(content: response.output, query: ".GridItem")
 
@@ -247,7 +253,7 @@ public struct WeCimaProvider: Provider {
     }
 
     public func home() async throws -> [MediaContentSection] {
-        let content = try await Utilities.downloadPage(url: Utilities.workerURL(homeURL))
+        let content = try await Utilities.downloadPage(url: homeURL)
         let movies =  try await parsePage(content: content, query: ".Slider--Grid .GridItem")
         let tv =  try await parsePage(content: content, query: ".Grid--WecimaPosts .GridItem")
         let tvshows = MediaContentSection(title: "مسلسلات", media: [], categories: Array(categories[0...5]))

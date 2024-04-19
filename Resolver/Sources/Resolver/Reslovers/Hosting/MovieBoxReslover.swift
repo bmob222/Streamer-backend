@@ -6,7 +6,7 @@ struct MovieBoxResolver: Resolver {
     static let domains: [String] = ["showbox.host"]
 
     func canHandle(url: URL) -> Bool {
-        Self.domains.firstIndex(of: url.host!) != nil || url.host?.contains("showbox.") == true
+        Self.domains.firstIndex(of: url.host!) != nil || url.host?.contains("showbox.") == true  || url.host?.contains("moviebox") == true
     }
 
     @EnviromentValue(key: "subtitles_srt_url", defaultValue: URL(staticString: "https://google.com/"))

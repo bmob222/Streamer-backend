@@ -2,6 +2,8 @@ import Foundation
 import SwiftSoup
 
 public struct AkwamProvider: Provider {
+    public init() {}
+
     public let locale: Locale = Locale(identifier: "ar_SA")
     public let type: ProviderType = .init(.akwam)
     public let title: String = "Akwam.us"

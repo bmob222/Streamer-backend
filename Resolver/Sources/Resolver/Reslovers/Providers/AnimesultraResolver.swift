@@ -12,7 +12,7 @@ struct AnimesultraResolver: Resolver {
             throw NSError(domain: "DataConversionError", code: 1001, userInfo: [NSLocalizedDescriptionKey: "Unable to convert string to Data"])
         }
         let response = try JSONDecoder().decode(Response.self, from: data)
-        
+
         let sPattern = "data-class=(.+?) .+?data-server-id=(.+?)"
         let document = try SwiftSoup.parse(response.html) // Parse the HTML content from the JSON
         let playerBoxes: Elements = try document.select(".player_box")

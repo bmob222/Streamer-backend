@@ -3,17 +3,16 @@ import SwiftSoup
 
 public struct AnimesultraAnimeProvider: Provider {
     public init() {}
-    
+
     public let locale: Locale = Locale(identifier: "fr")
     public let type: ProviderType = .init(.animesultra)
     public let title: String = "Animesultra"
     public let langauge: String = ""
-    
-  
+
     public let baseURL: URL = URL(staticString: "https://w2.animesultra.net")
     public var moviesURL: URL = URL(staticString: "https://w2.animesultra.net/anime-vf/")
     public var tvShowsURL: URL = URL(staticString: "https://w2.animesultra.net/anime-vostfr")
-    
+
     private var homeURL: URL {
         baseURL
     }
@@ -74,39 +73,38 @@ public struct AnimesultraAnimeProvider: Provider {
         case invalidEpisodeData
         case invalidPosterURL
         case invalidSeasonData
-         
+
         // Add more error cases as needed
     }
-    
-    
+
     public func parsePage(url: URL) async throws -> [MediaContent] {
         let content = try await Utilities.downloadPage(url: url)
-        
+
         // Check if the content is empty
         guard !content.isEmpty else {
             throw AnimesultraError.dataParsingError
         }
-        
+
         let document = try SwiftSoup.parse(content)
         let rows: Elements = try document.select(".flw-item")
-        
+
         return try rows.array().compactMap { item in
             let posterAnchor = try item.select("a.film-poster-ahref")
             let path: String = try posterAnchor.attr("href")
             guard let webURL = URL(string: path) else {
                 throw AnimesultraError.invalidURL
             }
-            
+
             let titleAnchor = try item.select("h3.film-name a.dynamic-name")
             let title: String = try titleAnchor.text().replacingOccurrences(of: "VOSTFR", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
             let posterPath: String = try item.select("img.film-poster-img").attr("data-src")
             guard let posterURL = URL(string: posterPath) else {
                 throw AnimesultraError.invalidURL
             }
-            
+
             let episodeInfo: String = try item.select("div.tick-item.tick-eps").text()
             let type: MediaContent.MediaContentType = episodeInfo.contains("Ep") ? .tvShow : .movie
-            
+
             return MediaContent(
                 title: title,
                 webURL: webURL,
@@ -116,21 +114,19 @@ public struct AnimesultraAnimeProvider: Provider {
             )
         }
     }
-    
+
     public func latestMovies(page: Int) async throws -> [MediaContent] {
         return try await parsePage(url: moviesURL.appendingPathComponent("page").appendingPathComponent(page))
     }
-    
+
     public func latestTVShows(page: Int) async throws -> [MediaContent] {
         return try await parsePage(url: tvShowsURL.appendingPathComponent("page").appendingPathComponent(page))
     }
-    
+
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
         throw AnimesultraError.dataParsingError
     }
-    
-   
-   
+
     public func fetchTVShowDetails(for url: URL) async throws -> TVshow {
         // https://kaido.to/watch/to-heart-5267
         let pageContent = try await Utilities.downloadPage(url: url)
@@ -138,7 +134,7 @@ public struct AnimesultraAnimeProvider: Provider {
 
         let title = try pageDocument.select("title").text().replacingOccurrences(of: "VOSTFR Streaming  » AnimesUltra", with: "")
         let posterPath = try pageDocument.select("div.film-poster img").attr("src")
-                
+
         let posterURL = baseURL.appendingPathComponent(posterPath)
         let sID = try pageDocument.select("meta[property=og:url]").attr("content").split("/")[4].split("-")[0]
         let id = sID
@@ -182,12 +178,11 @@ public struct AnimesultraAnimeProvider: Provider {
             let source = Source(hostURL: url)
             return Episode(number: episodeNumber, sources: [source])
         }.sorted()
-        
+
         let season = Season(seasonNumber: 1, webURL: url, episodes: episodes)
         return TVshow(title: title, webURL: url, posterURL: posterURL, seasons: [season])
     }
 
-    
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
         let url = URL(staticString: "https://w2.animesultra.net/").appending(
             [
@@ -198,36 +193,36 @@ public struct AnimesultraAnimeProvider: Provider {
         )
         return try await parsePage(url: url)
     }
-    
+
     enum MediaType {
         case movie
         case tvShow
     }
-    
+
     public func home() async throws -> [MediaContentSection] {
         do {
             var items = try await parsePage(url: homeURL)
             guard items.count >= 6 else {
                 return []
             }
-            
+
             // Create sections based on the HTML structure
             let topViewedDay = MediaContentSection(title: NSLocalizedString("Tendance", comment: ""),
                                                   media: Array(items.prefix(10)))
             items.removeFirst(3)
-            
+
             let topViewedWeek = MediaContentSection(title: NSLocalizedString("Dernier épisode Ajouté", comment: ""),
                                                    media: Array(items.prefix(10)))
-            
+
             let categoriesSection = MediaContentSection(title: "Categories", media: [], categories: categories)
-            
+
             // Return both Categories and Genres sections
             return [topViewedDay, topViewedWeek, categoriesSection]
         } catch {
             throw AnimesultraError.networkError
         }
     }
-    
+
     private struct Response: Codable {
         let html: String
     }

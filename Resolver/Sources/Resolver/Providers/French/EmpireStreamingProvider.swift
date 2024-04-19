@@ -53,7 +53,6 @@ public struct EmpireStreamingProvider: Provider {
         .init(id: 33, name: "Téléfilm", url: .init(staticString: "https://google.com/movies")),
         .init(id: 19, name: "Western", url: .init(staticString: "https://google.com/movies")),
 
-        
         .init(id: 125, name: "Action", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 127, name: "Animation", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 135, name: "Animes", url: .init(staticString: "https://google.com/tvshows")),
@@ -69,14 +68,13 @@ public struct EmpireStreamingProvider: Provider {
         .init(id: 123, name: "Horreur", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 112, name: "Musique", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 136, name: "Mystère", url: .init(staticString: "https://google.com/tvshows")),
-        .init(id: 131, name: "Romance", url: .init(staticString: "https://google.com/tvshows")),    
+        .init(id: 131, name: "Romance", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 132, name: "Science-Fiction", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 134, name: "Thriller", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 121, name: "Télé-Réalité", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 133, name: "Téléfilm", url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 119, name: "Western", url: .init(staticString: "https://google.com/tvshows")),
 
-        
         .init(id: 5, name: "Marvel Studios", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/hUzeosd33nzE5MCNsZxCGEKTXaQ.png"), url: .init(staticString: "https://google.com/movies")),
         .init(id: 6, name: "DC Entertainment", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/2Tc1P3Ac8M479naPp1kYT3izLS5.png"), url: .init(staticString: "https://google.com/movies")),
         .init(id: 7, name: "Warner Bros. Pictures", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/ky0xOc5OrhzkZ1N6KyUxacfQsCk.png"), url: .init(staticString: "https://google.com/movies")),
@@ -109,7 +107,7 @@ public struct EmpireStreamingProvider: Provider {
         .init(id: 125, name: "StarzPlay", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/xwJCudY7u7w3brf4JDeeBHXKfix.png"), url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 126, name: "Hulu", poster: .init(staticString: "https://image.tmdb.org/t/p/w300/pqUTCleNUiTLAVlelGxUgWn1ELh.png"), url: .init(staticString: "https://google.com/tvshows")),
         .init(id: 127, name: "Anime", poster: .init(staticString: "https://pnghq.com/wp-content/uploads/2023/02/anime-word-clip-art-png-6772.png"), url: .init(staticString: "https://google.com/tvshows")),
-        .init(id: 128, name: "Amazon prime video", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png"), url: .init(staticString: "https://google.com/tvshows")),
+        .init(id: 128, name: "Amazon prime video", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png"), url: .init(staticString: "https://google.com/tvshows"))
 
     ]
     static var contentItemsResponse: ContentItemsResponse?
@@ -212,7 +210,7 @@ public struct EmpireStreamingProvider: Provider {
                 type = "series"
                 universe = id - 100
             }
-        }else {
+        } else {
             if category.url?.lastPathComponent == "movies" {
                 type = "films"
                 cat = id
@@ -397,12 +395,11 @@ public struct EmpireStreamingProvider: Provider {
         let moviesCategries = Array(all.prefix(21))
         all.removeFirst(21)
 
-        
         let tvCategries =  Array(all.prefix(21))
         all.removeFirst(21)
-        
+
         let moviesUniverses =  Array(all.prefix(16))
-        all.removeFirst(16)        
+        all.removeFirst(16)
         let tvUniverses =  Array(all.prefix(16))
 
         home.append(MediaContentSection(title: "Film Univers", media: [], categories: moviesUniverses))

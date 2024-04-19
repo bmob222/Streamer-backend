@@ -3,13 +3,13 @@ import SwiftSoup
 
 struct ArabSeedResolver: Resolver {
     let name = "ArabSeed"
-    static let domains: [String] = ["f20.arabseed.ink"]
+    static let domains: [String] = ["m12.asd.homes"]
 
     enum ArabSeedResolverError: Error {
         case urlNotValid
     }
     func canHandle(url: URL) -> Bool {
-        Self.domains.firstIndex(of: url.host!) != nil || url.host?.contains("arabseed") == true
+        Self.domains.firstIndex(of: url.host!) != nil || url.host?.contains("arabseed") == true || url.host?.contains("asd") == true
     }
 
     func getMediaURL(url: URL) async throws -> [Stream] {
@@ -65,7 +65,7 @@ struct ArabSeedResolver: Resolver {
 
         return try await linksDic.concurrentMap { quality, links in
             try await links.concurrentMap { link -> [Stream] in
-                if link.absoluteString.contains("reviewtech") || link.absoluteString.contains("reviewrate.net") || link.absoluteString.contains("techinsider.wiki") {
+                if  HostsResolver.ResolverName(url: link) == nil {
                     return (try? await getMp4Link(url: link, quality: quality)) ?? []
                 } else {
                     return (try? await HostsResolver.resolveURL(url: link).map {

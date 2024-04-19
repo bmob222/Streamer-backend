@@ -2,9 +2,9 @@ import Foundation
 import SwiftSoup
 
 public class StreamingCommunityProvider: Provider {
-    public var locale: Locale {
-        return Locale(identifier: "it_IT")
-    }
+    public init() {}
+
+    public var locale: Locale = Locale(identifier: "it_IT")
 
     public enum StreamingCommunityProviderError: Error {
         case wrongURL
@@ -35,12 +35,11 @@ public class StreamingCommunityProvider: Provider {
         return decoder
     }()
 
-    @EnviromentValue(key: "streamingcommunity_url", defaultValue: URL(staticString: "https://streamingcommunity.estate"))
+    @EnviromentValue(key: "streamingcommunity_url", defaultValue: URL(staticString: "https://streamingcommunity.li"))
     public var baseURL: URL
-    
-    @EnviromentValue(key: "streamingcommunity_url_cdn", defaultValue: URL(staticString: "https://cdn.streamingcommunity.estate/images"))
+
+    @EnviromentValue(key: "streamingcommunity_url_cdn", defaultValue: URL(staticString: "https://cdn.streamingcommunity.li/images"))
     public var cdnBaseURL: URL
-    public init() {}
 
     var _inhertia: String = ""
 

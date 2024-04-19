@@ -1,46 +1,37 @@
 import Foundation
+import SwiftyPyString
 
-struct FilemoonResolver: Resolver {
-    let name = "Filemoon"
+struct VidPlayReslover: Resolver {
+    let name = "VidPlayer"
+
     static let domains: [String] = [
-        "filemoon.sx",
-        "filemoon.to",
-        "alions.pro",
-        "filelions.com",
-        "filelions.to",
-        "ajmidyadfihayh.sbs",
-        "alhayabambi.sbs",
-        "techradar.ink",
-        "moflix-stream.click",
-        "azipcdn.com",
-        "mlions.pro",
-        "alions.pro",
-        "dlions.pro",
-        "filelions.live",
-        "motvy55.store",
-        "filelions.xyz",
-        "lumiawatch.top",
-        "filelions.online",
-        "javplaya.com",
-        "fviplions.com",
-        "egsyxutd.sbs",
-        "filelions.site",
-        "vidhidepro.com",
-        "streamvid.net",
-        "fsdcmo.sbs",
-        "lylxan.com",
-        "luluvdo.com",
-        "vidhidevip.com",
-        "kerapoxy.cc"
+        "vidplay.online",
+        "vidplay.site",
+        "mwvn.vizcloud.info",
+        "vidstream.pro",
+        "vidstreamz.online",
+        "vizcloud.cloud",
+        "vizcloud.digital",
+        "vizcloud.info",
+        "vizcloud.live",
+        "vizcloud.online",
+        "vizcloud.xyz",
+        "vizcloud2.online",
+        "vizcloud2.ru",
+        "vid41c.site"
     ]
 
     @EnviromentValue(key: "mycloud_keys_url", defaultValue: URL(staticString: "https://google.com"))
     var keysURL: URL
 
+    func canHandle(url: URL) -> Bool {
+        Self.domains.firstIndex(of: url.host!) != nil || url.host?.contains("vidplay") == true
+    }
+
     func getMediaURL(url: URL) async throws -> [Stream] {
         let url = url.removing("sub.info")
         let info = url.absoluteString.replacingOccurrences(of: "https://", with: "")
-        let eURL = keysURL.appendingPathComponent("filemoon").appending("url", value: info.encodeURIComponent())
+        let eURL = keysURL.appendingPathComponent("vidplay").appending("url", value: info.encodeURIComponent())
 
         do {
 
@@ -103,4 +94,5 @@ struct FilemoonResolver: Resolver {
             case origin = "Origin"
         }
     }
+
 }

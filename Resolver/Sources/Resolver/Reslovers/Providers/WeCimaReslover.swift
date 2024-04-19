@@ -20,7 +20,8 @@ struct WeCimaReslover: Resolver {
         let content = try await Utilities.downloadPage(url: url)
         let document = try SwiftSoup.parse(content)
         let rows = try document.select(".Download--Wecima--Single").html()
-        return Utilities.extractURLs(content: rows)
+
+        let direct = Utilities.extractURLs(content: rows)
             .filter { $0.absoluteString.contains("mp4") }
             .compactMap {
                 Stream(
@@ -28,6 +29,23 @@ struct WeCimaReslover: Resolver {
                     streamURL: $0
                 )
             }
+
+            // extract all btn that has data-url
+        let servers = try document.select(".WatchServersList ul li")
+            .compactMap { try? $0.select("btn").first() }
+            .compactMap {  try? $0.attr("data-url")}
+            .compactMap { $0 }
+
+        let streams: [Stream] =  try await servers
+            .concurrentMap { path -> [Stream]? in
+                guard let url = URL(string: path) else { return nil }
+                return (try? await HostsResolver.resolveURL(url: url)) ?? []
+
+            }
+            .compactMap { $0 }
+            .flatMap { $0 }
+
+        return direct + streams
     }
 
 }

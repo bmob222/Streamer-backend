@@ -36,7 +36,7 @@ let package = Package(
                 "SwiftyPyString",
                 "CryptoSwift",
                 .product(name: "Logging", package: "swift-log"),
-                .product(name: "TMDb", package: "TMDb", moduleAliases: ["RTMDb": "TMDb"])
+                .product(name: "TMDb", package: "TMDb")
 
             ],
             resources: [

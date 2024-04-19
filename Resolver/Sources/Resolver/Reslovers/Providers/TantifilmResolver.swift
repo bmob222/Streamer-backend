@@ -3,7 +3,7 @@ import Foundation
 
     struct TantifilmResolver: Resolver {
         let name = "Tantifilm"
-        static let domains: [String] = ["nuovo-indirizzo.com", "hdplayer.casa"]
+        static let domains: [String] = ["nuovo-indirizzo.com"]
 
         enum YugenAnimeResolverError: Error {
             case urlNotValid, contentFetchingError, parsingError

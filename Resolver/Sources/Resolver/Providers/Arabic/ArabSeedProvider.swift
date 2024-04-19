@@ -16,7 +16,7 @@ public struct ArabseedProvider: Provider {
 
     private let homeURL: URL = ArabseedProvider.baseURL.appendingPathComponent("main")
 
-    @EnviromentValue(key: "arabseed_url", defaultValue: URL(staticString: "https://arabseed.show/"))
+    @EnviromentValue(key: "arabseed_url", defaultValue: URL(staticString: "https://m12.asd.homes/"))
     static var baseURL: URL
 
     enum ArabseedProviderError: Error {
@@ -33,9 +33,6 @@ public struct ArabseedProvider: Provider {
         let rows: Elements = try document.select(".MovieBlock")
         return try rows.array().compactMap { row -> MediaContent? in
             let category = try row.select(".BottomBar > .category").text()
-            guard category.contains("افلام") || category.contains("مسلسل") || category.contains("برامج") else {
-                return nil
-            }
 
             let content = try row.select("a")
             let url = try content.attr("href")
@@ -48,7 +45,7 @@ public struct ArabseedProvider: Provider {
                 posterPath = try row.select(".Poster > img").attr("data-src")
 
             }
-            guard let posterURL = try? URL(posterPath), let webURL = try? URL(url) else {
+            guard let posterURL = try? URL(posterPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""), let webURL = try? URL(url) else {
                 return nil
             }
             let type: MediaContent.MediaContentType
@@ -76,10 +73,10 @@ public struct ArabseedProvider: Provider {
 
     public func latestTVShows(page: Int) async throws -> [MediaContent] {
         let url = Self.baseURL
-            .appendingPathComponent("category/arabic-series")
+            .appendingPathComponent("category/مسلسلات-رمضان")
             .appending(["page": String(page)])
         let content = try await Utilities.downloadPage(url: url)
-        return try parsePage(content: content, onlyType: .tvShow)
+        return try parsePage(content: content)
     }
 
     public func fetchMovieDetails(for url: URL) async throws -> Movie {
@@ -205,30 +202,9 @@ public struct ArabseedProvider: Provider {
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
         // let keyword = keyword.replace(" ", new: "+")
         let arabseedURL = try await Utilities.getRedirect(url: ArabseedProvider.baseURL)
-        let searchURL = arabseedURL.appendingPathComponent("wp-content/themes/Elshaikh2021/Ajaxat/SearchingTwo.php")
-        let payloadSeries = "search=\(keyword)&type=series"
-        let contentSeries = try await Utilities.downloadPage(
-            url: searchURL,
-            httpMethod: "POST",
-            data: payloadSeries.data(using: .utf8),
-            extraHeaders: ["Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"]
-        )
-        let payloadMovies = "search=\(keyword)&type=movies"
-        let contentMovies = try await Utilities.downloadPage(
-            url: searchURL,
-            httpMethod: "POST",
-            data: payloadMovies.data(using: .utf8),
-            extraHeaders: ["Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"]
-        )
-
-        let payloadAdvanced = "search=\(keyword)&type=advanced"
-        let contentAdvanced = try await Utilities.downloadPage(
-            url: searchURL,
-            httpMethod: "POST",
-            data: payloadAdvanced.data(using: .utf8),
-            extraHeaders: ["Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"]
-        )
-        return try parsePage(content: contentMovies + contentSeries + contentAdvanced)
+        let searchURL = arabseedURL.appendingPathComponent("find").appending("find", value: keyword.encodeURIComponent())
+        let latestContent = try await Utilities.downloadPage(url: searchURL)
+        return try parsePage(content: latestContent)
 
     }
 
@@ -250,6 +226,7 @@ public struct ArabseedProvider: Provider {
 
         let latestContent = try await Utilities.downloadPage(url: ArabseedProvider.baseURL.appendingPathComponent("latest1"))
         let media = try parsePage(content: latestContent)
+
         return [.init(title: "المضاف حديثًا", media: media)] + home
 
     }

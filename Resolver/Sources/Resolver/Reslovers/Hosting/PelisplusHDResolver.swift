@@ -4,11 +4,11 @@ import SwiftSoup
 struct PelisplusHDResolver: Resolver {
     let name = "PelisplusHDResolver"
     static let domains: [String] = ["pelisplushd.nz"]
-    
+
     enum EmpireResolverError: Error {
         case urlNotValid
     }
-    
+
     func getMediaURL(url: URL) async throws -> [Stream] {
         let headers = [
             "Accept": "*/*",
@@ -28,18 +28,18 @@ struct PelisplusHDResolver: Resolver {
             "sec-ch-ua-platform": "\"macOS\""
         ]
         let content = try await Utilities.downloadPage(url: url, extraHeaders: headers)
-        
+
         // Extract the JavaScript code containing "video[1]"
         if let script = try? extractJavaScriptContainingVideo(content) {
             if let videoURL = extractVideoURL(from: script) {
                 let link = videoURL
                 return try await HostsResolver.resolveURL(url: link)
             }
-           
+
         }
-        
+
         throw EmpireResolverError.urlNotValid
-        
+
     }
 
     func extractJavaScriptContainingVideo(_ content: String) throws -> String {
@@ -61,5 +61,5 @@ struct PelisplusHDResolver: Resolver {
         }
         return nil
     }
-    
+
 }

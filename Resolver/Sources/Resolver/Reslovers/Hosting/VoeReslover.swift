@@ -23,7 +23,7 @@ struct VoeResolver: Resolver {
         let script = try pageDocument.select("script").filter {
             try $0.html().contains("'hls':")
         }.first?.html() ?? ""
-        guard let path = Utilities.extractURLs(content: script).filter({ $0.pathExtension == "m3u8"}).first else {
+        guard let path = Utilities.extractURLs(content: script).filter({ $0.pathExtension == "m3u8"}).last else {
             throw VoeResolverError.urlNotValid
         }
         return [.init(Resolver: "Voe", streamURL: path)]

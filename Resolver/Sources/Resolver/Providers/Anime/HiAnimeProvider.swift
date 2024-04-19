@@ -1,15 +1,15 @@
 import Foundation
 import SwiftSoup
 
-public class AniwatchAnimeProvider: Provider {
+public class HiAnimeProvider: Provider {
     public init() {}
 
-    public let type: ProviderType = .init(.aniwatch)
+    public let type: ProviderType = .init(.hiAnime)
 
-    public let title: String = "aniwatch.to"
+    public let title: String = "hianime.to"
     public let langauge: String = ""
 
-    public let baseURL: URL = URL(staticString: "https://aniwatch.to")
+    public let baseURL: URL = URL(staticString: "https://hianime.to")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("movie")
     }
@@ -43,8 +43,8 @@ public class AniwatchAnimeProvider: Provider {
         let pageDocument = try SwiftSoup.parse(pageContent)
 
         let title = try pageDocument.select(".anisc-detail > .film-name").text()
-        let posterPath = try pageDocument.select(".anisc-poster > .film-poster> img").attr("src")
-        let posterURL = URL(string: posterPath)!
+        let posterPath = try pageDocument.select(".film-poster > img").attr("src")
+        let posterURL = try URL(posterPath)
 
         let mediaID = url.lastPathComponent.components(separatedBy: "-").last!
         let requestUrl = baseURL.appendingPathComponent("ajax/v2/episode/list/").appendingPathComponent(mediaID)
@@ -88,20 +88,18 @@ public class AniwatchAnimeProvider: Provider {
     }
 }
 
-private extension AniwatchAnimeProvider {
+private extension HiAnimeProvider {
 
     private func parsePageContent(_ content: String) throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)
         let rows: Elements = try document.select(".film_list-wrap > .flw-item > .film-poster")
-        let watchBaseURL = URL(staticString: "https://aniwatch.to/watch")
-
         return try rows.array().map { row in
             let path: String = try row.select("a").attr("href").replacingOccurrences(of: "?ref=search", with: "")
-            let url = watchBaseURL.appendingPathComponent(path)
+            let url = baseURL.appendingPathComponent(path)
             let title: String = try row.select("img").attr("alt")
             let posterPath: String = try row.select("img").attr("data-src")
-            let posterURL = URL(string: posterPath)!
-            return MediaContent(title: title, webURL: url, posterURL: posterURL, type: .tvShow, provider: .kaido)
+            let posterURL = try URL(posterPath)
+            return MediaContent(title: title, webURL: url, posterURL: posterURL, type: .tvShow, provider: .hiAnime)
         }
 
     }

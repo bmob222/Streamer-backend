@@ -62,7 +62,7 @@ public struct HostsResolver {
         StreamWishResolver(),
         GogoAnimeHDResolver(),
         TheMovieArchiveReslover(),
-        AniwatchReslover(),
+        HiAnimeReslover(),
         GogoCDNResolver(),
         Mp4UploadReslover(),
         SuperflixReslover(),
@@ -83,6 +83,12 @@ public struct HostsResolver {
         StreamsitoResolver(),
         AnimeToastAnimeResolver(),
         ShluflixReslover(),
+        LonelilReslover(),
+        OkruReslover(),
+        VidsrcAPIReslover(),
+        VidPlayReslover(),
+        AniwaveAnimeResolver(),
+        SendVidReslover()
 
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {
@@ -100,7 +106,7 @@ public struct HostsResolver {
             logger.info("Using Resolver: \(Resolver.name)")
             return try await Resolver.getMediaURL(url: url)
                 .concurrentMap {
-                    if $0.streamURL.absoluteString.contains("m3u8"), $0.quality == .unknown {
+                    if $0.streamURL.isPlaylist, $0.quality == .unknown {
                         if let stream = try? await M3u8Parser.getQuality(stream: $0) {
                             return stream
                         } else {

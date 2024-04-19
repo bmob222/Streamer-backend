@@ -2,8 +2,6 @@ import Foundation
 import SwiftSoup
 
 public struct FlixtorProvider: Provider {
-    public init() {}
-
     public let type: ProviderType = .init(.flixtor)
     public let title: String = "Flixtorz.to"
 
@@ -19,6 +17,7 @@ public struct FlixtorProvider: Provider {
     }
     public let langauge: String = "🇺🇸"
 
+    public init() {}
     @EnviromentValue(key: "vrfSolverURL", defaultValue: URL(staticString: "https://google.com"))
     private var vrfSolverURL: URL
     enum FlixtorResolverError: Error {
