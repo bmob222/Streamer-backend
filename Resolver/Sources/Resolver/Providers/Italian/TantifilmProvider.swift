@@ -1,6 +1,6 @@
 import Foundation
 import SwiftSoup
-// https://www.tantifilm.farm/serie-tv/
+// https://www.tanti.icu/serie-tv/
 public class TantifilmProvider: Provider {
     public init() {}
 
@@ -11,7 +11,7 @@ public class TantifilmProvider: Provider {
     public let type: ProviderType = .init(.tantifilm)
     public let title: String = "tantifilm"
     public let langauge: String = "🇮🇹"
-    public let baseURL: URL = URL(staticString: "https://www.tantifilm.farm")
+    public let baseURL: URL = URL(staticString: "https://www.tanti.icu")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("film-1")
     }
@@ -157,45 +157,45 @@ public class TantifilmProvider: Provider {
     public func home() async throws -> [MediaContentSection] {
         // Define static categories and their corresponding URLs
         let categories: [(title: String, url: String)] = [
-            ("Ultimi Film Aggiornati", "https://www.tantifilm.farm/watch-genre/film-aggiornati"),
-            ("3D", "https://www.tantifilm.farm/watch-genre/3d"),
-            ("Al Cinema", "https://www.tantifilm.farm/watch-genre/al-cinema"),
-            ("HD AltaDefinizione", "https://www.tantifilm.farm/watch-genre/altadefinizione"),
-            ("Serie TV Altadefinizione", "https://www.tantifilm.farm/watch-genre/serie-altadefinizione"),
-            ("Sub-ITA", "https://www.tantifilm.farm/watch-genre/sub-ita"),
-            ("Anime", "https://www.tantifilm.farm/watch-genre/anime"),
-            ("Azione", "https://www.tantifilm.farm/watch-genre/azione"),
-            ("Avventura", "https://www.tantifilm.farm/watch-genre/avventura"),
-            ("Avventura Fantasy", "https://www.tantifilm.farm/watch-genre/avventura-fantasy"),
-            ("Biografico", "https://www.tantifilm.farm/watch-genre/biografico"),
-            ("Cartoni Animati", "https://www.tantifilm.farm/watch-genre/cartoni-animati"),
-            ("Comico", "https://www.tantifilm.farm/watch-genre/comico"),
-            ("Commedia", "https://www.tantifilm.farm/watch-genre/commedia"),
-            ("Documentari", "https://www.tantifilm.farm/watch-genre/documentari"),
-            ("Drammatico", "https://www.tantifilm.farm/watch-genre/drammatico"),
-            ("Erotici", "https://www.tantifilm.farm/watch-genre/erotici"),
-            ("Fantascienza", "https://www.tantifilm.farm/watch-genre/fantascienza"),
-            ("Gangster", "https://www.tantifilm.farm/watch-genre/gangster-1"),
-            ("Giallo", "https://www.tantifilm.farm/watch-genre/giallo"),
-            ("Grottesco", "https://www.tantifilm.farm/watch-genre/grotesto"),
-            ("Guerra", "https://www.tantifilm.farm/watch-genre/guerra"),
-            ("Musicale", "https://www.tantifilm.farm/watch-genre/musicale"),
-            ("Noir", "https://www.tantifilm.farm/watch-genre/noir"),
-            ("Poliziesco", "https://www.tantifilm.farm/watch-genre/poliziesco"),
-            ("Horror", "https://www.tantifilm.farm/watch-genre/horror"),
-            ("Romantico", "https://www.tantifilm.farm/watch-genre/romantico"),
-            ("Sportivo", "https://www.tantifilm.farm/watch-genre/sportivo"),
-            ("Storico", "https://www.tantifilm.farm/watch-genre/storico"),
-            ("Thriller", "https://www.tantifilm.farm/watch-genre/thriller-1"),
-            ("Western", "https://www.tantifilm.farm/watch-genre/western"),
-            ("Serie TV", "https://www.tantifilm.farm/watch-genre/serie-tv"),
-            ("Miniserie", "https://www.tantifilm.farm/watch-genre/miniserie-1"),
-            ("Programmi Tv", "https://www.tantifilm.farm/watch-genre/programmi-tv"),
-            ("Live", "https://www.tantifilm.farm/watch-genre/live"),
-            ("Trailers", "https://www.tantifilm.farm/watch-genre/trailers"),
-            ("Serie TV Aggiornate", "https://www.tantifilm.farm/watch-genre/series-tv-featured"),
-            ("Aggiornamenti", "https://www.tantifilm.farm/watch-genre/recommended"),
-            ("Featured", "https://www.tantifilm.farm/watch-genre/featured")
+            ("Ultimi Film Aggiornati", "https://www.tanti.icu/watch-genre/film-aggiornati"),
+            ("3D", "https://www.tanti.icu/watch-genre/3d"),
+            ("Al Cinema", "https://www.tanti.icu/watch-genre/al-cinema"),
+            ("HD AltaDefinizione", "https://www.tanti.icu/watch-genre/altadefinizione"),
+            ("Serie TV Altadefinizione", "https://www.tanti.icu/watch-genre/serie-altadefinizione"),
+            ("Sub-ITA", "https://www.tanti.icu/watch-genre/sub-ita"),
+            ("Anime", "https://www.tanti.icu/watch-genre/anime"),
+            ("Azione", "https://www.tanti.icu/watch-genre/azione"),
+            ("Avventura", "https://www.tanti.icu/watch-genre/avventura"),
+            ("Avventura Fantasy", "https://www.tanti.icu/watch-genre/avventura-fantasy"),
+            ("Biografico", "https://www.tanti.icu/watch-genre/biografico"),
+            ("Cartoni Animati", "https://www.tanti.icu/watch-genre/cartoni-animati"),
+            ("Comico", "https://www.tanti.icu/watch-genre/comico"),
+            ("Commedia", "https://www.tanti.icu/watch-genre/commedia"),
+            ("Documentari", "https://www.tanti.icu/watch-genre/documentari"),
+            ("Drammatico", "https://www.tanti.icu/watch-genre/drammatico"),
+            ("Erotici", "https://www.tanti.icu/watch-genre/erotici"),
+            ("Fantascienza", "https://www.tanti.icu/watch-genre/fantascienza"),
+            ("Gangster", "https://www.tanti.icu/watch-genre/gangster-1"),
+            ("Giallo", "https://www.tanti.icu/watch-genre/giallo"),
+            ("Grottesco", "https://www.tanti.icu/watch-genre/grotesto"),
+            ("Guerra", "https://www.tanti.icu/watch-genre/guerra"),
+            ("Musicale", "https://www.tanti.icu/watch-genre/musicale"),
+            ("Noir", "https://www.tanti.icu/watch-genre/noir"),
+            ("Poliziesco", "https://www.tanti.icu/watch-genre/poliziesco"),
+            ("Horror", "https://www.tanti.icu/watch-genre/horror"),
+            ("Romantico", "https://www.tanti.icu/watch-genre/romantico"),
+            ("Sportivo", "https://www.tanti.icu/watch-genre/sportivo"),
+            ("Storico", "https://www.tanti.icu/watch-genre/storico"),
+            ("Thriller", "https://www.tanti.icu/watch-genre/thriller-1"),
+            ("Western", "https://www.tanti.icu/watch-genre/western"),
+            ("Serie TV", "https://www.tanti.icu/watch-genre/serie-tv"),
+            ("Miniserie", "https://www.tanti.icu/watch-genre/miniserie-1"),
+            ("Programmi Tv", "https://www.tanti.icu/watch-genre/programmi-tv"),
+            ("Live", "https://www.tanti.icu/watch-genre/live"),
+            ("Trailers", "https://www.tanti.icu/watch-genre/trailers"),
+            ("Serie TV Aggiornate", "https://www.tanti.icu/watch-genre/series-tv-featured"),
+            ("Aggiornamenti", "https://www.tanti.icu/watch-genre/recommended"),
+            ("Featured", "https://www.tanti.icu/watch-genre/featured")
         ]
 
         // Convert categories into MediaContentSections
@@ -223,7 +223,7 @@ public class TantifilmProvider: Provider {
 
 private extension TantifilmProvider {
     // Assuming you have a baseURL defined elsewhere in your code
-    // private let baseURL = URL(staticString: "https://www.tantifilm.farm")
+    // private let baseURL = URL(staticString: "https://www.tanti.icu")
 
     private func parsePageContent(_ content: String) throws -> [MediaContent] {
         let document = try SwiftSoup.parse(content)

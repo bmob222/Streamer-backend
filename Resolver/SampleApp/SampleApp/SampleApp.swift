@@ -7,7 +7,7 @@ struct SampleApp: App {
         WindowGroup {
             // Update the provider you want to test
             MainView(
-                provider: AnimeToastAnimeProvider()
+                provider: Filma24Provider()
             )
         }
     }

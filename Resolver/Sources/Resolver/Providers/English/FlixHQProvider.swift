@@ -7,7 +7,7 @@ public struct FlixHQProvider: Provider {
     public var type: ProviderType = .init(.flixHQ)
     public let title: String = "FlixHQ.to"
     public let langauge: String = "🇺🇸"
-    public let baseURL: URL = URL(staticString: "https://flixhq.pe")
+    public let baseURL: URL = URL(staticString: "https://flixhq.to")
     public var moviesURL: URL {
         baseURL.appendingPathComponent("movie")
     }

@@ -42,16 +42,16 @@ public struct SearchView: View {
                 }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer)
-            .onChange(of: searchText) { newValue in
+            .onChange(of: searchText) { _ in
                 executeSearch()
             }
         }
     }
-    
+
     private func executeSearch() {
         // Perform your search request here using the searchText value
         // and update the searchResults array with the fetched results
-        Task{ @MainActor in
+        Task { @MainActor in
             self.mediaContent = try await provider.search(keyword: searchText, page: 1)
         }
     }

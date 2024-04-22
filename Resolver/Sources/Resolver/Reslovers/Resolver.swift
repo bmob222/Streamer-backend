@@ -88,7 +88,9 @@ public struct HostsResolver {
         VidsrcAPIReslover(),
         VidPlayReslover(),
         AniwaveAnimeResolver(),
-        SendVidReslover()
+        SendVidReslover(),
+        AvjosaResolver(),
+        Filma24Resolver()
 
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {

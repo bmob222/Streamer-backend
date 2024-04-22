@@ -17,8 +17,19 @@ public protocol Provider {
     func fetchTVShowDetails(for url: URL) async throws -> TVshow
     func search(keyword: String, page: Int) async throws -> [MediaContent]
     func home() async throws -> [MediaContentSection]
+
+    func test() async -> [String: String]
 }
 
+public enum TestError: Error, Equatable {
+    case emptyTVSources
+    case emptyMoviesSources
+
+    case noEpisodes
+    case noTVShows
+    case noMovies
+
+}
 extension Provider {
     public func latestCategory(id: Int, page: Int) async throws -> [MediaContent] {
         return []
@@ -29,6 +40,67 @@ extension Provider {
     public var categories: [Category] {
         return []
     }
+
+    public func test() async -> [String: String] {
+        var errors: [String: String] = [:]
+        // Home
+        do {
+            _ = try await home()
+            errors["1 - Home"] = "OK"
+        } catch {
+            errors["1 - Home"] = error.localizedDescription
+        }
+
+        // TV Listing
+        do {
+            let tvShows = try await latestTVShows(page: 1)
+            errors["2 - TV_Listing"] = "OK"
+
+            guard let tvShow = tvShows.first else { throw TestError.noTVShows }
+            let details = try await fetchTVShowDetails(for: tvShow.webURL)
+            guard let episodes = details.seasons?.last?.episodes?.first else { throw TestError.noEpisodes }
+            errors["3 - TV_Details"] = "OK"
+
+            let sources = try await episodes.sources?.concurrentMap {
+                return try? await HostsResolver.resolveURL(url: $0.hostURL)
+            }.compactMap { $0 }.flatMap { $0 } ?? []
+
+            if sources.isEmpty {
+                throw TestError.emptyTVSources
+            }
+            errors["4 - TV_Sources"] = "OK"
+
+        } catch {
+            errors["TV"] = error.localizedDescription
+        }
+
+        // Movies Listing
+        do {
+            let movies = try await latestMovies(page: 1)
+            errors["5 - Movies_Listing"] = "OK"
+            guard let movie = movies.last else { throw TestError.noMovies }
+            if movie.type == .tvShow {
+                errors["6 - Movies_Details"] = "No Movies"
+                errors["7 - Movies_Sources"] = "No Movies"
+            } else {
+                let details = try await fetchMovieDetails(for: movie.webURL)
+                errors["6 - Movies_Details"] = "OK"
+                let sources = try await details.sources?.concurrentMap {
+                    return try? await HostsResolver.resolveURL(url: $0.hostURL)
+                }.compactMap { $0 }.flatMap { $0 } ?? []
+                if sources.isEmpty {
+                    throw TestError.emptyMoviesSources
+                }
+                errors["7 - Movies_Sources"] = "OK"
+            }
+
+        } catch {
+            errors["Movies"] = error.localizedDescription
+        }
+
+        return errors
+    }
+
 }
 
 public enum ProviderError: Error, Equatable {
@@ -67,6 +139,7 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case pelisplus
     case animetoast
     case aniwave
+    case filma24
 }
 
 public enum ProviderType: Codable, Equatable, Hashable {
@@ -167,6 +240,8 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return AnimeToastAnimeProvider()
             case .aniwave:
                 return AniwaveAnimeProvider()
+            case .filma24:
+                return Filma24Provider()
             }
         case .remote(let id):
             let config = Self.activeProvidersConfig.first { $0.id == id}!
@@ -179,9 +254,9 @@ public enum ProviderType: Codable, Equatable, Hashable {
         rawValue == "tmdb"
     }
 
-    public var iconURL: URL {
-        let provider = Self.activeProvidersConfig.first { $0.id == self.rawValue}!
-        return provider.iconURL
+    public var iconURL: URL? {
+        let provider = Self.activeProvidersConfig.first { $0.id == self.rawValue}
+        return provider?.iconURL
     }
 
     public static var activeProvidersConfig: [ProviderConfig] = []

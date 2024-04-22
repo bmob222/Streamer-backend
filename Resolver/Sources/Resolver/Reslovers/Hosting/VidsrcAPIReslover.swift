@@ -3,7 +3,7 @@ import SwiftSoup
 
 struct VidsrcAPIReslover: Resolver {
     let name = "VidSrc"
-    static let domains: [String] = ["streamer-backend-vidsrc-api.3tx8cy.easypanel.host", "vidsrc.streamerapp.tech"]
+    static let domains: [String] = ["streamer-backend-vidsrc-api.3tx8cy.easypanel.host"]
 
     enum AnimetvStreamResolverError: Error {
         case idNotFound
