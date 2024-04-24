@@ -29,7 +29,16 @@ public class TMDBProvider: Provider {
         // anime providers//cartoon
         .init(id: 283, name: "Crunchyroll", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/81QfupgVijSH5v1H3VUbdlPm2r8.png")),
         .init(id: 318, name: "Adult Swim", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/tHZPHOLc6iF27G34cAZGPsMtMSy.png")),
-        .init(id: 34, name: "Boomerang", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/lkMfZclFXosrByxWf459NrXBiRY.png"))
+        //Fixed BOOMERANG ID
+        .init(id: 248, name: "Boomerang", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/lkMfZclFXosrByxWf459NrXBiRY.png")),
+        //added WWE/USA NEt/Food NET/HGTV
+        .init(id: 260, name: "WWE Network", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/fNkVI38NJKpnWKMmEkSxxinuyAe.png")),
+        .init(id: 322, name: "USA Network", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/g1e0H0Ka97IG5SyInMXdJkHGKiH.png")),
+        .init(id: 366, name: "Food Network", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/tm2UclPxfamHyFuILLq4jNxsi8v.png")),
+        .init(id: 406, name: "HGTV", poster: .init(staticString: "https://www.themoviedb.org/t/p/w300/tzTtKdQ7vC2FkBvJDUErOhBPdKJ.png")),
+        
+        
+        //
 
     ]
     enum TMDBProvider: Error {
