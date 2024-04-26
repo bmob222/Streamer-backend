@@ -32,7 +32,7 @@ struct Filma24Resolver: Resolver {
             }
             allLinks.append(url)
         }
-
+        
         // Convert URLs to Stream objects
         let streamURLs = try await allLinks.concurrentMap { url in
             return try await HostsResolver.resolveURL(url: url)

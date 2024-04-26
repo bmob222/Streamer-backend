@@ -6,7 +6,9 @@ struct MyCloudResolver: Resolver {
 
     static let domains: [String] = [
         "mcloud.to",
-        "mcloud.bz"
+        "mcloud.bz",
+        "mcloud2.to",
+        "mzcloud.life"
     ]
 
     @EnviromentValue(key: "mycloud_keys_url", defaultValue: URL(staticString: "https://google.com"))
@@ -17,29 +19,17 @@ struct MyCloudResolver: Resolver {
     }
 
     func getMediaURL(url: URL) async throws -> [Stream] {
-        var url = url.removing("sub.info")
-        let info = url.absoluteString
-            .replacingOccurrences(of: "https://", with: "")
-        let eURL = keysURL.appending("url", value: info.encodeURIComponent())
-        let encodedPath = try await Utilities.downloadPage(url: eURL)
-        let encodedURL = try URL(encodedPath)
-        let headers = [
-            "User-Agent": Constants.userAgent,
-            "Referer": url.absoluteString,
-            "origin": url.absoluteString,
-            "content-type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-origin"
-        ]
+        let url = url.removing("sub.info")
+        let info = url.absoluteString.replacingOccurrences(of: "https://", with: "")
+        let eURL = keysURL.appendingPathComponent("mcloud").appending("url", value: info.encodeURIComponent())
 
         do {
-            let data = try await Utilities.requestData(url: encodedURL, extraHeaders: headers)
 
+            let data = try await Utilities.requestData(url: eURL)
             let content = try JSONDecoder().decode(Response.self, from: data)
-            return content.result.sources.compactMap {
-                Stream(Resolver: "VizCloud", streamURL: $0.file, quality: .unknown)
-            }
+            return [
+                Stream(Resolver: "Mcloud", streamURL: content.source)
+            ]
         } catch {
             print(error)
             throw error
@@ -47,17 +37,6 @@ struct MyCloudResolver: Resolver {
 
     }
     struct Response: Codable {
-        let status: Int
-        let result: Media
-    }
-
-    // MARK: - Media
-    struct Media: Codable {
-        let sources: [Source]
-    }
-
-    // MARK: - Source
-    struct Source: Codable {
-        let file: URL
+        let source: URL
     }
 }

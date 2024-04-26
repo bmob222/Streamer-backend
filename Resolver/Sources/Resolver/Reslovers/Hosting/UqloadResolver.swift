@@ -22,7 +22,7 @@ struct UqloadResolver: Resolver {
         guard let path = Utilities.extractURLs(content: script).filter({ $0.pathExtension == "mp4"}).first else {
             throw UqloadResolverError.videoNotFound
         }
-        return [.init(Resolver: "Uqload", streamURL: path)]
+        return [.init(Resolver: "Uqload", streamURL: path, headers: ["referer": "https://uqload.to/"])]
     }
 
 }

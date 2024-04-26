@@ -31,7 +31,11 @@ struct FilemoonResolver: Resolver {
         "lylxan.com",
         "luluvdo.com",
         "vidhidevip.com",
-        "kerapoxy.cc"
+        "kerapoxy.cc",
+        "vpcxz19p.xyz",
+        "filemoon.top",
+        "fmoonembed.pro",
+        "rgeyyddl.skin"
     ]
 
     @EnviromentValue(key: "mycloud_keys_url", defaultValue: URL(staticString: "https://google.com"))
@@ -48,10 +52,10 @@ struct FilemoonResolver: Resolver {
             let content = try JSONDecoder().decode(VidPlay.self, from: data)
             return content.stream.compactMap {
 
-                Stream(Resolver: "VizCloud", streamURL: $0.playlist, headers: [
-                    "Referer": $0.headers.referer,
-                    "Origin": $0.headers.origin
-                ], subtitles: $0.captions.map { .init(url: $0.url, language: .init(rawValue: $0.language) ?? .unknown)})
+                Stream(
+                    Resolver: "Filemoon",
+                    streamURL: $0.playlist,
+                    subtitles: $0.captions.map { .init(url: $0.url, language: .init(rawValue: $0.language) ?? .unknown)})
             }
         } catch {
             print(error)
@@ -72,7 +76,7 @@ struct FilemoonResolver: Resolver {
     // MARK: - Stream
     struct SStream: Codable {
         let playlist: URL
-        let headers: Headers
+        let headers: Headers?
         let captions: [Caption]
 
         enum CodingKeys: String, CodingKey {

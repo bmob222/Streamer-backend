@@ -13,7 +13,15 @@ struct MixdropResolver: Resolver {
         "mixdrop.ag",
         "mdy48tn97.com",
         "md3b0j6hj.com",
-        "mdbekjwqa.pw"
+        "mdbekjwqa.pw",
+        "mixdrop.nu",
+        "mixdrop.si",
+        "mixdrop21.net",
+        "mixdropjmk.pw",
+        "mdzsmutpcvykb.net",
+        "mdfx9dc8n.net",
+        "mdbekjwqa.pw",
+        
     ]
     @EnviromentValue(key: "consumet_url", defaultValue: URL(staticString: "https://api.consumet.org"))
     private var consumetURL: URL
@@ -22,8 +30,9 @@ struct MixdropResolver: Resolver {
         case idNotFound
     }
     func getMediaURL(url: URL) async throws -> [Stream] {
+        let urlStr = url.absoluteString.replacingOccurrences(of: "/f/", with: "/e/")
         let watchURL = consumetURL.appendingPathComponent("utils/extractor")
-            .appending("url", value: url.absoluteString.base64Encoded())
+            .appending("url", value: urlStr.base64Encoded())
             .appending("server", value: "mixdrop")
 
         let data = try await Utilities.requestData(url: watchURL)

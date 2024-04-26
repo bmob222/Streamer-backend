@@ -1,6 +1,6 @@
 import Foundation
 import SwiftyPyString
-
+ 
 struct VidPlayReslover: Resolver {
     let name = "VidPlayer"
 
@@ -18,7 +18,26 @@ struct VidPlayReslover: Resolver {
         "vizcloud.xyz",
         "vizcloud2.online",
         "vizcloud2.ru",
-        "vid41c.site"
+        "vid41c.site",
+        "vidstream.pro",
+        "vidstreamz.online",
+        "vizcloud.ru",
+        "vizcloud2.ru",
+        "vizcloud2.online",
+        "vizcloud.online",
+        "vizstream.ru",
+        "vizcloud.xyz",
+        "vizcloud.live",
+        "vizcloud.digital",
+        "vizcloud.cloud",
+        "vizcloud.store",
+        "vizcloud.site",
+        "vizcloud.co",
+        "vidplay.site",
+        "vidplay.lol",
+        "vidplay.online",
+        "a9bfed0818.nl",
+        "vid142.site"
     ]
 
     @EnviromentValue(key: "mycloud_keys_url", defaultValue: URL(staticString: "https://google.com"))
@@ -36,14 +55,10 @@ struct VidPlayReslover: Resolver {
         do {
 
             let data = try await Utilities.requestData(url: eURL)
-            let content = try JSONDecoder().decode(VidPlay.self, from: data)
-            return content.stream.compactMap {
-
-                Stream(Resolver: "VizCloud", streamURL: $0.playlist, headers: [
-                    "Referer": $0.headers.referer,
-                    "Origin": $0.headers.origin
-                ], subtitles: $0.captions.map { .init(url: $0.url, language: .init(rawValue: $0.language) ?? .unknown)})
-            }
+            let content = try JSONDecoder().decode(Response.self, from: data)
+            return [
+                Stream(Resolver: "VidPlayer", streamURL: content.source)
+            ]
         } catch {
             print(error)
             throw error
@@ -51,48 +66,8 @@ struct VidPlayReslover: Resolver {
 
     }
 
-    // MARK: - VidPlay
-    struct VidPlay: Codable {
-        let stream: [SStream]
-
-        enum CodingKeys: String, CodingKey {
-            case stream = "stream"
-        }
-    }
-
-    // MARK: - Stream
-    struct SStream: Codable {
-        let playlist: URL
-        let headers: Headers
-        let captions: [Caption]
-
-        enum CodingKeys: String, CodingKey {
-            case playlist = "playlist"
-            case headers = "headers"
-            case captions = "captions"
-        }
-    }
-
-    // MARK: - Caption
-    struct Caption: Codable {
-        let url: URL
-        let language: String
-
-        enum CodingKeys: String, CodingKey {
-            case url = "url"
-            case language = "language"
-        }
-    }
-
-    // MARK: - Headers
-    struct Headers: Codable {
-        let referer: String
-        let origin: String
-
-        enum CodingKeys: String, CodingKey {
-            case referer = "Referer"
-            case origin = "Origin"
-        }
+    struct Response: Codable {
+        let source: URL
     }
 
 }

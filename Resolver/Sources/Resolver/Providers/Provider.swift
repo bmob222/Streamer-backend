@@ -121,7 +121,7 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case kinokiste
     case flixHQ
     case kaido
-    case viewAsian
+    case dramacool
     case filmPalast
     case faselHD
     case moviebox
@@ -139,7 +139,7 @@ public enum LocalProvider: String, Codable, Equatable, Hashable, CaseIterable {
     case pelisplus
     case animetoast
     case aniwave
-    case filma24
+    case filma
 }
 
 public enum ProviderType: Codable, Equatable, Hashable {
@@ -200,8 +200,8 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return KaidoAnimeProvider()
             case .arabseed:
                 return ArabseedProvider()
-            case .viewAsian:
-                return ViewAsianProvider()
+            case .dramacool:
+                return DramaCoolProvider()
             case .filmPalast:
                 return FilmPalastProvider()
             case .faselHD:
@@ -240,7 +240,7 @@ public enum ProviderType: Codable, Equatable, Hashable {
                 return AnimeToastAnimeProvider()
             case .aniwave:
                 return AniwaveAnimeProvider()
-            case .filma24:
+            case .filma:
                 return Filma24Provider()
             }
         case .remote(let id):

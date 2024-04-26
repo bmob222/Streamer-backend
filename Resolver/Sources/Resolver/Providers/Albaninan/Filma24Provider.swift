@@ -4,7 +4,7 @@ import SwiftSoup
 public class Filma24Provider: Provider {
     public init() {}
 
-    public let type: ProviderType = .init(.filma24)
+    public let type: ProviderType = .init(.filma)
 
     public let title: String = "filma24.lol"
     public let langauge: String = ""
@@ -62,9 +62,9 @@ public class Filma24Provider: Provider {
         let filmDetails = try JSONDecoder().decode(FilmDetails.self, from: aioseoSchema!)
 
         let title = filmDetails.graph.first?.headline ?? ""
-        let poster = filmDetails.graph.first?.image?.url ?? .init(staticString: "https://google.com")
+        let poster = filmDetails.graph.first?.image?.url ?? .init(staticString: "https://eticketsolutions.com/demo/themes/e-ticket/img/movie.jpg")
 
-        return Movie(title: title, webURL: url, posterURL: poster, sources: [Source(hostURL: url)])
+        return Movie(title: cleanTitle(title), webURL: url, posterURL: poster, sources: [Source(hostURL: url)])
 
     }
 
@@ -99,7 +99,7 @@ public class Filma24Provider: Provider {
         // Create season objects
         let seasons = seasonsDict.map { Season(seasonNumber: $0.key, webURL: url, episodes: $0.value.sorted(by: { $0.number < $1.number })) }
 
-        return TVshow(title: title, webURL: url, posterURL: posterURL, seasons: seasons.sorted(by: { $0.seasonNumber < $1.seasonNumber }))
+        return TVshow(title: cleanTitle(title), webURL: url, posterURL: posterURL, seasons: seasons.sorted(by: { $0.seasonNumber < $1.seasonNumber }))
     }
 
     public func search(keyword: String, page: Int) async throws -> [MediaContent] {
@@ -121,6 +121,14 @@ public class Filma24Provider: Provider {
 
     }
 
+    
+    func cleanTitle(_ title: String) -> String {
+        return title.replacingOccurrences(of: "streaming", with: "")
+            .removingRegexMatches(pattern: "\\(\\d{4}\\)", replaceWith: "") // (2022)
+            .strip()
+    }
+
+    
     // MARK: - FilmDetails
     struct FilmDetails: Codable {
         let graph: [Graph]
@@ -149,5 +157,6 @@ public class Filma24Provider: Provider {
             case url = "url"
         }
     }
+   
 
 }

@@ -44,7 +44,7 @@ public struct HostsResolver {
         WatchSBResolver(),
         ArabSeedResolver(),
         FlixHQResolver(),
-        ViewAsianResolver(),
+        DramaCoolResolver(),
         WolfstreamResolver(),
         FilmPalastResolver(),
         VoeResolver(),
@@ -90,7 +90,8 @@ public struct HostsResolver {
         AniwaveAnimeResolver(),
         SendVidReslover(),
         AvjosaResolver(),
-        Filma24Resolver()
+        Filma24Resolver(),
+        StremifyReslover()
 
     ]
     static public func resolveURL(url: URL) async throws -> [Stream] {
