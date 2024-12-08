@@ -2,7 +2,7 @@ import Foundation
 
 struct EmbedsitoResolver: Resolver {
     let name = "Embedsito"
-    static let domains: [String] = ["embedsito.com", "fembed.com", "fembed-hd.com", "suzihaza.com", "www.fembed.com", "vanfem.com"]
+    static let domains: [String] = ["embedsito.com", "fembed.com", "fembed-hd.com", "suzihaza.com", "www.fembed.com", "vanfem.com","embed69.org"]
 
     enum EmbedsitoResolverError: Error {
         case urlNotValid
